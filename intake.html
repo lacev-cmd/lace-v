@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lace V — Build Your Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F5F1E8;
+    --accent: #6B1A2A;
+    --ink: #2a1a1a;
+    --mid: #5a4a3a;
+    --muted: #7a6a5a;
+    --faint: #9a7a6a;
+    --border: #d4c4b4;
+    --white: #ffffff;
+    --font: 'Inter', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    font-family: var(--font);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  nav {
+    padding: 1.5rem 3rem;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    text-decoration: none;
+  }
+
+  .logo-text p:first-child {
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+  }
+
+  .logo-text p:last-child {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--faint);
+    text-transform: uppercase;
+  }
+
+  .intake {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .intro {
+    margin-bottom: 3rem;
+  }
+
+  .intro h1 {
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+
+  .question {
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .question-number {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 0.75rem;
+  }
+
+  .question h2 {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  .question p.hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .options {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .option-btn {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.65rem 1.5rem;
+    font-family: var(--font);
+    font-size: 14px;
+    color: var(--mid);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .option-btn:hover,
+  .option-btn.selected {
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  textarea {
+    width: 100%;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    font-family: var(--font);
+    font-size: 14px;
+    color: var(--ink);
+    resize: vertical;
+    min-height: 90px;
+    transition: border-color 0.15s;
+  }
+
+  textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .output-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .output-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .output-card:hover,
+  .output-card.selected {
+    border-color: var(--accent);
+  }
+
+  .output-card h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+
+  .output-card p {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .upload-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background: var(--white);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 1.75rem;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--muted);
+    transition: border-color 0.15s;
+  }
+
+  .upload-area:hover { border-color: var(--accent); }
+
+  .upload-area input { display: none; }
+
+  .btn-complete {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 8px;
+    padding: 0.9rem 2.5rem;
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    transition: opacity 0.15s;
+    margin-top: 2.5rem;
+  }
+
+  .btn-complete:hover { opacity: 0.88; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 3rem;
+  }
+
+  footer p {
+    font-size: 13px;
+    color: var(--faint);
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 1rem 1.25rem; }
+    .intake { padding: 2rem 1.25rem; }
+    .output-grid { grid-template-columns: 1fr; }
+    footer { padding: 1.5rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="lace-v-landing.html">
+    <svg width="52" height="44" viewBox="0 0 160 140">
+      <polyline points="0,0 80,150 160,0" fill="none" stroke="#6B1A2A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.2"/>
+      <polyline points="22,0 80,103 138,0" fill="none" stroke="#6B1A2A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+      <polyline points="50,0 80,56 110,0" fill="none" stroke="#6B1A2A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+    </svg>
+    <div class="logo-text">
+      <p>LACE V</p>
+      <p>Pattern Reading Machine</p>
+    </div>
+  </a>
+</nav>
+
+<div class="intake">
+
+  <div class="intro">
+    <h1>Lace V reads patterns. To build the right tool for you, we need to ask a few questions. It takes two minutes.</h1>
+  </div>
+
+  <div class="question">
+    <p class="question-number">01</p>
+    <h2>Is this for you personally or for work?</h2>
+    <div class="options">
+      <button class="option-btn" onclick="select(this, 'q1')">Personal</button>
+      <button class="option-btn" onclick="select(this, 'q1')">Work</button>
+    </div>
+  </div>
+
+  <div class="question">
+    <p class="question-number">02</p>
+    <h2>What is the decision or situation you need mapped?</h2>
+    <textarea placeholder="Describe it briefly."></textarea>
+  </div>
+
+  <div class="question">
+    <p class="question-number">03</p>
+    <h2>Is this an existing situation or something new?</h2>
+    <div class="options">
+      <button class="option-btn" onclick="select(this, 'q3')">Existing</button>
+      <button class="option-btn" onclick="select(this, 'q3')">New</button>
+    </div>
+  </div>
+
+  <div class="question">
+    <p class="question-number">04</p>
+    <h2>Any background worth knowing?</h2>
+    <textarea placeholder="Optional."></textarea>
+  </div>
+
+  <div class="question">
+    <p class="question-number">05</p>
+    <h2>What would you like delivered?</h2>
+    <div class="output-grid">
+      <div class="output-card" onclick="selectCard(this, 'q5')">
+        <h3>Personal map</h3>
+        <p>For you. Private. No audience.</p>
+      </div>
+      <div class="output-card" onclick="selectCard(this, 'q5')">
+        <h3>Professional handover</h3>
+        <p>Structured for the person receiving your case.</p>
+      </div>
+      <div class="output-card" onclick="selectCard(this, 'q5')">
+        <h3>Case worker</h3>
+        <p>For a support worker managing your situation.</p>
+      </div>
+      <div class="output-card" onclick="selectCard(this, 'q5')">
+        <h3>Legal prep</h3>
+        <p>Bounded and caveated for a legal context.</p>
+      </div>
+      <div class="output-card" onclick="selectCard(this, 'q5')">
+        <h3>Governance audit</h3>
+        <p>For an organisation or review process.</p>
+      </div>
+      <div class="output-card" onclick="selectCard(this, 'q5')">
+        <h3>Progress arc</h3>
+        <p>A longitudinal read across time.</p>
+      </div>
+      <div class="output-card" onclick="selectCard(this, 'q5')">
+        <h3>STEM technical evidence readiness</h3>
+        <p>For engineering and technical decisions.</p>
+      </div>
+      <div class="output-card" onclick="selectCard(this, 'q5')">
+        <h3>Horizon</h3>
+        <p>A forward-facing read of where things are headed.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="question">
+    <p class="question-number">06</p>
+    <h2>Do you have any documents to include?</h2>
+    <p class="hint">Optional. PDF, Word, or text files.</p>
+    <label class="upload-area">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9a7a6a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      Upload files or drag and drop
+      <input type="file" multiple accept=".pdf,.doc,.docx,.txt">
+    </label>
+  </div>
+
+  <button class="btn-complete">Complete</button>
+
+</div>
+
+<footer>
+  <p>© 2026 Lace V</p>
+</footer>
+
+<script>
+  function select(btn, group) {
+    document.querySelectorAll('[data-group="' + group + '"]').forEach(b => b.classList.remove('selected'));
+    btn.setAttribute('data-group', group);
+    document.querySelectorAll('[data-group="' + group + '"]').forEach(b => b.classList.remove('selected'));
+    btn.classList.toggle('selected');
+  }
+
+  function selectCard(card, group) {
+    document.querySelectorAll('.output-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+  }
+
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const siblings = this.closest('.options').querySelectorAll('.option-btn');
+      siblings.forEach(s => s.classList.remove('selected'));
+      this.classList.add('selected');
+    });
+  });
+</script>
+
+</body>
+</html>
