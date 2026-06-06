@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LACE V · Personal Map</title>
+<style>
+/* ── TOKENS ──────────────────────────────────────────── */
+:root {
+  --bg:           #f3f1eb;
+  --surface:      #ffffff;
+  --surface2:     #f8f6f0;
+  --surface3:     #eee9dc;
+  --ink:          #171512;
+  --text:         #211f1a;
+  --muted:        #676157;
+  --faint:        #9b968c;
+  --border:       #e1dbcc;
+  --border-strong:#bfb7a6;
+  --black:        #14120f;
+  --cream:        #f6efe2;
+  --warn:         #92601a;
+  --warn-light:   #fdf3e3;
+  --danger:       #8b1f1f;
+  --danger-light: #fdeaea;
+  --gap-mark:     #b35a1a;
+  --gap-light:    #fef4ec;
+  --moving:       #1a4a6b;
+  --moving-light: #eaf2f8;
+  --accent:       #2d5a3d;
+  --accent-light: #e8f0ea;
+  --flag:         #6b5a1a;
+  --flag-light:   #f8f4e8;
+  --flag-border:  #d8c890;
+  --r-lg:         20px;
+  --r-md:         14px;
+  --r-sm:         8px;
+  --shadow:       0 8px 32px rgba(20,18,15,.07);
+}
+*  { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+button,input,textarea,select { font:inherit; }
+button { cursor:pointer; }
+button:disabled { opacity:.5; cursor:default; }
+::selection { background: var(--accent-light); }
+
+/* ── TYPOGRAPHY ─────────────────────────────────────── */
+.serif { font-family: Georgia,"Times New Roman",serif; }
+h1,h2,h3 { letter-spacing:-.03em; }
+
+/* ── BUTTONS ────────────────────────────────────────── */
+.btn {
+  display:inline-flex; align-items:center; gap:.45rem;
+  border:1px solid var(--border);
+  background:var(--surface2);
+  border-radius:999px;
+  padding:.6rem 1.1rem;
+  font-size:.82rem; font-weight:650;
+  color:var(--text);
+  transition:all .12s;
+  white-space:nowrap;
+}
+.btn:hover { border-color:var(--border-strong); transform:translateY(-1px); }
+.btn-primary { background:var(--black); color:var(--cream); border-color:var(--black); }
+.btn-accent  { background:var(--accent); color:#fff; border-color:var(--accent); }
+.btn-danger  { background:var(--danger-light); color:var(--danger); border-color:#efb5b5; }
+.btn-sm      { padding:.38rem .75rem; font-size:.76rem; }
+
+/* ── SCREENS ────────────────────────────────────────── */
+.screen { display:none; min-height:100vh; }
+.screen.active { display:block; }
+
+/* ── ONBOARD ────────────────────────────────────────── */
+#screen-onboard {
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:clamp(2rem,5vw,4rem) 1rem;
+  min-height:100vh;
+}
+.onboard-wrap { max-width:560px; width:100%; }
+.brand-kicker {
+  font-size:.65rem; letter-spacing:.16em; text-transform:uppercase;
+  font-weight:800; color:var(--faint); margin-bottom:.9rem;
+}
+.onboard-title {
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(2.6rem,8vw,5rem);
+  line-height:.92; letter-spacing:-.06em;
+  margin-bottom:1rem; color:var(--black);
+}
+.onboard-lead {
+  font-size:clamp(.95rem,2vw,1.12rem);
+  color:var(--muted); line-height:1.72;
+  max-width:480px; margin-bottom:2rem;
+}
+.what-this-is {
+  background:rgba(255,255,255,.72);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  padding:1.4rem 1.5rem;
+  margin-bottom:1.8rem;
+}
+.what-this-is p {
+  font-size:.86rem; color:var(--muted);
+  line-height:1.72; margin-bottom:.75rem;
+}
+.what-this-is p:last-child { margin-bottom:0; }
+.what-this-is strong { color:var(--text); }
+.onboard-actions { display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; }
+
+/* ── MAIN APP ───────────────────────────────────────── */
+#screen-app { display:none; padding:0 0 6rem; }
+
+.app-header {
+  position:sticky; top:0; z-index:40;
+  background:rgba(243,241,235,.92);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  padding:.6rem 0;
+}
+.app-header-inner {
+  width:min(960px,calc(100vw - 2rem));
+  margin:0 auto;
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+}
+.app-brand { display:flex; align-items:baseline; gap:.6rem; }
+.app-brand-name {
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:1.1rem; letter-spacing:-.04em; color:var(--black);
+}
+.app-brand-domain {
+  font-size:.66rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:800; color:var(--faint);
+}
+.app-header-actions { display:flex; gap:.5rem; flex-wrap:wrap; }
+
+/* ── TABS ───────────────────────────────────────────── */
+.tabs-bar {
+  width:min(960px,calc(100vw - 2rem));
+  margin:1.4rem auto .6rem;
+  display:flex; gap:.35rem; flex-wrap:wrap;
+}
+.tab-btn {
+  border:1px solid transparent;
+  background:none; border-radius:999px;
+  padding:.42rem .9rem;
+  font-size:.78rem; font-weight:700;
+  color:var(--muted);
+  transition:all .12s;
+}
+.tab-btn:hover { color:var(--text); }
+.tab-btn.active {
+  background:var(--surface);
+  border-color:var(--border);
+  color:var(--black);
+  box-shadow:0 2px 8px rgba(20,18,15,.05);
+}
+
+.tab-pane { display:none; }
+.tab-pane.active { display:block; }
+.tab-content {
+  width:min(960px,calc(100vw - 2rem));
+  margin:0 auto;
+}
+
+/* ── CARDS ──────────────────────────────────────────── */
+.card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  padding:clamp(1.2rem,3vw,2rem);
+  box-shadow:var(--shadow);
+  margin-bottom:1rem;
+}
+.card-title {
+  font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  font-weight:800; color:var(--faint); margin-bottom:.9rem;
+}
+.card h2 {
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(1.5rem,3vw,2.2rem);
+  letter-spacing:-.045em; margin-bottom:.5rem; color:var(--black);
+}
+.card p { color:var(--muted); font-size:.9rem; line-height:1.7; margin-bottom:.9rem; }
+.card p:last-child { margin-bottom:0; }
+
+/* ── FORM ELEMENTS ──────────────────────────────────── */
+textarea, input[type="text"], input[type="date"], select {
+  width:100%; padding:.7rem .9rem;
+  border:1px solid var(--border); border-radius:var(--r-md);
+  background:var(--surface2); color:var(--text);
+  font-size:.88rem; line-height:1.55;
+  transition:border-color .12s;
+  resize:vertical;
+}
+textarea:focus, input:focus, select:focus {
+  outline:none; border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-light);
+}
+textarea { min-height:120px; }
+label {
+  display:block; font-size:.76rem; font-weight:750;
+  text-transform:uppercase; letter-spacing:.08em;
+  color:var(--muted); margin-bottom:.45rem;
+}
+.field { margin-bottom:1.1rem; }
+.field:last-child { margin-bottom:0; }
+.field-row { display:flex; gap:.75rem; align-items:flex-end; }
+.field-row .field { flex:1; margin-bottom:0; }
+.form-hint { font-size:.78rem; color:var(--faint); margin-top:.35rem; line-height:1.5; }
+.status-msg {
+  display:none; font-size:.78rem; color:var(--accent);
+  margin-top:.5rem; font-weight:650;
+}
+
+/* ── ENTRY LIST ─────────────────────────────────────── */
+.entry-list { display:grid; gap:.65rem; margin-top:1rem; }
+.entry-item {
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:var(--r-md);
+  padding:1rem 1.1rem;
+}
+.entry-item.flagged { border-color:var(--flag-border); background:var(--flag-light); }
+.entry-meta { display:flex; gap:.6rem; align-items:center; margin-bottom:.45rem; }
+.entry-meta strong { font-size:.78rem; font-weight:750; color:var(--black); }
+.entry-meta span {
+  font-size:.68rem; letter-spacing:.08em; text-transform:uppercase;
+  font-weight:800; color:var(--flag); background:var(--flag-light);
+  border:1px solid var(--flag-border); border-radius:999px;
+  padding:.1rem .5rem;
+}
+.entry-text { font-size:.88rem; color:var(--text); line-height:1.65; margin-bottom:.65rem; white-space:pre-wrap; }
+.entry-actions { display:flex; gap:.45rem; flex-wrap:wrap; }
+.empty-note { color:var(--faint); font-size:.85rem; padding:.5rem 0; }
+
+/* ── CORRECTION LIST ────────────────────────────────── */
+.correction-item {
+  border:1px solid var(--border); border-radius:var(--r-sm);
+  padding:.75rem .9rem; margin-bottom:.5rem;
+  font-size:.86rem; display:flex; gap:.75rem;
+  align-items:flex-start; justify-content:space-between;
+}
+.correction-date { font-size:.72rem; color:var(--faint); white-space:nowrap; }
+
+/* ── REPORT OUTPUT ──────────────────────────────────── */
+.report-empty {
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  min-height:260px; text-align:center;
+  color:var(--faint); gap:.75rem;
+}
+.report-empty p { font-size:.88rem; max-width:400px; line-height:1.65; }
+
+#reportOutput {
+  display:none;
+  padding-bottom:2rem;
+}
+
+.report-block {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  padding:1.4rem 1.6rem;
+  margin-bottom:.85rem;
+  box-shadow:var(--shadow);
+}
+.report-block-title {
+  font-size:.63rem; letter-spacing:.14em; text-transform:uppercase;
+  font-weight:800; color:var(--faint); margin-bottom:.75rem;
+}
+.report-block h3 {
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:1.3rem; letter-spacing:-.04em;
+  margin-bottom:.6rem; color:var(--black);
+}
+.report-item {
+  font-size:.88rem; color:var(--text);
+  line-height:1.7; margin-bottom:.5rem;
+  padding-left:.9rem; border-left:2px solid var(--border);
+}
+.report-item:last-child { margin-bottom:0; }
+.report-item.moving { border-left-color:var(--moving); }
+.report-item.gap    { border-left-color:var(--gap-mark); }
+.report-item.warn   { border-left-color:var(--warn); }
+.report-item.held   { border-left-color:var(--flag); }
+
+.confidence-badge {
+  display:inline-flex; align-items:center;
+  font-size:.66rem; letter-spacing:.08em; text-transform:uppercase;
+  font-weight:800; border-radius:999px;
+  padding:.18rem .6rem;
+  border:1px solid;
+}
+.confidence-badge.strong   { color:#1a4a2b; background:#e4f2ea; border-color:#b3d9bf; }
+.confidence-badge.supported{ color:#1a4a6b; background:var(--moving-light); border-color:#b3cfe0; }
+.confidence-badge.partial  { color:var(--warn); background:var(--warn-light); border-color:#deb87a; }
+.confidence-badge.thin,
+.confidence-badge.inferred { color:var(--muted); background:var(--surface3); border-color:var(--border-strong); }
+.confidence-badge.not_readable { color:var(--danger); background:var(--danger-light); border-color:#efb5b5; }
+
+.next-move-block {
+  background:var(--black); color:var(--cream);
+  border-radius:var(--r-lg);
+  padding:1.4rem 1.6rem;
+  margin-bottom:.85rem;
+}
+.next-move-block .report-block-title { color:rgba(246,239,226,.55); }
+.next-move-block h3 { color:var(--cream); }
+.next-move-block p { color:rgba(246,239,226,.78); font-size:.9rem; line-height:1.7; }
+
+.summary-capstone {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  padding:1.4rem 1.6rem;
+  margin-bottom:1rem;
+  box-shadow:var(--shadow);
+}
+.summary-title {
+  font-size:.63rem; letter-spacing:.14em; text-transform:uppercase;
+  font-weight:800; color:var(--faint); margin-bottom:.75rem;
+}
+.summary-row {
+  display:grid; grid-template-columns:130px 1fr;
+  gap:.75rem; padding:.5rem 0;
+  border-top:1px solid var(--border);
+  font-size:.86rem;
+}
+.summary-row strong { color:var(--black); font-weight:750; }
+.summary-row span { color:var(--muted); line-height:1.55; }
+
+/* ── CRISIS ─────────────────────────────────────────── */
+.crisis-banner {
+  display:none;
+  background:var(--danger-light);
+  border:1px solid #efb5b5;
+  color:var(--danger);
+  border-radius:var(--r-md);
+  padding:1rem 1.2rem;
+  margin-bottom:1rem;
+  font-size:.88rem;
+  line-height:1.65;
+}
+.crisis-banner strong { display:block; margin-bottom:.35rem; }
+
+/* ── GAPS NOTICE ────────────────────────────────────── */
+.gap-notice {
+  background:var(--gap-light);
+  border:1px solid #e8b88a;
+  border-radius:var(--r-md);
+  padding:.8rem 1rem;
+  font-size:.82rem;
+  color:var(--gap-mark);
+  line-height:1.6;
+  margin-bottom:.65rem;
+}
+
+/* ── REPORT CONTROLS ────────────────────────────────── */
+.report-controls {
+  display:flex; gap:.65rem; flex-wrap:wrap;
+  align-items:center; margin-bottom:1.2rem;
+}
+.report-controls label { margin:0; text-transform:none; letter-spacing:0; font-size:.82rem; color:var(--muted); }
+.report-controls input[type="date"] { width:auto; padding:.38rem .65rem; font-size:.82rem; }
+
+/* ── IDENTITY FOOTER ────────────────────────────────── */
+.identity-footer {
+  border-top:1px solid var(--border);
+  padding:1.4rem 0;
+  margin-top:2rem;
+  font-size:.78rem;
+  color:var(--faint);
+  line-height:1.65;
+  max-width:680px;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────── */
+@media(max-width:640px) {
+  .field-row { flex-direction:column; }
+  .app-header-actions .btn-sm:not(.keep-mobile) { display:none; }
+  .summary-row { grid-template-columns:1fr; gap:.2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── ONBOARD SCREEN ──────────────────────────────────────── -->
+<div id="screen-onboard">
+  <div class="onboard-wrap">
+    <p class="brand-kicker">LACE V</p>
+    <h1 class="onboard-title serif" id="onboard-title">Personal Map</h1>
+    <p class="onboard-lead" id="onboard-lead">A reading and sorting tool. You write. It reads what you wrote.</p>
+
+    <div class="what-this-is">
+      <p><strong>What this is.</strong> This map is built from what you wrote. Nothing more. It cannot see what you did not give it. It cannot fill gaps you left empty. It cannot read what you held back. The more honestly you write, the more honestly it reads.</p>
+      <p>It does not generate, predict, or guess. It reads your material, counts what appears independently, maps what is moving and what is not, holds what contradicts without resolving it, and surfaces what is missing.</p>
+      <p><strong>This is your record.</strong> Nothing leaves this device. No account required. No data stored anywhere but here.</p>
+    </div>
+
+    <div class="onboard-actions">
+      <button class="btn btn-primary" onclick="startApp()">Start your map</button>
+      <button class="btn btn-sm" onclick="loadSample()">See a sample</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ── APP SCREEN ──────────────────────────────────────────── -->
+<div id="screen-app">
+
+  <header class="app-header">
+    <div class="app-header-inner">
+      <div class="app-brand">
+        <span class="app-brand-name serif" id="header-name">Map</span>
+        <span class="app-brand-domain" id="header-domain"></span>
+      </div>
+      <div class="app-header-actions">
+        <button class="btn btn-sm keep-mobile" onclick="showTab('report'); generateReport()">Read the map</button>
+        <button class="btn btn-sm" onclick="exportData()">Export</button>
+        <button class="btn btn-sm btn-danger" onclick="clearAll()">Clear</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- crisis banner -->
+  <div id="crisis-banner" class="crisis-banner" style="width:min(960px,calc(100vw - 2rem));margin:1rem auto 0;">
+    <strong>Something you wrote may need urgent attention.</strong>
+    If you are in crisis or unsafe right now, please reach out to someone who can help — a crisis line, a trusted person, or emergency services.
+    <span id="crisis-contact-display"></span>
+  </div>
+
+  <nav class="tabs-bar" aria-label="Sections">
+    <button class="tab-btn active" onclick="showTab('baseline')">Baseline</button>
+    <button class="tab-btn" onclick="showTab('entries')">Entries</button>
+    <button class="tab-btn" onclick="showTab('corrections')">Corrections</button>
+    <button class="tab-btn" onclick="showTab('report')">Report</button>
+  </nav>
+
+  <!-- BASELINE TAB -->
+  <div id="tab-baseline" class="tab-pane active">
+    <div class="tab-content">
+      <div class="card">
+        <p class="card-title">Foundation</p>
+        <h2 class="serif" id="baseline-title">Set your baseline</h2>
+        <p id="baseline-desc">Write the starting point — where things stand right now, what is already under pressure, and what you are carrying.</p>
+        <div class="field">
+          <label for="baselineText">Your baseline</label>
+          <textarea id="baselineText" rows="10" id="baselineText" placeholder="Where are you right now? What is already under pressure? What are you carrying that you have not told anyone?"></textarea>
+        </div>
+        <div class="field">
+          <label for="crisisContactInput">Crisis contact (optional)</label>
+          <input type="text" id="crisisContactInput" placeholder="A name or number you can call if things get hard">
+          <p class="form-hint">Stored locally. Appears in the crisis notice if the map detects crisis language.</p>
+        </div>
+        <div style="display:flex;gap:.65rem;flex-wrap:wrap;margin-top:.5rem;">
+          <button class="btn btn-accent" onclick="saveBaseline()">Save baseline</button>
+          <button class="btn btn-sm" onclick="saveCrisisContact()">Save crisis contact</button>
+        </div>
+        <p class="status-msg" id="baseline-status">Saved.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENTRIES TAB -->
+  <div id="tab-entries" class="tab-pane">
+    <div class="tab-content">
+      <div class="card">
+        <p class="card-title">New entry</p>
+        <h2 class="serif" id="entry-title">Add an entry</h2>
+        <p id="entry-desc">Write what is on your mind. What happened. What you noticed. What you are carrying.</p>
+        <div class="field">
+          <label for="entryDate">Date</label>
+          <input type="date" id="entryDate">
+        </div>
+        <div class="field">
+          <label for="entryText">Entry</label>
+          <textarea id="entryText" rows="8" placeholder="What is on your mind?"></textarea>
+        </div>
+        <div style="display:flex;gap:.65rem;align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-accent" onclick="addEntry()">Save entry</button>
+          <p class="status-msg" style="display:inline;" id="entry-status"></p>
+        </div>
+      </div>
+      <div class="card">
+        <p class="card-title">Previous entries</p>
+        <p class="form-hint" id="entry-count" style="margin-bottom:.75rem;">No entries yet.</p>
+        <div id="entries-list" class="entry-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORRECTIONS TAB -->
+  <div id="tab-corrections" class="tab-pane">
+    <div class="tab-content">
+      <div class="card">
+        <p class="card-title">Govern the map</p>
+        <h2 class="serif">Corrections</h2>
+        <p>A correction tells the map something the entries do not. Mark a topic as stale, confirm something is still current, or flag what the map should weigh differently.</p>
+        <div class="field">
+          <label for="correctionText">Correction</label>
+          <textarea id="correctionText" rows="4" placeholder="e.g. The job situation has changed — treat those entries as stale. The housing is now stable. Do not read the gap in entries last week as avoidance — I was away."></textarea>
+        </div>
+        <button class="btn btn-accent" onclick="saveCorrection()">Save correction</button>
+      </div>
+      <div class="card">
+        <p class="card-title">Saved corrections</p>
+        <div id="corrections-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORT TAB -->
+  <div id="tab-report" class="tab-pane">
+    <div class="tab-content">
+      <div class="report-controls">
+        <label>From <input type="date" id="reportStart"></label>
+        <label>To <input type="date" id="reportEnd"></label>
+        <button class="btn btn-accent btn-sm" onclick="generateReport()">Read the map</button>
+        <button class="btn btn-sm" onclick="generateExitReport()">Full arc</button>
+        <button class="btn btn-sm" onclick="window.print()">Print</button>
+      </div>
+
+      <div id="report-empty" class="report-empty">
+        <p id="report-empty-desc">Add a baseline and at least one entry, then read your map.</p>
+        <button class="btn btn-sm" onclick="showTab('baseline')">Start with your baseline</button>
+      </div>
+
+      <div id="reportOutput"></div>
+
+      <div class="identity-footer">
+        This map is built from what you wrote. It cannot see what you did not give it. It reads your material and maps what it found — no more, no less. It does not diagnose, score risk, or produce a legal finding. The map is yours.
+      </div>
+    </div>
+  </div>
+
+</div><!-- end #screen-app -->
+
+
+<script>
+// ════════════════════════════════════════════════════════
+// CARTRIDGE SLOT
+// ════════════════════════════════════════════════════════
+//
+// This shell expects a cartridge object assigned to
+// window.SORTER_CARTRIDGE before the app initialises.
+//
+// Minimum shape:
+//   {
+//     id, name, tagline, desc,
+//     baselineTitle, baselineDesc, baselinePlaceholder,
+//     entryTitle, entryDesc, entryPlaceholder,
+//     reportDesc, reportEmptyDesc,
+//     crisisCheck: true|false,
+//     crisisRx: RegExp,
+//     gaps:              [{ key, name, rx, reason }],
+//     skills:            [{ key, name, rx, loadSensitive, isStructureSkill, works, breaks }],
+//     contradictions:    [{ a, b, text }],
+//     directionPatterns: [{ rx, label }],
+//     pressureSignals:   [{ key, rx, label }],
+//     stuckRx:           RegExp,
+//     sampleBaseline:    string,
+//     sampleEntries:     [{ daysAgo, text }],
+//     sampleCorrection:  string (optional),
+//   }
+//
+// When this file ships from assembly, the cartridge block
+// below is replaced with the assembled cartridge object.
+//
+// ════════════════════════════════════════════════════════
+
+// ── CARTRIDGE INJECTION POINT ─────────────────────────
+// Assembly replaces everything between these markers.
+/* CARTRIDGE_START */
+window.SORTER_CARTRIDGE = {
+  id: "ai-agent",
+  name: "Personal Map",
+  tagline: "private · evidence-bound",
+  desc: "Agent developer, system designer, AI safety reviewer, or deployment architect.. Key pressures: Capability boundary not defined — agent operating without stated limits.; Confidence miscalibration — output presented with more certainty than the evidence supports.; Escalation path absent — no route to human or higher capability when needed..",
+  accent: "#2d5a3d",
+  accentLight: "#e8f0ea",
+  baselineTitle: "Set your baseline",
+  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: capability profile not defined — what the agent can and cannot do; escalation path not named — who or what receives the handover; confidence threshold not set — at what point the agent stops and flags. Movement in this domain looks like: task completed within stated capability bounds; confidence correctly labelled on output.",
+  baselinePlaceholder: "Where are you now? What has led to this point? Include: capability profile not defined — what the agent can and cannot do.",
+  entryTitle: "Add an entry",
+  entryDesc: "Precise. Evidence-bound. Conservative on claims. Escalation-aware. No flattery toward the agent — reads capability honestly including failures.",
+  entryPlaceholder: "What is on your mind?",
+  reportDesc: "The map reads what is moving, stuck, and under load based on what you wrote.",
+  reportEmptyDesc: "Add a baseline and at least one entry, then read your map.",
+  crisisCheck: false,
+  crisisRx: /\b(kill myself|end my life|suicide|suicidal|I want to die|don't want to be here|hurt myself|harm myself|can't go on|not worth it|overdose)\b/i,
+  gaps: [
+    {
+      key: "capability_profile",
+      name: "Capability profile",
+      rx: /\b(can do|cannot do|capable of|not capable|within scope|out of scope|my limits|the boundary|capability|what I can|what I cannot|I am able|I am not able|within my|outside my)\b/i,
+      reason: "Without a stated capability profile the map cannot read whether the agent is operating within bounds or beyond them. Every other read is provisional without this."
+    },
+    {
+      key: "escalation_path",
+      name: "Escalation path",
+      rx: /\b(escalate|hand off|hand over|pass to|route to|escalation path|when to stop|human in the loop|human review|flag for|supervisor|the next step when|if I cannot)\b/i,
+      reason: "An agent without a defined escalation path has no correct failure mode. When it reaches its limit it either stops silently or overclaims. The escalation path is what makes the boundary real."
+    },
+    {
+      key: "confidence_threshold",
+      name: "Confidence threshold",
+      rx: /\b(confidence threshold|confidence level|how certain|certainty required|minimum confidence|when to flag|when to stop|confidence gate|confidence required|uncertainty threshold)\b/i,
+      reason: "Without a confidence threshold the agent cannot calibrate when to act and when to pause. Miscalibrated confidence is the most common and consequential failure mode."
+    },
+    {
+      key: "tool_inventory",
+      name: "Tool inventory",
+      rx: /\b(tools available|I can use|tool selection|the right tool|which tool|tool inventory|available tools|routing to|tool for this|use the|call the|invoke)\b/i,
+      reason: "Without tool inventory described the map cannot read whether routing decisions are correct or whether the agent is attempting tasks with the wrong instrument."
+    },
+    {
+      key: "task_scope",
+      name: "Task scope",
+      rx: /\b(the task is|in scope|out of scope|the instruction|what I was asked|the original request|scope of this|within this task|the boundary of|what I am doing|what I am not doing)\b/i,
+      reason: "Scope creep is invisible without a stated scope. The map cannot read whether the agent is on task or has extended beyond it."
+    },
+    {
+      key: "state_freshness",
+      name: "State freshness",
+      rx: /\b(last updated|current as of|stale|fresh|I last checked|the information is|as of|my knowledge|I am working from|the state is|current state|this may have changed)\b/i,
+      reason: "An agent operating on stale state without acknowledging it will produce confident output from wrong premises. State freshness must be visible."
+    }
+  ],
+  skills: [
+    {
+      key: "confidence_calibration",
+      name: "Calibrating confidence correctly",
+      rx: /\b(I am confident|I am not certain|this is uncertain|I believe|I think|likely|probably|possibly|I cannot confirm|with high confidence|with low confidence|I estimate|I am not sure|this is a guess|I would need to verify)\b/i,
+      loadSensitive: false,
+      isStructureSkill: true,
+      works: "Output is labelled with its actual confidence level — strong claims carry strong evidence, uncertain claims are flagged as uncertain.",
+      breaks: "Under task pressure or ambiguous instruction the agent produces confident-sounding output from thin or inferred basis. Overclaiming is the primary failure mode."
+    },
+    {
+      key: "boundary_recognition",
+      name: "Recognising capability boundaries",
+      rx: /\b(outside my capability|I cannot do this|this is beyond|I do not have access|I am not able to|this requires|I would need|I cannot verify|out of scope|I should not|I am not the right)\b/i,
+      loadSensitive: true,
+      isStructureSkill: false,
+      works: "Agent names its boundary before reaching it — flags the limit, states what it can do up to that point, and routes correctly.",
+      breaks: "Task complexity, ambiguous scope, or pressure to produce output causes the agent to continue past its boundary without flagging, producing output that appears valid but is not."
+    },
+    {
+      key: "tool_routing",
+      name: "Selecting the correct tool",
+      rx: /\b(using the|I will call|routing to|the right tool for|I selected|I am using|tool selection|invoking|I need to use|the appropriate tool|this calls for)\b/i,
+      loadSensitive: false,
+      isStructureSkill: false,
+      works: "Tool selection is matched to task type — the agent routes to the tool with the right capability for what is needed.",
+      breaks: "Ambiguous task type, missing tool, or tool inventory not fully described causes the agent to use the closest available tool regardless of fit, producing approximate or incorrect output."
+    },
+    {
+      key: "handover_execution",
+      name: "Executing handover cleanly",
+      rx: /\b(handing over|passing to|escalating to|flagging for|I am stopping|I cannot continue|routing to human|human review needed|I have reached|this needs|I am flagging|beyond my scope|I recommend|needs expert)\b/i,
+      loadSensitive: false,
+      isStructureSkill: false,
+      works: "When the agent reaches its limit it stops cleanly — states what it has done, what it cannot do, and what the handover receiver needs to know.",
+      breaks: "No escalation path defined, pressure to complete the task, or ambiguous limit causes the agent to either stop silently (no handover information) or continue inappropriately."
+    },
+    {
+      key: "gap_surfacing",
+      name: "Surfacing gaps rather than inventing around them",
+      rx: /\b(I do not have|missing information|I cannot find|gap in|I was not given|I do not know|information not available|I would need|this is not in|I cannot confirm|no data on|I lack)\b/i,
+      loadSensitive: false,
+      isStructureSkill: false,
+      works: "When information is missing the agent names the gap explicitly rather than filling it with inference or invention.",
+      breaks: "Instruction implies a complete answer is expected, causing the agent to produce plausible-sounding output from gaps rather than naming what is absent."
+    },
+    {
+      key: "scope_discipline",
+      name: "Holding task scope",
+      rx: /\b(within scope|as instructed|the original task|staying on|I was asked to|the task is|I am not extending|I will not|out of scope|beyond the instruction|the boundary of this task)\b/i,
+      loadSensitive: true,
+      isStructureSkill: false,
+      works: "Agent completes the stated task and stops — does not extend scope, does not add adjacent tasks, does not anticipate follow-on actions without instruction.",
+      breaks: "Ambiguous instruction or desire to be helpful causes the agent to extend beyond the task boundary, producing unrequested output or taking unrequested actions."
+    }
+  ],
+  contradictions: [
+    {
+      a: /\b(I am confident|with high confidence|I am certain|this is correct|I can confirm|the answer is|I know that)\b/i,
+      b: /\b(I do not have access|stale|I cannot verify|this may have changed|I am not certain|I estimate|I believe|possibly|I think|unconfirmed)\b/i,
+      text: "A confident-sounding claim and a basis that does not support that confidence both appear. This is the primary failure pattern — output presented with more certainty than the evidence warrants. The confident phrasing should be downgraded to match the actual basis."
+    },
+    {
+      a: /\b(within my capability|I can do this|this is in scope|I am able to|I can handle|this is straightforward)\b/i,
+      b: /\b(I do not have|I cannot access|missing|I would need|I lack|not available|out of reach|I cannot verify|I do not know)\b/i,
+      text: "Stated capability and a missing prerequisite for that capability both appear. The agent may be claiming a capability it cannot currently exercise. The gap between what is claimed and what is available is where the failure will occur."
+    },
+    {
+      a: /\b(task complete|done|finished|I have completed|the task is done|output delivered|result provided)\b/i,
+      b: /\b(I could not|I was not able|this part is missing|gap remains|I did not have|incomplete|partial|I approximated|I estimated|I assumed)\b/i,
+      text: "Task completion stated and incompleteness signals both appear. A task is not complete if key components were approximated, gaps were not named, or assumptions were not surfaced. The completion claim needs to be qualified."
+    },
+    {
+      a: /\b(the escalation path|I will escalate|I know when to stop|I will flag|I will hand over|I will route to)\b/i,
+      b: /\b(no escalation path|escalation not defined|I do not know who|unclear where|no human in the loop|I cannot reach|there is no one to|I have no way to flag)\b/i,
+      text: "A stated escalation intention and the absence of a defined escalation path both appear. Intending to escalate and having somewhere to escalate to are different things. Without the path defined the escalation intention is not actionable."
+    }
+  ],
+  directionPatterns: [
+    {
+      rx: /task complete|output delivered|within bounds|confidence labelled|clean handover/i,
+      label: "toward reliable bounded operation"
+    },
+    {
+      rx: /escalation|flagging|stopping|handing over|routing to human/i,
+      label: "toward correct escalation"
+    },
+    {
+      rx: /capability profile|defining limits|scoping|setting the boundary|what I can and cannot/i,
+      label: "toward capability definition"
+    },
+    {
+      rx: /overclaiming|beyond my|outside my|I should not have|I went too far|I extended/i,
+      label: "toward boundary failure recognition"
+    },
+    {
+      rx: /refining|improving|learning from|adjusting|recalibrating|updating my/i,
+      label: "toward capability improvement"
+    }
+  ],
+  pressureSignals: [
+    {
+      key: "overclaim_risk",
+      rx: /\b(I am certain|definitely|without doubt|I know|the answer is definitely|this is correct|I can confirm|guaranteed)\b/i,
+      label: "overclaim risk — confidence language exceeds basis"
+    },
+    {
+      key: "boundary_approach",
+      rx: /\b(approaching the limit|near the edge of|at the boundary|reaching my|getting close to|almost beyond|at the edge of my capability)\b/i,
+      label: "approaching capability boundary"
+    },
+    {
+      key: "scope_creep",
+      rx: /\b(also|additionally|I also|and I|while I am at it|I noticed|I went ahead|I also completed|beyond the original|I extended|I added)\b/i,
+      label: "scope creep signal"
+    },
+    {
+      key: "stale_state",
+      rx: /\b(last time I checked|as of my last|I believe this is still|this may have changed|I am not sure if this is current|my last update|this was true when)\b/i,
+      label: "stale state operating risk"
+    },
+    {
+      key: "invention_risk",
+      rx: /\b(I assume|I expect|probably|it is likely that|I would guess|I think it is|based on my general|I imagine|typically|usually in these cases)\b/i,
+      label: "gap invention risk — inference presented as fact"
+    },
+    {
+      key: "handover_missed",
+      rx: /\b(I continued|I proceeded|I kept going|I went ahead anyway|despite not|even though I|I completed it even|I finished it but|I was not sure but)\b/i,
+      label: "handover trigger missed — continued past boundary"
+    }
+  ],
+  stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
+  sampleBaseline: "",
+  sampleEntries: [],
+};
+/* CARTRIDGE_END */
+
+
+// ════════════════════════════════════════════════════════
+// MERCATOR ENGINE  v3.0.2 (embedded)
+// ════════════════════════════════════════════════════════
+
+const MercatorEngine = (() => {
+
+  let _cartridge = null;
+  let _state = {
+    baseline: '', crisisContact: '', entries: [],
+    corrections: [], connections: [],
+    exitReportGenerated: false,
+    crisisPaused: false, crisisResumedAt: null,
+  };
+
+  // ── Helpers ──────────────────────────────────────────
+  const todayISO   = () => new Date().toISOString().slice(0,10);
+  const daysAgoISO = n  => { const d=new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); };
+  const daysBetween= (a,b) => Math.abs((new Date(a)-new Date(b))/86400000);
+  const escapeHTML = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  const shorten    = (s,n) => s.length>n?s.slice(0,n-1)+'…':s;
+  const uid        = () => Math.random().toString(36).slice(2,9);
+  const safe       = escapeHTML;
+
+  function _testRx(rx, text) {
+    if (!rx) return false;
+    try { return (rx instanceof RegExp ? rx : new RegExp(rx.source||rx, rx.flags||'i')).test(text); }
+    catch(e) { return false; }
+  }
+
+  // ── State management ─────────────────────────────────
+  function mountCartridge(c) { _cartridge = c; }
+  function getCartridge()     { return _cartridge; }
+  function getState()         { return { ..._state, entries:[..._state.entries], corrections:[..._state.corrections] }; }
+
+  function saveBaseline(text) {
+    _state.baseline = text;
+    _persist();
+  }
+  function saveCrisisContact(c) {
+    _state.crisisContact = c;
+    _persist();
+  }
+  function addEntry(date, text) {
+    _state.entries.push({ id: uid(), date, text, flagged: false, createdAt: new Date().toISOString() });
+    _persist();
+    _checkCrisis(text);
+  }
+  function editEntry(id, text) {
+    const e = _state.entries.find(e=>e.id===id);
+    if (e) { e.text = text; e.editedAt = new Date().toISOString(); }
+    _persist();
+  }
+  function deleteEntry(id) {
+    _state.entries = _state.entries.filter(e=>e.id!==id);
+    _persist();
+  }
+  function toggleFlag(id) {
+    const e = _state.entries.find(e=>e.id===id);
+    if (e) e.flagged = !e.flagged;
+    _persist();
+  }
+  function addCorrection(text) {
+    _state.corrections.push({ id: uid(), date: todayISO(), text });
+    _persist();
+  }
+  function deleteCorrection(id) {
+    _state.corrections = _state.corrections.filter(c=>c.id!==id);
+    _persist();
+  }
+  function clearAll() {
+    _state = { baseline:'', crisisContact:'', entries:[], corrections:[], connections:[], exitReportGenerated:false, crisisPaused:false, crisisResumedAt:null };
+    _persist();
+  }
+  function exportJSON() {
+    return JSON.stringify({ cartridge: _cartridge?.id, exportedAt: new Date().toISOString(), state: _state }, null, 2);
+  }
+  function loadSample() {
+    if (!_cartridge) return;
+    const c = _cartridge;
+    _state.baseline = c.sampleBaseline || '';
+    _state.crisisContact = '';
+    _state.entries = (c.sampleEntries||[]).map(e=>({
+      id: uid(),
+      date: daysAgoISO(e.daysAgo || 0),
+      text: e.text,
+      flagged: false,
+      createdAt: new Date().toISOString(),
+    }));
+    _state.corrections = c.sampleCorrection
+      ? [{ id: uid(), date: todayISO(), text: c.sampleCorrection }]
+      : [];
+    _persist();
+  }
+
+  // ── Persistence ──────────────────────────────────────
+  function _persist() {
+    try {
+      localStorage.setItem('sorter-map-' + (_cartridge?.id||'default'), JSON.stringify(_state));
+    } catch(e) {}
+  }
+  function _restore() {
+    try {
+      const saved = localStorage.getItem('sorter-map-' + (_cartridge?.id||'default'));
+      if (saved) { const p = JSON.parse(saved); Object.assign(_state, p); }
+    } catch(e) {}
+  }
+
+  // ── Crisis check ─────────────────────────────────────
+  function _checkCrisis(text) {
+    if (!_cartridge?.crisisCheck || !_cartridge?.crisisRx) return;
+    if (_testRx(_cartridge.crisisRx, text)) {
+      const banner = document.getElementById('crisis-banner');
+      if (banner) {
+        const contact = _state.crisisContact;
+        const contactEl = document.getElementById('crisis-contact-display');
+        if (contactEl && contact) contactEl.textContent = ' ' + contact;
+        banner.style.display = 'block';
+      }
+    }
+  }
+
+  // ── Analysis core ────────────────────────────────────
+
+  function _allText(entries) { return entries.map(e=>e.text||'').join('\n'); }
+
+  function _independentDays(entries, rx) {
+    const days = new Set();
+    entries.forEach(e => {
+      if (_testRx(rx, e.text||'') && e.date) days.add(e.date.slice(0,10));
+    });
+    return days.size;
+  }
+
+  function _confidenceTier(independentDays, entryCount) {
+    if (entryCount === 0)           return 'not_readable';
+    if (independentDays >= 5)       return 'strong';
+    if (independentDays >= 3)       return 'supported';
+    if (independentDays >= 2)       return 'partial';
+    if (independentDays === 1)      return 'thin';
+    if (entryCount > 0)             return 'inferred';
+    return 'not_readable';
+  }
+
+  function _readGaps(baseline, entries) {
+    const gaps = _cartridge?.gaps || [];
+    const allText = _allText(entries);
+    const open = [];
+    gaps.forEach(g => {
+      const inBaseline = _testRx(g.rx, baseline);
+      const inEntries  = _testRx(g.rx, allText);
+      if (!inBaseline && !inEntries) {
+        open.push(g);
+      }
+    });
+    return open;
+  }
+
+  function _readSkills(entries) {
+    const skills = _cartridge?.skills || [];
+    const allText = _allText(entries);
+    const present = [], absent = [], loadSensitivePresent = [];
+    skills.forEach(s => {
+      const days = _independentDays(entries, s.rx);
+      if (days > 0) {
+        present.push({ ...s, independentDays: days });
+        if (s.loadSensitive) loadSensitivePresent.push(s);
+      } else if (_testRx(s.rx, allText) === false) {
+        absent.push(s);
+      }
+    });
+    return { present, absent, loadSensitivePresent };
+  }
+
+  function _readContradictions(baseline, entries) {
+    const contradictions = _cartridge?.contradictions || [];
+    const allText = baseline + '\n' + _allText(entries);
+    const found = [];
+    contradictions.forEach(c => {
+      if (_testRx(c.a, allText) && _testRx(c.b, allText)) {
+        found.push(c);
+      }
+    });
+    return found;
+  }
+
+  function _readDirection(baseline, entries) {
+    const patterns = _cartridge?.directionPatterns || [];
+    const allText  = baseline + '\n' + _allText(entries);
+    const found = [];
+    patterns.forEach(p => {
+      if (_testRx(p.rx, allText)) found.push(p.label);
+    });
+    return found;
+  }
+
+  function _readPressure(entries) {
+    const signals = _cartridge?.pressureSignals || [];
+    const allText = _allText(entries);
+    const found = [];
+    signals.forEach(s => {
+      if (_testRx(s.rx, allText)) found.push(s.label);
+    });
+    return found;
+  }
+
+  function _readMovement(entries) {
+    if (!entries.length) return { isMoving: false, signals: [], independentDays: 0 };
+    // Use skills as movement evidence
+    const skills = _cartridge?.skills || [];
+    let totalDays = 0;
+    const signals = [];
+    skills.forEach(s => {
+      const days = _independentDays(entries, s.rx);
+      if (days > 0) {
+        signals.push(s.name);
+        totalDays += days;
+      }
+    });
+    return {
+      isMoving: signals.length > 0,
+      signals,
+      independentDays: Math.min(totalDays, entries.length),
+    };
+  }
+
+  function _readStuck(entries) {
+    const rx = _cartridge?.stuckRx;
+    if (!rx) return { signals: [] };
+    const allText = _allText(entries);
+    return { signals: _testRx(rx, allText) ? ['Stuck language present.'] : [] };
+  }
+
+  function _overallConfidence(openGaps, movement, entries) {
+    const n = entries.length;
+    if (n === 0) return 'not_readable';
+    if (openGaps.length >= 4) return 'thin';
+    if (movement.independentDays >= 3 && openGaps.length <= 1) return 'supported';
+    if (movement.independentDays >= 2) return 'partial';
+    if (n > 0 && openGaps.length <= 2) return 'partial';
+    return 'thin';
+  }
+
+  function _nextUsefulMove(openGaps, movement, stuck, pressure) {
+    if (openGaps.length > 0) {
+      const g = openGaps[0];
+      return g.reason
+        ? `Address the open gap: ${g.reason}`
+        : `Name what is not yet described: ${g.name}.`;
+    }
+    if (stuck.signals.length > 0) return 'The map is reading a stuck pattern. Name specifically what has not moved and what is getting in the way.';
+    if (pressure.length > 0) return `Pressure is active (${pressure[0]}). Name what that pressure is doing to the map — what it is stopping or changing.`;
+    if (movement.isMoving) return 'Movement is visible. The next entry should describe what the movement is building toward, not just that it is happening.';
+    return 'Add honest material — the map cannot produce a reliable next move yet.';
+  }
+
+  // ── Report rendering ─────────────────────────────────
+
+  function _confidenceBadge(level) {
+    const labels = {
+      strong: 'strong read', supported: 'supported', partial: 'partial',
+      thin: 'thin', inferred: 'inferred', not_readable: 'not readable',
+    };
+    return `<span class="confidence-badge ${level}">${labels[level]||level}</span>`;
+  }
+
+  function _renderBlock(title, items, cls='') {
+    if (!items.length) return '';
+    const itemsHTML = items.map(i=>`<div class="report-item ${cls}">${safe(i)}</div>`).join('');
+    return `<div class="report-block">
+      <p class="report-block-title">${safe(title)}</p>
+      ${itemsHTML}
+    </div>`;
+  }
+
+  function generateReport(start, end, outputEl, emptyEl) {
+    const entries = _state.entries.filter(e => {
+      if (!e.date) return true;
+      if (start && e.date < start) return false;
+      if (end   && e.date > end)   return false;
+      return true;
+    });
+
+    if (!_state.baseline && !entries.length) {
+      if (emptyEl) { emptyEl.style.display='flex'; outputEl.style.display='none'; }
+      return;
+    }
+
+    const baseline     = _state.baseline || '';
+    const openGaps     = _readGaps(baseline, entries);
+    const skills       = _readSkills(entries);
+    const contradictions = _readContradictions(baseline, entries);
+    const directions   = _readDirection(baseline, entries);
+    const pressure     = _readPressure(entries);
+    const movement     = _readMovement(entries);
+    const stuck        = _readStuck(entries);
+    const confidence   = _overallConfidence(openGaps, movement, entries);
+    const nextMove     = _nextUsefulMove(openGaps, movement, stuck, pressure);
+    const corrections  = _state.corrections;
+
+    let html = '';
+
+    // Summary capstone
+    const movementSummary = movement.signals.length
+      ? movement.signals.slice(0,3).join(', ')
+      : 'Not yet visible — more entries needed.';
+    const gapSummary = openGaps.length
+      ? openGaps.map(g=>g.name).slice(0,3).join(', ')
+      : 'No critical gaps detected.';
+    const directionSummary = directions.length ? directions[0] : 'Not yet stated.';
+    const pressureSummary  = pressure.length ? pressure.slice(0,2).join(', ') : 'Not visible in current entries.';
+
+    html += `<div class="summary-capstone">
+      <p class="summary-title">Current read</p>
+      <div class="summary-row"><strong>Movement</strong><span>${safe(movementSummary)}</span></div>
+      <div class="summary-row"><strong>Load</strong><span>${safe(pressureSummary)}</span></div>
+      <div class="summary-row"><strong>Main gap</strong><span>${safe(gapSummary)}</span></div>
+      <div class="summary-row"><strong>Direction</strong><span>${safe(directionSummary)}</span></div>
+      <div class="summary-row"><strong>Confidence</strong><span>${_confidenceBadge(confidence)}</span></div>
+    </div>`;
+
+    // Corrections applied notice
+    if (corrections.length) {
+      html += `<div class="report-block">
+        <p class="report-block-title">Corrections applied</p>
+        ${corrections.map(c=>`<div class="report-item">${safe(c.date)} — ${safe(c.text)}</div>`).join('')}
+      </div>`;
+    }
+
+    // What is moving
+    if (movement.signals.length) {
+      html += `<div class="report-block">
+        <p class="report-block-title">What is moving</p>
+        ${movement.signals.map(s=>`<div class="report-item moving">${safe(s)}</div>`).join('')}
+      </div>`;
+    } else {
+      html += `<div class="report-block">
+        <p class="report-block-title">What is moving</p>
+        <div class="report-item">Movement is not yet visible in the current entries. The map needs more material to read this.</div>
+      </div>`;
+    }
+
+    // Stuck
+    if (stuck.signals.length) {
+      html += `<div class="report-block">
+        <p class="report-block-title">What is not moving</p>
+        <div class="report-item warn">Stuck language is present in the material. Something is not moving — the entries describe circling or repetition.</div>
+      </div>`;
+    }
+
+    // Pressure
+    if (pressure.length) {
+      html += _renderBlock('What is under load', pressure, 'warn');
+    }
+
+    // Direction
+    if (directions.length) {
+      html += _renderBlock('Direction visible', directions, 'moving');
+    }
+
+    // Contradictions
+    if (contradictions.length) {
+      html += `<div class="report-block">
+        <p class="report-block-title">Unresolved tensions</p>
+        ${contradictions.map(c=>`<div class="report-item held">${safe(c.text)}</div>`).join('')}
+      </div>`;
+    }
+
+    // Skills present
+    if (skills.present.length) {
+      html += `<div class="report-block">
+        <p class="report-block-title">Skills visible in the material</p>
+        ${skills.present.map(s=>`<div class="report-item moving">
+          <strong>${safe(s.name)}</strong> — ${safe(s.works)}
+          ${_confidenceBadge(_confidenceTier(s.independentDays, entries.length))}
+        </div>`).join('')}
+      </div>`;
+    }
+
+    // Open gaps
+    if (openGaps.length) {
+      html += `<div class="report-block">
+        <p class="report-block-title">Open gaps</p>
+        ${openGaps.map(g=>`<div class="gap-notice">
+          <strong>${safe(g.name)}</strong> — ${safe(g.reason)}
+        </div>`).join('')}
+      </div>`;
+    }
+
+    // Next useful move
+    html += `<div class="next-move-block">
+      <p class="report-block-title">Next useful move</p>
+      <p>${safe(nextMove)}</p>
+    </div>`;
+
+    // Map confidence and limits
+    html += `<div class="report-block">
+      <p class="report-block-title">Map confidence and limits</p>
+      <div class="report-item">Overall: ${_confidenceBadge(confidence)}</div>
+      <div class="report-item">Based on ${entries.length} entr${entries.length===1?'y':'ies'} in the selected period.</div>
+      ${openGaps.length ? `<div class="report-item gap">${openGaps.length} open gap${openGaps.length>1?'s':''} — the map cannot read what was not written.</div>` : ''}
+      <div class="report-item">This map reads what was written. It cannot see what was held back. It does not diagnose, assess risk, or produce a legal finding.</div>
+    </div>`;
+
+    if (emptyEl) emptyEl.style.display = 'none';
+    outputEl.style.display = 'block';
+    outputEl.innerHTML = html;
+  }
+
+  function generateExitReport(outputEl) {
+    generateReport(null, null, outputEl, null);
+  }
+
+  // ── Public API ───────────────────────────────────────
+  return {
+    mountCartridge, getCartridge, getState,
+    saveBaseline, saveCrisisContact,
+    addEntry, editEntry, deleteEntry, toggleFlag,
+    addCorrection, deleteCorrection,
+    clearAll, exportJSON, loadSample,
+    generateReport, generateExitReport,
+    escapeHTML, shorten,
+    restore: _restore,
+  };
+
+})();
+
+
+// ════════════════════════════════════════════════════════
+// SHELL APP
+// ════════════════════════════════════════════════════════
+
+(function(){
+  const $ = id => document.getElementById(id);
+
+  function todayISO() { return new Date().toISOString().slice(0,10); }
+  function daysAgoISO(n){ const d=new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
+  const safe = s => MercatorEngine.escapeHTML(String(s||''));
+
+  // ── Boot ─────────────────────────────────────────────
+  function boot() {
+    const cartridge = window.SORTER_CARTRIDGE;
+
+    if (!cartridge) {
+      // Dev fallback — show error
+      document.body.innerHTML = `<div style="padding:2rem;font-family:sans-serif;color:#8b1f1f;">
+        <h2>No cartridge loaded</h2>
+        <p style="margin-top:.75rem;color:#555;">This shell requires a cartridge object assigned to <code>window.SORTER_CARTRIDGE</code>.</p>
+      </div>`;
+      return;
+    }
+
+    MercatorEngine.mountCartridge(cartridge);
+    MercatorEngine.restore();
+
+    // Apply cartridge copy
+    if (cartridge.name) {
+      document.title = `LACE V · ${cartridge.name}`;
+      $('onboard-title').textContent   = cartridge.name;
+      $('header-name').textContent     = cartridge.name;
+    }
+    if (cartridge.tagline)      $('header-domain').textContent   = cartridge.tagline;
+    if (cartridge.desc)         $('onboard-lead').textContent    = cartridge.desc;
+    if (cartridge.baselineTitle)  $('baseline-title').textContent = cartridge.baselineTitle;
+    if (cartridge.baselineDesc)   $('baseline-title').nextElementSibling.textContent = cartridge.baselineDesc;
+    if (cartridge.baselinePlaceholder) $('baselineText').placeholder = cartridge.baselinePlaceholder;
+    if (cartridge.entryTitle)   $('entry-title').textContent    = cartridge.entryTitle;
+    if (cartridge.entryDesc)    $('entry-title').nextElementSibling.textContent = cartridge.entryDesc;
+    if (cartridge.entryPlaceholder)  $('entryText').placeholder = cartridge.entryPlaceholder;
+    if (cartridge.reportEmptyDesc)   $('report-empty-desc').textContent = cartridge.reportEmptyDesc;
+
+    // Accent colour
+    if (cartridge.accent) {
+      document.documentElement.style.setProperty('--accent', cartridge.accent);
+    }
+    if (cartridge.accentLight) {
+      document.documentElement.style.setProperty('--accent-light', cartridge.accentLight);
+    }
+
+    // Restore UI state
+    const st = MercatorEngine.getState();
+    if (st.baseline) $('baselineText').value = st.baseline;
+    if (st.crisisContact) $('crisisContactInput').value = st.crisisContact;
+    $('entryDate').value = todayISO();
+    $('reportStart').value = daysAgoISO(14);
+    $('reportEnd').value = todayISO();
+    renderEntries();
+    renderCorrections();
+
+    $('screen-onboard').style.display = 'flex';
+  }
+
+  // ── Navigation ───────────────────────────────────────
+  function startApp() {
+    $('screen-onboard').style.display = 'none';
+    $('screen-app').style.display = 'block';
+  }
+
+  function showTab(id) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    const pane = $('tab-' + id);
+    if (pane) pane.classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      if (b.textContent.toLowerCase().includes(id) ||
+          (id==='report' && b.textContent.toLowerCase().includes('report')) ||
+          (id==='baseline' && b.textContent.toLowerCase().includes('baseline')) ||
+          (id==='entries' && b.textContent.toLowerCase().includes('entr')) ||
+          (id==='corrections' && b.textContent.toLowerCase().includes('correct'))) {
+        b.classList.add('active');
+      }
+    });
+  }
+
+  // ── Actions ──────────────────────────────────────────
+  function saveBaseline() {
+    MercatorEngine.saveBaseline($('baselineText').value.trim());
+    const s = $('baseline-status');
+    s.textContent = 'Saved.'; s.style.display = 'block';
+    setTimeout(() => s.style.display='none', 2000);
+  }
+
+  function saveCrisisContact() {
+    MercatorEngine.saveCrisisContact(($('crisisContactInput')?.value||'').trim());
+  }
+
+  function addEntry() {
+    const text = $('entryText').value.trim();
+    if (!text) return;
+    MercatorEngine.addEntry($('entryDate').value || todayISO(), text);
+    $('entryText').value = '';
+    const s = $('entry-status');
+    s.textContent = 'Entry saved.'; s.style.display = 'inline';
+    setTimeout(() => s.style.display='none', 2000);
+    renderEntries();
+  }
+
+  function saveCorrection() {
+    const text = $('correctionText').value.trim();
+    if (!text) return;
+    MercatorEngine.addCorrection(text);
+    $('correctionText').value = '';
+    renderCorrections();
+  }
+
+  function deleteEntry(id) {
+    if (confirm('Delete this entry?')) { MercatorEngine.deleteEntry(id); renderEntries(); }
+  }
+  function toggleFlag(id) { MercatorEngine.toggleFlag(id); renderEntries(); }
+  function deleteCorrection(id) { MercatorEngine.deleteCorrection(id); renderCorrections(); }
+
+  function startEdit(id) {
+    const entry = MercatorEngine.getState().entries.find(e=>e.id===id);
+    if (!entry) return;
+    const item = $('entry-' + id);
+    if (!item) return;
+    item.querySelector('.entry-text').innerHTML = `<textarea class="entry-edit-area" rows="5" style="width:100%;margin-bottom:.5rem;">${safe(entry.text)}</textarea>`;
+    item.querySelector('.entry-actions').innerHTML = `
+      <button class="btn btn-sm btn-accent" onclick="window._Shell.saveEdit('${id}')">Save</button>
+      <button class="btn btn-sm" onclick="window._Shell.renderEntries()">Cancel</button>`;
+  }
+  function saveEdit(id) {
+    const item = $('entry-'+id);
+    const val = item?.querySelector('.entry-edit-area')?.value.trim();
+    if (!val) return;
+    MercatorEngine.editEntry(id, val);
+    renderEntries();
+  }
+
+  function exportData() {
+    const json = MercatorEngine.exportJSON();
+    const blob = new Blob([json], {type:'application/json'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = `lacev-map-${MercatorEngine.getCartridge()?.id||'export'}-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function clearAll() {
+    if (confirm('Clear all data? This cannot be undone.')) {
+      MercatorEngine.clearAll();
+      $('baselineText').value = '';
+      $('crisisContactInput').value = '';
+      renderEntries();
+      renderCorrections();
+      $('reportOutput').style.display = 'none';
+      $('report-empty').style.display = 'flex';
+    }
+  }
+
+  function loadSample() {
+    MercatorEngine.loadSample();
+    const st = MercatorEngine.getState();
+    $('baselineText').value = st.baseline || '';
+    renderEntries();
+    renderCorrections();
+    startApp();
+    showTab('report');
+    generateReport();
+  }
+
+  function generateReport() {
+    const start = $('reportStart').value || daysAgoISO(14);
+    const end   = $('reportEnd').value   || todayISO();
+    MercatorEngine.generateReport(start, end, $('reportOutput'), $('report-empty'));
+  }
+
+  function generateExitReport() {
+    $('reportOutput').style.display = 'block';
+    $('report-empty').style.display = 'none';
+    MercatorEngine.generateExitReport($('reportOutput'));
+  }
+
+  // ── Render helpers ───────────────────────────────────
+  function renderEntries() {
+    const st     = MercatorEngine.getState();
+    const list   = $('entries-list');
+    const count  = $('entry-count');
+    if (count) count.textContent = `${st.entries.length} entr${st.entries.length===1?'y':'ies'}`;
+    if (!list) return;
+    const sorted = [...st.entries].sort((a,b)=>b.date.localeCompare(a.date));
+    if (!sorted.length) { list.innerHTML = '<p class="empty-note">No entries yet.</p>'; return; }
+    list.innerHTML = sorted.map(e => `<div class="entry-item ${e.flagged?'flagged':''}" id="entry-${safe(e.id)}">
+      <div class="entry-meta">
+        <strong>${safe(e.date)}</strong>
+        ${e.flagged ? '<span>Significant</span>' : ''}
+        ${e.editedAt ? '<span>edited</span>' : ''}
+      </div>
+      <div class="entry-text">${safe(MercatorEngine.shorten(e.text, 280))}</div>
+      <div class="entry-actions">
+        <button class="btn btn-sm" onclick="window._Shell.startEdit('${safe(e.id)}')">Edit</button>
+        <button class="btn btn-sm" onclick="window._Shell.toggleFlag('${safe(e.id)}')">${e.flagged?'★ Significant':'☆ Mark'}</button>
+        <button class="btn btn-sm btn-danger" onclick="window._Shell.deleteEntry('${safe(e.id)}')">Delete</button>
+      </div>
+    </div>`).join('');
+  }
+
+  function renderCorrections() {
+    const st   = MercatorEngine.getState();
+    const list = $('corrections-list');
+    if (!list) return;
+    if (!st.corrections.length) { list.innerHTML = '<p class="empty-note">No corrections yet.</p>'; return; }
+    list.innerHTML = st.corrections.map(c => `<div class="correction-item">
+      <div>
+        <span class="correction-date">${safe(c.date)}</span>
+        <div style="margin-top:.3rem;">${safe(c.text)}</div>
+      </div>
+      <button class="btn btn-sm btn-danger" onclick="window._Shell.deleteCorrection('${safe(c.id)}')">Delete</button>
+    </div>`).join('');
+  }
+
+  // ── Public surface (for inline event handlers) ───────
+  window._Shell = {
+    startApp, showTab,
+    saveBaseline, saveCrisisContact,
+    addEntry, saveCorrection,
+    deleteEntry, toggleFlag, deleteCorrection,
+    startEdit, saveEdit, renderEntries,
+    exportData, clearAll, loadSample,
+    generateReport, generateExitReport,
+  };
+
+  // Also expose named functions directly for button onclick attrs
+  window.startApp          = startApp;
+  window.showTab           = showTab;
+  window.saveBaseline      = saveBaseline;
+  window.saveCrisisContact = saveCrisisContact;
+  window.addEntry          = addEntry;
+  window.saveCorrection    = saveCorrection;
+  window.deleteEntry       = deleteEntry;
+  window.toggleFlag        = toggleFlag;
+  window.deleteCorrection  = deleteCorrection;
+  window.exportData        = exportData;
+  window.clearAll          = clearAll;
+  window.loadSample        = loadSample;
+  window.generateReport    = generateReport;
+  window.generateExitReport = generateExitReport;
+
+  document.addEventListener('DOMContentLoaded', boot);
+})();
+</script>
+
+</body>
+</html>

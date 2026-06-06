@@ -1,0 +1,427 @@
+
+<h2 class="sr-only">Aperiodic Path Denial Engine v3</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+#app{padding:1rem 0}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:1rem;align-items:flex-end}
+.cg{display:flex;flex-direction:column;gap:3px}
+.cg label{font-size:11px;color:var(--color-text-secondary)}
+.cg select{font-size:12px}
+.btn{padding:5px 14px;font-size:12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer}
+.btn:hover{background:var(--color-background-secondary)}
+canvas{display:block;width:100%;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary)}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-top:10px}
+.m{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px}
+.ml{font-size:10px;color:var(--color-text-secondary);margin-bottom:2px}
+.mv{font-size:19px;font-weight:500;line-height:1}
+.g{color:var(--color-text-success)}.b{color:var(--color-text-danger)}.w{color:var(--color-text-warning)}
+.verdict{margin-top:8px;font-size:12px;padding:8px 12px;border-radius:var(--border-radius-md);border-left:3px solid}
+.vs{background:var(--color-background-success);border-color:var(--color-text-success);color:var(--color-text-success)}
+.vw{background:var(--color-background-danger);border-color:var(--color-text-danger);color:var(--color-text-danger)}
+.vm{background:var(--color-background-warning);border-color:var(--color-text-warning);color:var(--color-text-warning)}
+.leg{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;font-size:11px;color:var(--color-text-secondary)}
+.sw{width:10px;height:10px;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:2px}
+</style>
+
+<div id="app">
+<div class="row">
+  <div class="cg">
+    <label>Layout</label>
+    <select id="lt">
+      <option value="square">Square (periodic)</option>
+      <option value="hex">Hex (periodic)</option>
+      <option value="random">Random</option>
+      <option value="aperiodic" selected>Aperiodic monotile</option>
+    </select>
+  </div>
+  <div class="cg">
+    <label>Grid size</label>
+    <select id="gs">
+      <option value="5">5×5 (fast)</option>
+      <option value="7" selected>7×7</option>
+      <option value="9">9×9</option>
+    </select>
+  </div>
+  <div class="cg">
+    <label>Search direction</label>
+    <select id="sd">
+      <option value="0" selected>Left → right</option>
+      <option value="90">Top → bottom</option>
+      <option value="45">Diagonal</option>
+    </select>
+  </div>
+  <button class="btn" id="rb">Run ↗</button>
+</div>
+
+<canvas id="cv"></canvas>
+
+<div class="leg">
+  <span><span class="sw" style="background:#5a9fd4"></span>Tile</span>
+  <span><span class="sw" style="background:#c44"></span>Failure path</span>
+  <span><span class="sw" style="background:#c80"></span>Seam</span>
+  <span><span class="sw" style="background:#855cc"></span>Entry/exit</span>
+</div>
+
+<div class="metrics" id="mx"></div>
+<div id="vd"></div>
+</div>
+
+<script>
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+const W = 640, H = 320;
+cv.width = W; cv.height = H;
+
+function dk() { return matchMedia('(prefers-color-scheme: dark)').matches; }
+function pal() {
+  const d = dk();
+  return {
+    bg: d ? '#181816' : '#f4f3ef',
+    tile: d ? '#1e3448' : '#c5daf0',
+    ts: d ? '#3a6fa0' : '#2a5f8f',
+    pt: d ? '#4a1010' : '#fdd',
+    ps: d ? '#dd2222' : '#c33',
+    sm: d ? '#7a5010' : '#c80',
+    en: d ? '#7744bb' : '#855cc',
+    tx: d ? '#aaa9a0' : '#444',
+  };
+}
+
+// deterministic rand
+function mkrng(seed) {
+  let s = seed >>> 0;
+  return () => { s = Math.imul(s ^ s >>> 15, s | 1); s ^= s + Math.imul(s ^ s >>> 7, s | 61); return ((s ^ s >>> 14) >>> 0) / 4294967296; };
+}
+
+function hatVerts(cx, cy, r, deg, ch) {
+  const a = deg * Math.PI / 180;
+  const p = [
+    [0, -r], [r*.55*ch, -r*.7], [r*.9*ch, -r*.25],
+    [r*.9*ch, r*.2], [r*.4*ch, r*.6], [0, r*.8],
+    [-r*.35*ch, r*.55], [-r*.8*ch, r*.15],
+    [-r*.8*ch, -r*.3], [-r*.4*ch, -r*.7]
+  ];
+  return p.map(([x, y]) => [
+    cx + x * Math.cos(a) - y * Math.sin(a),
+    cy + x * Math.sin(a) + y * Math.cos(a)
+  ]);
+}
+
+function hexVerts(cx, cy, r) {
+  return Array.from({length:6}, (_, i) => {
+    const a = (i * 60 - 30) * Math.PI / 180;
+    return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+  });
+}
+
+function rverts(x, y, w, h) { return [[x,y],[x+w,y],[x+w,y+h],[x,y+h]]; }
+
+function makeTiles(type, N) {
+  const tw = W / N, th = H / N;
+  const rng = mkrng(type === 'random' ? (Date.now() & 0xfffff) : 42);
+  const tiles = [];
+  const ROTS = [0,30,60,90,120,150,180,210,240,270,300,330];
+
+  if (type === 'square') {
+    for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+      const x = c*tw, y = r*th;
+      tiles.push({id: r*N+c, cx: x+tw/2, cy: y+th/2, w: tw, h: th, verts: rverts(x,y,tw,th)});
+    }
+  } else if (type === 'hex') {
+    const hr = Math.min(tw, th) * 0.5;
+    for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+      const cx = c*tw*0.87 + (r%2 ? tw*0.44 : 0) + tw*0.44;
+      const cy = r*th*0.76 + th*0.5;
+      if (cx > W+tw || cy > H+th) continue;
+      tiles.push({id: tiles.length, cx, cy, w: tw*0.85, h: th*0.85, verts: hexVerts(cx, cy, hr)});
+    }
+  } else if (type === 'aperiodic') {
+    for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+      const rot = ROTS[(r*4 + c*7 + r*c*3) % 12];
+      const ch = ((r*3 + c*5) % 3 === 0) ? -1 : 1;
+      const cx = (c+0.5)*tw + (r%2 ? tw*0.5 : 0) + (rng()-0.5)*tw*0.12;
+      const cy = (r+0.5)*th + (rng()-0.5)*th*0.12;
+      if (cx < 0 || cy < 0 || cx > W+tw || cy > H+th) continue;
+      const rad = Math.min(tw, th) * 0.5;
+      tiles.push({id: tiles.length, cx, cy, w: tw*0.9, h: th*0.9, verts: hatVerts(cx, cy, rad, rot, ch)});
+    }
+  } else {
+    for (let i = 0; i < N*N; i++) {
+      const w = tw*(0.5+rng()*0.8), h = th*(0.5+rng()*0.8);
+      const cx = rng()*(W-w)+w/2, cy = rng()*(H-h)+h/2;
+      tiles.push({id: i, cx, cy, w, h, verts: rverts(cx-w/2, cy-h/2, w, h)});
+    }
+  }
+  return tiles;
+}
+
+// Spatial bucket: O(1) neighbour lookup
+function spatialBuckets(tiles, cellSize) {
+  const map = {};
+  for (const t of tiles) {
+    const bx = Math.floor(t.cx / cellSize);
+    const by = Math.floor(t.cy / cellSize);
+    const key = `${bx},${by}`;
+    if (!map[key]) map[key] = [];
+    map[key].push(t);
+  }
+  return { map, cellSize };
+}
+
+function getNear(buckets, cx, cy, radius) {
+  const cs = buckets.cellSize;
+  const r = Math.ceil(radius / cs);
+  const bx0 = Math.floor(cx/cs), by0 = Math.floor(cy/cs);
+  const out = [];
+  for (let dx = -r; dx <= r; dx++) for (let dy = -r; dy <= r; dy++) {
+    const k = `${bx0+dx},${by0+dy}`;
+    if (buckets.map[k]) out.push(...buckets.map[k]);
+  }
+  return out;
+}
+
+function emid(v, i) {
+  const a = v[i], b = v[(i+1) % v.length];
+  return [(a[0]+b[0])/2, (a[1]+b[1])/2];
+}
+function eang(v, i) {
+  const a = v[i], b = v[(i+1) % v.length];
+  return Math.atan2(b[1]-a[1], b[0]-a[0]) * 180 / Math.PI;
+}
+function elen(v, i) {
+  const a = v[i], b = v[(i+1) % v.length];
+  return Math.hypot(b[0]-a[0], b[1]-a[1]);
+}
+function d2(a, b) { return Math.hypot(a[0]-b[0], a[1]-b[1]); }
+
+function buildSeams(tiles, type) {
+  const avgW = tiles.reduce((s,t) => s+t.w, 0) / tiles.length;
+  const thresh = avgW * 0.38;
+  const buckets = spatialBuckets(tiles, avgW * 1.5);
+  const seams = [];
+  const seen = new Set();
+  const rng = mkrng(99);
+
+  for (const ti of tiles) {
+    if (!ti.verts) continue;
+    const near = getNear(buckets, ti.cx, ti.cy, avgW * 2.0);
+    for (const tj of near) {
+      if (tj.id <= ti.id) continue;
+      if (!tj.verts) continue;
+      const key = `${ti.id}_${tj.id}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+
+      // Only check edges — limit to 8 per tile to cap inner loop
+      const eiMax = Math.min(ti.verts.length, 8);
+      const ejMax = Math.min(tj.verts.length, 8);
+      let best = Infinity, bmx = 0, bmy = 0, bang = 0, blen = 0;
+
+      for (let ei = 0; ei < eiMax; ei++) {
+        const mi = emid(ti.verts, ei);
+        for (let ej = 0; ej < ejMax; ej++) {
+          const mj = emid(tj.verts, ej);
+          const dd = d2(mi, mj);
+          if (dd < best) {
+            best = dd;
+            bmx = (mi[0]+mj[0])/2; bmy = (mi[1]+mj[1])/2;
+            bang = (eang(ti.verts,ei) + eang(tj.verts,ej)) / 2;
+            blen = (elen(ti.verts,ei) + elen(tj.verts,ej)) / 2;
+          }
+        }
+      }
+
+      if (best < thresh) {
+        seams.push({
+          id: seams.length,
+          from: ti.id, to: tj.id,
+          mx: bmx, my: bmy,
+          angle: ((bang % 360) + 360) % 360,
+          len: blen,
+          res: type === 'aperiodic' ? 0.5 + rng()*0.5 : 0.2 + rng()*0.4,
+        });
+      }
+    }
+  }
+  return seams;
+}
+
+function entryExit(tiles, dir) {
+  if (dir === 0) return {
+    entry: tiles.filter(t => t.cx - t.w/2 < W*0.13),
+    exit:  tiles.filter(t => t.cx + t.w/2 > W*0.87),
+  };
+  if (dir === 90) return {
+    entry: tiles.filter(t => t.cy - t.h/2 < H*0.13),
+    exit:  tiles.filter(t => t.cy + t.h/2 > H*0.87),
+  };
+  return {
+    entry: tiles.filter(t => t.cx < W*0.2 && t.cy < H*0.3),
+    exit:  tiles.filter(t => t.cx > W*0.7 && t.cy > H*0.7),
+  };
+}
+
+function dijkstra(tiles, seams, dir) {
+  const {entry, exit} = entryExit(tiles, dir);
+  const exitSet = new Set(exit.map(t => t.id));
+
+  // Build adj list
+  const adj = {};
+  for (const t of tiles) adj[t.id] = [];
+  for (const s of seams) {
+    adj[s.from].push({nb: s.to, s});
+    adj[s.to].push({nb: s.from, s});
+  }
+
+  const dist = {}, prev = {};
+  for (const t of tiles) { dist[t.id] = Infinity; prev[t.id] = -1; }
+  for (const t of entry) dist[t.id] = 0;
+
+  // Simple priority queue via sorted array — fine for <200 nodes
+  const pq = entry.map(t => ({id: t.id, cost: 0, lastAng: dir}));
+  const visited = new Set();
+  let deadEnds = 0, branches = 0, maxStr = 0;
+
+  while (pq.length) {
+    pq.sort((a,b) => a.cost - b.cost);
+    const cur = pq.shift();
+    if (visited.has(cur.id)) continue;
+    visited.add(cur.id);
+
+    const moves = adj[cur.id].filter(n => !visited.has(n.nb));
+    if (!moves.length && !exitSet.has(cur.id)) deadEnds++;
+    if (moves.length > 2) branches++;
+
+    for (const {nb, s} of moves) {
+      const ad = Math.abs(s.angle - cur.lastAng) % 180;
+      const nd = Math.min(ad, 180-ad);
+      const turn = nd / 180 * 4.5;
+      const nc = cur.cost + s.res + turn;
+      const str = nd < 25 ? (cur.straight||0)+1 : 0;
+      if (str > maxStr) maxStr = str;
+      if (nc < dist[nb]) {
+        dist[nb] = nc; prev[nb] = cur.id;
+        pq.push({id: nb, cost: nc, lastAng: s.angle, straight: str});
+      }
+    }
+  }
+
+  // Find cheapest exit
+  let bestExit = -1, bestCost = Infinity;
+  for (const t of exit) {
+    if (dist[t.id] < bestCost) { bestCost = dist[t.id]; bestExit = t.id; }
+  }
+
+  const pathT = new Set(), pathS = new Set();
+  if (bestExit >= 0 && bestCost < Infinity) {
+    let c = bestExit;
+    while (c >= 0 && c !== undefined) {
+      pathT.add(c);
+      const p = prev[c];
+      if (p >= 0) {
+        const s = seams.find(s => (s.from===c&&s.to===p)||(s.to===c&&s.from===p));
+        if (s) pathS.add(s.id);
+      }
+      c = prev[c];
+    }
+  }
+
+  return {pathT, pathS, reached: bestExit>=0 && bestCost<Infinity, cost: bestCost<Infinity?bestCost:0, deadEnds, branches, maxStr, visited: visited.size};
+}
+
+function drawScene(tiles, seams, res, dir) {
+  const p = pal();
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = p.bg; ctx.fillRect(0,0,W,H);
+
+  // Tiles
+  for (const t of tiles) {
+    if (!t.verts || t.verts.length < 3) continue;
+    ctx.beginPath();
+    ctx.moveTo(t.verts[0][0], t.verts[0][1]);
+    for (let i=1;i<t.verts.length;i++) ctx.lineTo(t.verts[i][0], t.verts[i][1]);
+    ctx.closePath();
+    ctx.fillStyle = res.pathT.has(t.id) ? p.pt+'cc' : p.tile+'77';
+    ctx.fill();
+    ctx.strokeStyle = res.pathT.has(t.id) ? p.ps : p.ts;
+    ctx.lineWidth = res.pathT.has(t.id) ? 1.5 : 0.5;
+    ctx.stroke();
+  }
+
+  // Seams
+  for (const s of seams) {
+    const onP = res.pathS.has(s.id);
+    const a = s.angle * Math.PI / 180;
+    const hl = s.len * 0.42;
+    ctx.beginPath();
+    ctx.moveTo(s.mx - Math.cos(a)*hl, s.my - Math.sin(a)*hl);
+    ctx.lineTo(s.mx + Math.cos(a)*hl, s.my + Math.sin(a)*hl);
+    ctx.strokeStyle = onP ? p.ps : p.sm+'55';
+    ctx.lineWidth = onP ? 2.5 : 0.6;
+    ctx.setLineDash(onP ? [] : [3,2]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Entry/exit dots
+  const {entry, exit} = entryExit(tiles, dir);
+  for (const t of [...entry, ...exit]) {
+    ctx.beginPath(); ctx.arc(t.cx, t.cy, 4, 0, Math.PI*2);
+    ctx.fillStyle = p.en+'cc'; ctx.fill();
+  }
+
+  // Direction arrow
+  const dr = dir * Math.PI/180;
+  ctx.beginPath();
+  ctx.moveTo(16, H-16);
+  ctx.lineTo(16+Math.cos(dr)*30, H-16+Math.sin(dr)*30);
+  ctx.strokeStyle = p.en; ctx.lineWidth = 1.5;
+  ctx.setLineDash([3,2]); ctx.stroke(); ctx.setLineDash([]);
+
+  ctx.fillStyle = p.tx; ctx.font = '10px var(--font-sans)';
+  ctx.fillText(`${tiles.length}t · ${seams.length}s`, 6, 12);
+}
+
+function renderMetrics(seams, tiles, res) {
+  const angles = seams.map(s => s.angle);
+  const bk = {};
+  angles.forEach(a => { const b=Math.round(a/30)*30; bk[b]=(bk[b]||0)+1; });
+  const maxB = Math.max(...Object.values(bk), 1);
+  const dr = +(maxB / seams.length).toFixed(2);
+  const sci = res.reached ? +(1 - Math.min(res.pathT.size/tiles.length,1)).toFixed(2) : 1;
+  const tc = +res.cost.toFixed(1);
+
+  const drG=dr<0.35, sciG=sci<0.35, tcG=tc>8, deG=res.deadEnds>4, msG=res.maxStr<4, pcG=!res.reached;
+
+  document.getElementById('mx').innerHTML = `
+    <div class="m"><div class="ml">Seam continuity</div><div class="mv ${sciG?'g':'b'}">${sci}</div></div>
+    <div class="m"><div class="ml">Dir. repeat</div><div class="mv ${drG?'g':'b'}">${dr}</div></div>
+    <div class="m"><div class="ml">Traversal cost</div><div class="mv ${tcG?'g':'b'}">${tc}</div></div>
+    <div class="m"><div class="ml">Branches</div><div class="mv w">${res.branches}</div></div>
+    <div class="m"><div class="ml">Dead ends</div><div class="mv ${deG?'g':'w'}">${res.deadEnds}</div></div>
+    <div class="m"><div class="ml">Max straight</div><div class="mv ${msG?'g':'b'}">${res.maxStr}</div></div>
+    <div class="m"><div class="ml">Path crossed</div><div class="mv ${res.reached?'b':'g'}">${res.reached?'yes':'no'}</div></div>
+  `;
+
+  const good = [sciG,drG,tcG,deG,msG,pcG].filter(Boolean).length;
+  const vd = document.getElementById('vd');
+  if (good >= 5) vd.innerHTML = `<div class="verdict vs">Strong path-denial candidate — geometry only, not material proof.</div>`;
+  else if (good >= 3) vd.innerHTML = `<div class="verdict vm">Moderate path-denial. Some corridors remain.</div>`;
+  else vd.innerHTML = `<div class="verdict vw">Weak path-denial. Continuous corridors detected.</div>`;
+}
+
+function run() {
+  const type = document.getElementById('lt').value;
+  const N = parseInt(document.getElementById('gs').value);
+  const dir = parseInt(document.getElementById('sd').value);
+  const tiles = makeTiles(type, N);
+  const seams = buildSeams(tiles, type);
+  const res = dijkstra(tiles, seams, dir);
+  drawScene(tiles, seams, res, dir);
+  renderMetrics(seams, tiles, res);
+}
+
+['lt','gs','sd'].forEach(id => document.getElementById(id).addEventListener('change', run));
+document.getElementById('rb').addEventListener('click', run);
+run();
+</script>

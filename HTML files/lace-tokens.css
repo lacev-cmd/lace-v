@@ -1,0 +1,132 @@
+/**
+ * ══════════════════════════════════════════════════════
+ * LACE V — Design Tokens  v1.0.0
+ * ══════════════════════════════════════════════════════
+ *
+ * Shared CSS custom properties for all LACE V tools.
+ * Include this file (or copy its :root block) into any
+ * tool shell before tool-specific styles.
+ *
+ * ACCENTS
+ * ───────
+ * The --accent and --accent-light variables are intentionally
+ * generic defaults. Each cartridge overrides them at runtime
+ * via JavaScript:
+ *
+ *   document.documentElement.style.setProperty('--accent', cartridge.accent);
+ *   document.documentElement.style.setProperty('--accent-light', cartridge.accentLight);
+ *
+ * This is how each downloaded tool carries its domain colour
+ * without any CSS change needed.
+ *
+ * TOOL FAMILIES
+ * ─────────────
+ * Mercator tools (text/journalling): light background, warm parchment palette.
+ * Nexus tools (graph/network):       dark background, cool monochrome palette.
+ * Aperiodic tools (simulation):      inherits from Claude artifact tokens.
+ *
+ * The tokens below are for the Mercator family (light).
+ * Nexus tokens are defined separately in nexus-tokens.css.
+ *
+ * ══════════════════════════════════════════════════════
+ */
+
+/* ── Mercator / light tool tokens ──────────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --bg:           #f3f1eb;
+  --surface:      #ffffff;
+  --surface2:     #f8f6f0;
+  --surface3:     #eee9dc;
+
+  /* Text */
+  --ink:          #171512;
+  --text:         #211f1a;
+  --muted:        #676157;
+  --faint:        #9b968c;
+
+  /* Borders */
+  --border:       #e1dbcc;
+  --border-strong:#bfb7a6;
+
+  /* Named colours */
+  --black:        #14120f;
+  --cream:        #f6efe2;
+
+  /* Semantic colours */
+  --warn:         #92601a;
+  --warn-light:   #fdf3e3;
+  --danger:       #8b1f1f;
+  --danger-light: #fdeaea;
+  --gap-mark:     #b35a1a;
+  --gap-light:    #fef4ec;
+  --moving:       #1a4a6b;
+  --moving-light: #eaf2f8;
+  --flag:         #6b5a1a;
+  --flag-light:   #f8f4e8;
+  --flag-border:  #d8c890;
+
+  /* Accent — overridden by cartridge at runtime */
+  --accent:       #2d5a3d;
+  --accent-light: #e8f0ea;
+
+  /* Radii */
+  --r-lg:         20px;
+  --r-md:         14px;
+  --r-sm:         8px;
+
+  /* Shadow */
+  --shadow:       0 8px 32px rgba(20, 18, 15, .07);
+}
+
+/* ── Nexus / dark tool tokens ───────────────────────────────────────────── */
+/*
+  When building a Nexus shell, use these in place of the above.
+  Apply via a .nexus-tool class on <html> or <body>, or by
+  copying into the Nexus shell's own <style> block.
+
+  .nexus-tool {
+    --bg:         #0d0d0f;
+    --surface:    #13131a;
+    --surface2:   #1a1a24;
+    --surface3:   #22222f;
+    --ink:        #e8e6f0;
+    --text:       #c8c5d8;
+    --muted:      #7a778f;
+    --faint:      #4a4860;
+    --border:     #2a2838;
+    --border2:    #3a3850;
+    --accent:     #7c6aff;
+    --accent2:    #b09fff;
+    --accent-dim: rgba(124, 106, 255, .12);
+    --danger:     #ff5a6e;
+    --danger-dim: rgba(255, 90, 110, .12);
+    --warn:       #ffaa3a;
+    --warn-dim:   rgba(255, 170, 58, .10);
+    --good:       #3affb4;
+    --good-dim:   rgba(58, 255, 180, .10);
+    --r:          10px;
+  }
+*/
+
+/* ── Typography base ────────────────────────────────────────────────────── */
+/* Applied by tool shells, not here — avoids collisions with host pages.   */
+
+/* ── Confidence badge colour system ─────────────────────────────────────── */
+/*
+  Used by Mercator reports. Shells should include these rules:
+
+  .confidence-badge {
+    display: inline-flex; align-items: center;
+    font-size: .66rem; letter-spacing: .08em; text-transform: uppercase;
+    font-weight: 800; border-radius: 999px;
+    padding: .18rem .6rem;
+    border: 1px solid;
+  }
+  .confidence-badge.strong    { color: #1a4a2b; background: #e4f2ea; border-color: #b3d9bf; }
+  .confidence-badge.supported { color: #1a4a6b; background: var(--moving-light); border-color: #b3cfe0; }
+  .confidence-badge.partial   { color: var(--warn); background: var(--warn-light); border-color: #deb87a; }
+  .confidence-badge.thin,
+  .confidence-badge.inferred  { color: var(--muted); background: var(--surface3); border-color: var(--border-strong); }
+  .confidence-badge.not_readable { color: var(--danger); background: var(--danger-light); border-color: #efb5b5; }
+*/

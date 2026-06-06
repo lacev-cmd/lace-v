@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LACE V · Horizon · Financial</title>
+<style>
+/* ── TOKENS ──────────────────────────────────────────── */
+:root {
+  --bg:           #f3f1eb;
+  --surface:      #ffffff;
+  --surface2:     #f8f6f0;
+  --surface3:     #eee9dc;
+  --ink:          #171512;
+  --text:         #211f1a;
+  --muted:        #676157;
+  --faint:        #9b968c;
+  --border:       #e1dbcc;
+  --border-strong:#bfb7a6;
+  --black:        #14120f;
+  --cream:        #f6efe2;
+  --warn:         #92601a;
+  --warn-light:   #fdf3e3;
+  --danger:       #8b1f1f;
+  --danger-light: #fdeaea;
+  --gap-mark:     #b35a1a;
+  --gap-light:    #fef4ec;
+  --moving:       #1a4a6b;
+  --moving-light: #eaf2f8;
+  --accent:       #2d3a5a;
+  --accent-light: #eaecf4;
+  --flag:         #6b5a1a;
+  --flag-light:   #f8f4e8;
+  --flag-border:  #d8c890;
+  --horizon:      #1a3a4a;
+  --horizon-light:#e6eff4;
+  --gap-closing:  #1a4a2b;
+  --gap-closing-light: #e4f2ea;
+  --gap-holding:  #92601a;
+  --gap-holding-light: #fdf3e3;
+  --gap-widening: #8b1f1f;
+  --gap-widening-light:#fdeaea;
+  --r-lg:         20px;
+  --r-md:         14px;
+  --r-sm:         8px;
+  --shadow:       0 8px 32px rgba(20,18,15,.07);
+}
+*  { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.55; min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+button,input,textarea,select { font:inherit; }
+button { cursor:pointer; }
+button:disabled { opacity:.5; cursor:default; }
+::selection { background: var(--accent-light); }
+.serif { font-family: Georgia,"Times New Roman",serif; }
+h1,h2,h3 { letter-spacing:-.03em; }
+
+/* ── BUTTONS ────────────────────────────────────────── */
+.btn {
+  display:inline-flex; align-items:center; gap:.45rem;
+  border:1px solid var(--border); background:var(--surface2);
+  border-radius:999px; padding:.6rem 1.1rem;
+  font-size:.82rem; font-weight:650; color:var(--text);
+  transition:all .12s; white-space:nowrap;
+}
+.btn:hover { border-color:var(--border-strong); transform:translateY(-1px); }
+.btn-primary { background:var(--black); color:var(--cream); border-color:var(--black); }
+.btn-accent  { background:var(--accent); color:#fff; border-color:var(--accent); }
+.btn-horizon { background:var(--horizon); color:#fff; border-color:var(--horizon); }
+.btn-danger  { background:var(--danger-light); color:var(--danger); border-color:#efb5b5; }
+.btn-sm      { padding:.38rem .75rem; font-size:.76rem; }
+
+/* ── SCREENS ────────────────────────────────────────── */
+#screen-onboard {
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:clamp(2rem,5vw,4rem) 1rem; min-height:100vh;
+}
+.onboard-wrap { max-width:560px; width:100%; }
+.brand-kicker {
+  font-size:.65rem; letter-spacing:.16em; text-transform:uppercase;
+  font-weight:800; color:var(--faint); margin-bottom:.9rem;
+}
+.onboard-title {
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(2.6rem,8vw,5rem);
+  line-height:.92; letter-spacing:-.06em;
+  margin-bottom:1rem; color:var(--black);
+}
+.onboard-lead {
+  font-size:clamp(.95rem,2vw,1.12rem);
+  color:var(--muted); line-height:1.72;
+  max-width:480px; margin-bottom:2rem;
+}
+.what-this-is {
+  background:rgba(255,255,255,.72); border:1px solid var(--border);
+  border-radius:var(--r-lg); padding:1.4rem 1.5rem; margin-bottom:1.8rem;
+}
+.what-this-is p { font-size:.86rem; color:var(--muted); line-height:1.72; margin-bottom:.75rem; }
+.what-this-is p:last-child { margin-bottom:0; }
+.what-this-is strong { color:var(--text); }
+.onboard-actions { display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; }
+
+/* ── MAIN APP ───────────────────────────────────────── */
+#screen-app { display:none; padding:0 0 6rem; }
+.app-header {
+  position:sticky; top:0; z-index:40;
+  background:rgba(243,241,235,.92); backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border); padding:.6rem 0;
+}
+.app-header-inner {
+  width:min(960px,calc(100vw - 2rem)); margin:0 auto;
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+}
+.app-brand { display:flex; align-items:baseline; gap:.6rem; }
+.app-brand-name { font-family:Georgia,"Times New Roman",serif; font-size:1.1rem; letter-spacing:-.04em; color:var(--black); }
+.app-brand-domain { font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; font-weight:800; color:var(--faint); }
+.app-header-actions { display:flex; gap:.5rem; flex-wrap:wrap; }
+
+/* ── TABS ───────────────────────────────────────────── */
+.tabs-bar {
+  width:min(960px,calc(100vw - 2rem));
+  margin:1.4rem auto .6rem;
+  display:flex; gap:.35rem; flex-wrap:wrap;
+}
+.tab-btn {
+  border:1px solid transparent; background:none; border-radius:999px;
+  padding:.42rem .9rem; font-size:.78rem; font-weight:700;
+  color:var(--muted); transition:all .12s;
+}
+.tab-btn:hover { color:var(--text); }
+.tab-btn.active { background:var(--surface); border-color:var(--border); color:var(--black); box-shadow:0 2px 8px rgba(20,18,15,.05); }
+.tab-pane { display:none; }
+.tab-pane.active { display:block; }
+.tab-content { width:min(960px,calc(100vw - 2rem)); margin:0 auto; }
+
+/* ── CARDS ──────────────────────────────────────────── */
+.card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r-lg); padding:clamp(1.2rem,3vw,2rem);
+  box-shadow:var(--shadow); margin-bottom:1rem;
+}
+.card-title {
+  font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  font-weight:800; color:var(--faint); margin-bottom:.9rem;
+}
+.card h2 {
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(1.5rem,3vw,2.2rem);
+  letter-spacing:-.045em; margin-bottom:.5rem; color:var(--black);
+}
+.card p { color:var(--muted); font-size:.9rem; line-height:1.7; margin-bottom:.9rem; }
+.card p:last-child { margin-bottom:0; }
+
+/* ── FORM ───────────────────────────────────────────── */
+textarea, input[type="text"], input[type="date"], select {
+  width:100%; padding:.7rem .9rem;
+  border:1px solid var(--border); border-radius:var(--r-md);
+  background:var(--surface2); color:var(--text);
+  font-size:.88rem; line-height:1.55;
+  transition:border-color .12s; resize:vertical;
+}
+textarea:focus, input:focus, select:focus {
+  outline:none; border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-light);
+}
+textarea { min-height:120px; }
+label {
+  display:block; font-size:.76rem; font-weight:750;
+  text-transform:uppercase; letter-spacing:.08em;
+  color:var(--muted); margin-bottom:.45rem;
+}
+.field { margin-bottom:1.1rem; }
+.field:last-child { margin-bottom:0; }
+.field-row { display:flex; gap:.75rem; align-items:flex-end; }
+.field-row .field { flex:1; margin-bottom:0; }
+.form-hint { font-size:.78rem; color:var(--faint); margin-top:.35rem; line-height:1.5; }
+.status-msg { display:none; font-size:.78rem; color:var(--accent); margin-top:.5rem; font-weight:650; }
+
+/* ── ENTRY LIST ─────────────────────────────────────── */
+.entry-list { display:grid; gap:.65rem; margin-top:1rem; }
+.entry-item { background:var(--surface2); border:1px solid var(--border); border-radius:var(--r-md); padding:1rem 1.1rem; }
+.entry-item.flagged { border-color:var(--flag-border); background:var(--flag-light); }
+.entry-meta { display:flex; gap:.6rem; align-items:center; margin-bottom:.45rem; }
+.entry-meta strong { font-size:.78rem; font-weight:750; color:var(--black); }
+.entry-meta span { font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; font-weight:800; color:var(--flag); background:var(--flag-light); border:1px solid var(--flag-border); border-radius:999px; padding:.1rem .5rem; }
+.entry-text { font-size:.88rem; color:var(--text); line-height:1.65; margin-bottom:.65rem; white-space:pre-wrap; }
+.entry-actions { display:flex; gap:.45rem; flex-wrap:wrap; }
+.empty-note { color:var(--faint); font-size:.85rem; padding:.5rem 0; }
+
+/* ── REPORT ─────────────────────────────────────────── */
+.report-empty {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  min-height:260px; text-align:center; color:var(--faint); gap:.75rem;
+}
+.report-empty p { font-size:.88rem; max-width:400px; line-height:1.65; }
+#reportOutput, #horizonOutput { display:none; padding-bottom:2rem; }
+
+.report-block {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r-lg); padding:1.4rem 1.6rem;
+  margin-bottom:.85rem; box-shadow:var(--shadow);
+}
+.report-block-title {
+  font-size:.63rem; letter-spacing:.14em; text-transform:uppercase;
+  font-weight:800; color:var(--faint); margin-bottom:.75rem;
+}
+.report-block h3 { font-family:Georgia,"Times New Roman",serif; font-size:1.3rem; letter-spacing:-.04em; margin-bottom:.6rem; color:var(--black); }
+.report-item { font-size:.88rem; color:var(--text); line-height:1.7; margin-bottom:.5rem; padding-left:.9rem; border-left:2px solid var(--border); }
+.report-item:last-child { margin-bottom:0; }
+.report-item.moving { border-left-color:var(--moving); }
+.report-item.gap    { border-left-color:var(--gap-mark); }
+.report-item.warn   { border-left-color:var(--warn); }
+
+.confidence-badge {
+  display:inline-flex; align-items:center;
+  font-size:.66rem; letter-spacing:.08em; text-transform:uppercase;
+  font-weight:800; border-radius:999px; padding:.18rem .6rem; border:1px solid;
+}
+.confidence-badge.strong    { color:#1a4a2b; background:#e4f2ea; border-color:#b3d9bf; }
+.confidence-badge.supported { color:#1a4a6b; background:var(--moving-light); border-color:#b3cfe0; }
+.confidence-badge.partial   { color:var(--warn); background:var(--warn-light); border-color:#deb87a; }
+.confidence-badge.thin,
+.confidence-badge.inferred  { color:var(--muted); background:var(--surface3); border-color:var(--border-strong); }
+.confidence-badge.not_readable { color:var(--danger); background:var(--danger-light); border-color:#efb5b5; }
+
+.next-move-block {
+  background:var(--black); color:var(--cream);
+  border-radius:var(--r-lg); padding:1.4rem 1.6rem; margin-bottom:.85rem;
+}
+.next-move-block .report-block-title { color:rgba(246,239,226,.55); }
+.next-move-block h3 { color:var(--cream); }
+.next-move-block p { color:rgba(246,239,226,.78); font-size:.9rem; line-height:1.7; }
+
+/* ── HORIZON SPECIFIC ───────────────────────────────── */
+.horizon-block {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r-lg); padding:1.4rem 1.6rem;
+  margin-bottom:.85rem; box-shadow:var(--shadow);
+}
+.horizon-block.hero {
+  background:var(--horizon); color:#fff; border-color:var(--horizon);
+}
+.horizon-block.hero .report-block-title { color:rgba(255,255,255,.55); }
+.horizon-block.hero h3 { color:#fff; font-size:1.5rem; }
+.horizon-block.hero p { color:rgba(255,255,255,.78); font-size:.92rem; line-height:1.72; }
+
+.gap-pill {
+  display:inline-flex; align-items:center;
+  font-size:.72rem; letter-spacing:.06em; text-transform:uppercase;
+  font-weight:800; border-radius:999px; padding:.22rem .75rem; border:1px solid;
+  margin-bottom:.75rem;
+}
+.gap-pill.aligned  { color:var(--gap-closing); background:var(--gap-closing-light); border-color:#b3d9bf; }
+.gap-pill.closing  { color:var(--gap-closing); background:var(--gap-closing-light); border-color:#b3d9bf; }
+.gap-pill.holding  { color:var(--gap-holding); background:var(--gap-holding-light); border-color:#deb87a; }
+.gap-pill.widening { color:var(--gap-widening); background:var(--gap-widening-light); border-color:#efb5b5; }
+.gap-pill.diverging{ color:var(--gap-widening); background:var(--gap-widening-light); border-color:#efb5b5; }
+.gap-pill.no_baseline { color:var(--muted); background:var(--surface3); border-color:var(--border-strong); }
+
+.horizon-two-col {
+  display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;
+}
+.horizon-col {
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:var(--r-md); padding:1.1rem 1.2rem;
+}
+.horizon-col-title {
+  font-size:.63rem; letter-spacing:.14em; text-transform:uppercase;
+  font-weight:800; color:var(--faint); margin-bottom:.6rem;
+}
+.horizon-col p { font-size:.88rem; color:var(--text); line-height:1.65; }
+
+.horizon-prompt-block {
+  background:var(--horizon-light); border:1px solid #c4cadb;
+  border-radius:var(--r-md); padding:1.1rem 1.3rem; margin-top:.75rem;
+}
+.horizon-prompt-block p { font-size:.92rem; color:var(--horizon); line-height:1.7; font-style:italic; }
+
+.projection-warning {
+  background:var(--warn-light); border:1px solid #deb87a;
+  border-radius:var(--r-sm); padding:.65rem .9rem;
+  font-size:.78rem; color:var(--warn); line-height:1.6; margin-bottom:.75rem;
+}
+
+.horizon-selector {
+  display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.2rem;
+}
+.horizon-selector button {
+  border:1px solid var(--border); background:var(--surface2);
+  border-radius:999px; padding:.38rem .85rem;
+  font-size:.78rem; font-weight:700; color:var(--muted); transition:all .12s;
+}
+.horizon-selector button.active {
+  background:var(--horizon); color:#fff; border-color:var(--horizon);
+}
+
+.report-controls {
+  display:flex; gap:.65rem; flex-wrap:wrap; align-items:center; margin-bottom:1.2rem;
+}
+.report-controls label { margin:0; text-transform:none; letter-spacing:0; font-size:.82rem; color:var(--muted); }
+.report-controls input[type="date"] { width:auto; padding:.38rem .65rem; font-size:.82rem; }
+
+.identity-footer {
+  border-top:1px solid var(--border); padding:1.4rem 0; margin-top:2rem;
+  font-size:.78rem; color:var(--faint); line-height:1.65; max-width:680px;
+}
+
+.correction-item {
+  border:1px solid var(--border); border-radius:var(--r-sm);
+  padding:.75rem .9rem; margin-bottom:.5rem;
+  font-size:.86rem; display:flex; gap:.75rem;
+  align-items:flex-start; justify-content:space-between;
+}
+.correction-date { font-size:.72rem; color:var(--faint); white-space:nowrap; }
+
+@media(max-width:640px) {
+  .field-row { flex-direction:column; }
+  .horizon-two-col { grid-template-columns:1fr; }
+  .app-header-actions .btn-sm:not(.keep-mobile) { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── ONBOARD ──────────────────────────────────────────────── -->
+<div id="screen-onboard">
+  <div class="onboard-wrap">
+    <p class="brand-kicker">LACE V · Horizon</p>
+    <h1 class="onboard-title serif">Financial Horizon</h1>
+    <p class="onboard-lead">Reads where your financial arc is pointing. Shows the gap between that and where you said you want to get to.</p>
+
+    <div class="what-this-is">
+      <p><strong>What this is.</strong> A planning surface built from what you write about your financial position. It reads the pattern of your entries over time — what you are doing with money, what is moving, what is being avoided — and projects that arc forward to a horizon you choose.</p>
+      <p>It compares where the arc is pointing to where you said you want to be financially. The gap between those two things is what you are actually planning across. It is not a forecast. It does not tell you what will happen.</p>
+      <p><strong>It reads what is done, not what is intended.</strong> Stated plans are real. But what you actually do with money — the statements opened, the creditors contacted, the numbers named — is the more reliable signal. The map reads both and holds the gap between them.</p>
+      <p><strong>This is your record.</strong> Nothing leaves this device. No account. No data stored anywhere but here.</p>
+    </div>
+
+    <div class="onboard-actions">
+      <button class="btn btn-primary" onclick="startApp()">Start</button>
+      <button class="btn btn-sm" onclick="loadSample()">See a sample</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ── APP ──────────────────────────────────────────────────── -->
+<div id="screen-app">
+
+  <header class="app-header">
+    <div class="app-header-inner">
+      <div class="app-brand">
+        <span class="app-brand-name serif">Horizon</span>
+        <span class="app-brand-domain">Financial</span>
+      </div>
+      <div class="app-header-actions">
+        <button class="btn btn-sm btn-horizon keep-mobile" onclick="showTab('horizon'); generateHorizon()">Read the horizon</button>
+        <button class="btn btn-sm" onclick="showTab('report'); generateReport()">Full map</button>
+        <button class="btn btn-sm" onclick="exportData()">Export</button>
+        <button class="btn btn-sm btn-danger" onclick="clearAll()">Clear</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs-bar" aria-label="Sections">
+    <button class="tab-btn active" onclick="showTab('baseline')">Baseline</button>
+    <button class="tab-btn" onclick="showTab('entries')">Entries</button>
+    <button class="tab-btn" onclick="showTab('corrections')">Corrections</button>
+    <button class="tab-btn" onclick="showTab('horizon')">Horizon</button>
+    <button class="tab-btn" onclick="showTab('report')">Full map</button>
+  </nav>
+
+
+  <!-- BASELINE TAB -->
+  <div id="tab-baseline" class="tab-pane active">
+    <div class="tab-content">
+      <div class="card">
+        <p class="card-title">Foundation</p>
+        <h2 class="serif">Set your baseline</h2>
+        <p>Describe your current financial position honestly. What comes in. What goes out. What you owe. What is under pressure. And — most important for the horizon — where you want to get to. One concrete sentence: debt-free, stable, a specific target.</p>
+        <div class="field">
+          <label for="baselineText">Your baseline</label>
+          <textarea id="baselineText" rows="10" placeholder="What is your current income? What are your main outgoings? What do you owe and to whom? What is under pressure right now? And where do you want to get to — debt-free, stable, a specific amount saved?"></textarea>
+        </div>
+        <div style="display:flex;gap:.65rem;flex-wrap:wrap;margin-top:.5rem;">
+          <button class="btn btn-accent" onclick="saveBaseline()">Save baseline</button>
+        </div>
+        <p class="status-msg" id="baseline-status">Saved.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ENTRIES TAB -->
+  <div id="tab-entries" class="tab-pane">
+    <div class="tab-content">
+      <div class="card">
+        <p class="card-title">New entry</p>
+        <h2 class="serif">Add an entry</h2>
+        <p>What happened with money this week. What you did or avoided. Numbers are more useful than impressions. Each entry adds to the arc the horizon reads from.</p>
+        <div class="field">
+          <label for="entryDate">Date</label>
+          <input type="date" id="entryDate">
+        </div>
+        <div class="field">
+          <label for="entryText">Entry</label>
+          <textarea id="entryText" rows="8" placeholder="What happened with money this week? Did you open the statements? Contact a creditor? Stick to the budget or not? What are the actual figures?"></textarea>
+        </div>
+        <div style="display:flex;gap:.65rem;align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-accent" onclick="addEntry()">Save entry</button>
+          <p class="status-msg" style="display:inline;" id="entry-status"></p>
+        </div>
+      </div>
+      <div class="card">
+        <p class="card-title">Previous entries</p>
+        <p class="form-hint" id="entry-count" style="margin-bottom:.75rem;">No entries yet.</p>
+        <div id="entries-list" class="entry-list"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- CORRECTIONS TAB -->
+  <div id="tab-corrections" class="tab-pane">
+    <div class="tab-content">
+      <div class="card">
+        <p class="card-title">Govern the map</p>
+        <h2 class="serif">Corrections</h2>
+        <p>A correction tells the map something the entries do not. Mark a topic as stale, confirm something is still current, or note what the map is reading wrong.</p>
+        <div class="field">
+          <label for="correctionText">Correction</label>
+          <textarea id="correctionText" rows="4" placeholder="e.g. The debt figure I gave at baseline has changed — it is now lower. The creditor situation resolved last week. The direction I stated has shifted — I am now focused on building savings rather than clearing debt."></textarea>
+        </div>
+        <button class="btn btn-accent" onclick="saveCorrection()">Save correction</button>
+      </div>
+      <div class="card">
+        <p class="card-title">Saved corrections</p>
+        <div id="corrections-list"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- HORIZON TAB -->
+  <div id="tab-horizon" class="tab-pane">
+    <div class="tab-content">
+
+      <div style="margin-bottom:1.2rem;">
+        <p class="form-hint" style="margin-bottom:.65rem;">Choose a horizon</p>
+        <div class="horizon-selector" id="horizon-selector">
+          <button onclick="setHorizon('short')"   id="h-short">30 days</button>
+          <button onclick="setHorizon('medium')"  id="h-medium" class="active">90 days</button>
+          <button onclick="setHorizon('long')"    id="h-long">6 months</button>
+          <button onclick="setHorizon('extended')" id="h-extended">12 months</button>
+        </div>
+        <button class="btn btn-horizon btn-sm" onclick="generateHorizon()">Read the horizon</button>
+      </div>
+
+      <div id="horizon-empty" class="report-empty">
+        <p>Add a baseline with a stated financial direction and at least three entries from separate days — then read the horizon.</p>
+        <button class="btn btn-sm" onclick="showTab('baseline')">Start with your baseline</button>
+      </div>
+
+      <div id="horizonOutput"></div>
+
+      <div class="identity-footer">
+        The horizon is a projection — not a reading. It does not predict what will happen with your finances. It shows where the arc is pointing and what the gap to your stated financial goal looks like from here. It reads what is written — what you actually do with money, not just what you intend.
+      </div>
+    </div>
+  </div>
+
+
+  <!-- FULL MAP TAB -->
+  <div id="tab-report" class="tab-pane">
+    <div class="tab-content">
+      <div class="report-controls">
+        <label>From <input type="date" id="reportStart"></label>
+        <label>To <input type="date" id="reportEnd"></label>
+        <button class="btn btn-accent btn-sm" onclick="generateReport()">Read the map</button>
+        <button class="btn btn-sm" onclick="window.print()">Print</button>
+      </div>
+      <div id="report-empty" class="report-empty">
+        <p>Add a baseline and at least one entry, then read your map.</p>
+        <button class="btn btn-sm" onclick="showTab('baseline')">Start with your baseline</button>
+      </div>
+      <div id="reportOutput"></div>
+      <div class="identity-footer">
+        This map is built from what you wrote. It reads what you actually do with money — numbers named, actions taken — not just what you intend. It does not judge. It does not advise. The map is yours.
+      </div>
+    </div>
+  </div>
+
+</div><!-- end #screen-app -->
+
+
+<script>
+'use strict';
+// ════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════
+const _state = {
+  baseline:    '',
+  entries:     [],
+  corrections: [],
+  activeHorizon: 'medium',
+};
+
+function saveState() {
+  try { localStorage.setItem('lacev-horizon-financial', JSON.stringify(_state)); } catch(e) {}
+}
+function loadState() {
+  try {
+    const s = localStorage.getItem('lacev-horizon-financial');
+    if (s) { const p = JSON.parse(s); Object.assign(_state, p); }
+  } catch(e) {}
+}
+
+const uid  = () => Math.random().toString(36).slice(2,9);
+const safe = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+const todayISO   = () => new Date().toISOString().slice(0,10);
+const daysAgoISO = n  => { const d=new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); };
+
+
+// ════════════════════════════════════════════════════════
+// CARTRIDGE — Financial with horizon config
+// ════════════════════════════════════════════════════════
+const CARTRIDGE = {
+  id:      'horizon-financial',
+  name:    'Financial Horizon',
+  tagline: 'financial · planning surface',
+
+  // ── Horizon config ──────────────────────────────────
+  horizonEnabled: true,
+  horizonConfig: {
+    active:              'medium',
+    minimumArcPeriods:   3,
+    minimumArcDays:      21,
+    shortHorizonDays:    30,
+    mediumHorizonDays:   90,
+    longHorizonDays:     180,
+    extendedHorizonDays: 365,
+    userOverridable:     true,
+  },
+
+  // ── Direction language (intended state) ─────────────
+  // ── Direction language ───────────────────────────────
+  directionRx: /\b(debt free|clear the debt|get out of debt|no more debt|owe nothing|financial stability|stable|solid ground|secure|not worrying about money|save|savings|emergency fund|put money away|build a cushion|live within|spend less|reduce outgoings|cut back|more income|earn more|better paid|increase my income|I want to be|my goal is|where I want to be|what I am working toward|I want to get to|I am working toward|I want to clear|I want to save|I want to be debt free|I want to be stable|I want to be financially)\b/i,
+
+  // ── Trajectory language ──────────────────────────────
+  horizonTrajectoryRx: /\b(the debt is reducing|I am paying it down|things are improving financially|I am making progress|I stayed within budget|I am building|the position is improving|I am getting there|less debt now|more savings|things are more stable|I am on track financially|moving in the right direction)\b/i,
+
+  // ── Financial gaps ───────────────────────────────────
+  gaps: [
+    { key: 'real_numbers',       name: 'Actual income and outgoings', rx: /\b(my income|I earn|I bring in|my outgoings|I spend|I pay|monthly|weekly|the total|the numbers|what I owe|what comes in|what goes out)\b/i, reason: 'Without specific numbers the map cannot read the real position. Described financial difficulty without figures is partial.' },
+    { key: 'debt_total',         name: 'Total debt named',            rx: /\b(total debt|I owe|the debt is|in total|altogether|the full amount|all of it|the whole|the sum)\b/i,                                          reason: 'The total debt figure is the anchor for everything else. Without it the map cannot assess whether movement is meaningful.' },
+    { key: 'creditor_situation', name: 'Creditor situation',          rx: /\b(creditor|they have contacted|final demand|letter from|court|enforcement|bailiff|CCJ|they are threatening|arrangement with|I have spoken to)\b/i, reason: 'Whether creditors are active or taking enforcement action shapes the urgency of the whole picture.' },
+    { key: 'plan',               name: 'A plan for the position',     rx: /\b(my plan|the plan is|I am going to|I intend to|the approach|step by step|I have decided|the strategy|I will)\b/i,                              reason: 'Movement without a plan is reactive. A stated plan tells the map whether the person is managing toward something.' },
+    { key: 'direction',          name: 'Stated financial direction',  rx: /\b(I want to|my goal|what I am working toward|where I want to be|debt free|stable|clear the|get out of|in a better position|financially)\b/i,    reason: 'Without a stated direction the horizon cannot be computed.' },
+  ],
+
+  // ── Financial movement signals ────────────────────────
+  defaultActionRx: /\b(I opened|I looked at|I checked|I calculated|I counted|I added up|I worked out|I read the|I faced the numbers|I know what I owe|I called|I contacted|I wrote to|I spoke to|I emailed|I arranged|I agreed|payment plan|I negotiated|they agreed|we agreed|I paid|I reduced|I cut|I budgeted|I tracked|I set aside|I applied|I submitted|I stayed within|I kept to the budget|bank statement)\b/i,
+
+  defaultStuckRx: /\b(same situation|no change|still in debt|still behind|nothing has moved|I keep avoiding|I have not opened|same amount|no further forward|still the same|going further into|I have not looked|I have not called|I keep putting it off|I cannot face|I am avoiding|I did not open|I did not call)\b/i,
+
+  // ── Load signals ─────────────────────────────────────
+  defaultLoadSignals: [
+    { key: 'enforcement', rx: /\b(bailiff|court order|CCJ|enforcement|repossession|final demand|legal action|they are taking me to court)\b/i },
+    { key: 'shame',       rx: /\b(ashamed|embarrassed|I cannot tell|keeping it from|hiding it|no one knows|too ashamed)\b/i },
+    { key: 'overwhelm',   rx: /\b(overwhelming|I do not know where to start|too much|I cannot face|I cannot look|I am paralysed|I do not open)\b/i },
+    { key: 'dependency',  rx: /\b(credit card|overdraft|borrowing|payday loan|borrowing to pay|using credit to|I borrowed again)\b/i },
+    { key: 'relationship',rx: /\b(my partner|they do not know|argument about money|financial pressure on us|it is affecting us)\b/i },
+  ],
+
+  // ── Contradiction patterns ───────────────────────────
+  statedGoalRx:    /\b(I have a plan|I know what to do|I have it worked out|I am managing|I am coping|I have it handled)\b/i,
+  positiveFrameRx: /\b(I am managing|under control|I have it handled|I am coping|it is fine|not that bad|I am getting by)\b/i,
+  negativeDetailRx:/\b(I borrowed|I used the card|I went into|I could not pay|I missed|I have not opened|enforcement|final demand|I am avoiding|it is getting worse)\b/i,
+
+  // ── Sample data ──────────────────────────────────────
+  sampleBaseline: `I'm in about £18,000 of debt across three credit cards and an overdraft. My income is around £2,200 a month after tax. My outgoings are tight — rent £900, bills £300, food roughly £300, minimum payments on the cards about £280. That leaves almost nothing. I've been avoiding looking at the full picture properly. I want to be debt-free in three years and have some savings behind me. That's the goal. I know I need to face the numbers properly and stop using the cards.`,
+  sampleEntries: [
+    { daysAgo: 35, text: `Didn't open the statements again this week. I know roughly what's in them but I keep putting it off. Used the card twice for things I could have avoided. Nothing has changed. I know what I need to do, I just haven't done it.` },
+    { daysAgo: 24, text: `Finally opened all three statements. The total is worse than I thought — £18,400 not £18,000. But I know the number now. I wrote it down. I also calculated exactly what I'm paying in interest each month — it's £210 just in interest. That's what made it real. I called one creditor and asked about a payment plan.` },
+    { daysAgo: 14, text: `The creditor I called agreed to freeze interest for six months if I make a fixed payment of £180 a month. That's less than the minimum plus interest I was paying. I've set up the direct debit. Didn't use the credit cards this week. Worked out a rough budget — it's tight but possible. I want to clear that card first and then tackle the next one.` },
+    { daysAgo: 4,  text: `Second week without using the cards. Stayed within budget. Called the second creditor — waiting to hear back. The debt is still big but I can see a path now. I want to be debt-free and I'm working toward it properly now, not just intending to.` },
+  ],
+};
+
+
+// ════════════════════════════════════════════════════════
+// CORE ENGINE
+// ════════════════════════════════════════════════════════
+// Lightweight inline engine — runs the map and horizon
+// directly without the full Mercator/Spine stack.
+// Implements the same behaviour logic as sorter-runtime
+// for the behaviours needed here.
+
+const Engine = (() => {
+
+  const _rx = (rx, text) => {
+    if (!rx) return false;
+    try { return (rx instanceof RegExp ? rx : new RegExp(rx.source||rx, rx.flags||'i')).test(text); } catch(e) { return false; }
+  };
+
+  const _dayKey = d => { if (!d) return null; const x=new Date(d); return isNaN(x)?null:x.toISOString().slice(0,10); };
+  const _daysBetween = (a,b) => Math.abs(Math.round((new Date(a)-new Date(b))/86400000));
+
+  function run(state, cartridge, horizonKey) {
+    const entries    = state.entries    || [];
+    const baseline   = state.baseline   || '';
+    const allText    = entries.map(e=>e.text||'').join('\n') + '\n' + baseline;
+    const corrections= state.corrections|| [];
+
+    // ── Gaps ─────────────────────────────────────────
+    const gapDefs   = cartridge.gaps || [];
+    const openGaps  = gapDefs.filter(g => !_rx(g.rx, allText));
+    const closedGaps= gapDefs.filter(g =>  _rx(g.rx, allText));
+
+    // ── Movement ─────────────────────────────────────
+    const moving = [], stuck = [];
+    entries.forEach((e,i) => {
+      const t = e.text || '';
+      const day = _dayKey(e.date) || `e${i}`;
+      if (_rx(cartridge.defaultActionRx, t)) moving.push({ day, text: t.slice(0,120) });
+      else if (_rx(cartridge.defaultStuckRx, t)) stuck.push({ day, text: t.slice(0,120) });
+    });
+    const isMoving = moving.length > stuck.length;
+    const uniqueDays = new Set(moving.map(m=>m.day)).size;
+    const strength = uniqueDays>=4?'strong':uniqueDays>=3?'moderate':uniqueDays>=2?'weak':'thin';
+
+    // ── Load ─────────────────────────────────────────
+    const loadSignals = (cartridge.defaultLoadSignals||[]).filter(s=>_rx(s.rx, allText));
+    const loadLevel   = loadSignals.length===0?'low':loadSignals.length<=2?'moderate':loadSignals.length<=4?'high':'critical';
+
+    // ── Confidence ───────────────────────────────────
+    const n = entries.length;
+    let overall = 'not_readable';
+    if      (n===0)                                    overall = 'not_readable';
+    else if (n===1)                                    overall = 'thin';
+    else if (openGaps.length>=3)                       overall = 'partial';
+    else if (n>=5 && openGaps.length===0)              overall = 'strong';
+    else if (n>=3 && openGaps.length<=1)               overall = 'supported';
+    else                                               overall = 'partial';
+
+    // ── Direction ─────────────────────────────────────
+    const hasDirection = _rx(cartridge.directionRx, allText);
+
+    // ── Horizon ──────────────────────────────────────
+    const hCfg       = cartridge.horizonConfig || {};
+    const hKey       = horizonKey || hCfg.active || 'medium';
+    const HDAYS      = { short:hCfg.shortHorizonDays||30, medium:hCfg.mediumHorizonDays||90, long:hCfg.longHorizonDays||180, extended:hCfg.extendedHorizonDays||365 };
+    const HLABELS    = { short:'30-day horizon', medium:'90-day horizon', long:'6-month horizon', extended:'12-month horizon' };
+    const horizonDays= HDAYS[hKey]||90;
+    const horizon    = { key:hKey, days:horizonDays, label:HLABELS[hKey]||`${horizonDays}-day horizon` };
+
+    const datedEntries = entries.map(e=>_dayKey(e.date)).filter(Boolean).sort();
+    const arcSpanDays  = datedEntries.length>=2 ? _daysBetween(datedEntries[0], datedEntries[datedEntries.length-1]) : 0;
+    const independentDays = new Set(datedEntries).size;
+
+    const minPeriods = hCfg.minimumArcPeriods || 3;
+    const minDays    = hCfg.minimumArcDays    || 21;
+
+    const blockers = [];
+    if (!hasDirection)             blockers.push({ key:'no_direction',    label:'No intended state',         severity:'critical', desc:'No direction language found. State where you want to be.' });
+    if (independentDays<minPeriods)blockers.push({ key:'thin_arc',        label:'Arc too thin to project',   severity:'critical', desc:`${independentDays} independent period(s). Need ${minPeriods}.` });
+    if (arcSpanDays<minDays)       blockers.push({ key:'arc_too_short',   label:'Arc span too short',        severity:'critical', desc:`Arc spans ${arcSpanDays} days. Need ${minDays}.` });
+    if (loadLevel==='high'||loadLevel==='critical') blockers.push({ key:'high_load', label:'High load active', severity:'moderate', desc:`Load level: ${loadLevel}.` });
+
+    const isStalled = !isMoving && stuck.length>=2;
+    if (isStalled) blockers.push({ key:'stalled_arc', label:'Arc is stalled', severity:'moderate', desc:'No movement across multiple periods.' });
+
+    const criticalBlockers = blockers.filter(b=>b.severity==='critical');
+    const projectable = criticalBlockers.length===0;
+
+    // Projection confidence
+    const PMAP = { not_readable:'not_projectable', inferred:'wide_uncertainty', thin:'wide_uncertainty', partial:'indicative', supported:'moderate', strong:'moderate' };
+    const projConf = PMAP[overall] || 'wide_uncertainty';
+
+    // Intended state
+    let intendedState = null;
+    if (hasDirection) {
+      const drx = cartridge.directionRx instanceof RegExp ? cartridge.directionRx : new RegExp(cartridge.directionRx.source||cartridge.directionRx, 'i');
+      const sentences = allText.split(/[.!?]+/).map(s=>s.trim()).filter(s=>s.length>10);
+      const found = sentences.find(s=>drx.test(s));
+      intendedState = found ? found.slice(0,200) : 'Direction stated in material.';
+    }
+
+    // Gap type
+    const hasPositiveTraj = _rx(cartridge.horizonTrajectoryRx, allText) || (isMoving && strength!=='thin');
+    const contradictedDir = _rx(cartridge.positiveFrameRx, allText) && _rx(cartridge.negativeDetailRx, allText) && !isMoving;
+
+    let gapType;
+    if (!hasDirection)         gapType = 'no_baseline';
+    else if (contradictedDir)  gapType = 'diverging';
+    else if (isStalled)        gapType = loadLevel==='high'?'holding':'widening';
+    else if (hasPositiveTraj && strength==='strong') gapType = 'closing';
+    else if (hasPositiveTraj)  gapType = 'holding';
+    else                       gapType = 'widening';
+
+    const GAP_DESC = {
+      aligned:    'Trajectory and stated intention are consistent.',
+      closing:    'Movement is in the right direction. The gap exists but is narrowing.',
+      holding:    'No meaningful movement toward the intended state. The gap is stable — which over time is itself a signal.',
+      widening:   'Current patterns are moving away from the stated intention.',
+      diverging:  'There is a structural contradiction between the current arc and the stated intention.',
+      no_baseline:'No intended state was found. The horizon requires a direction.',
+    };
+
+    const PLANNING_PROMPTS = {
+      aligned:    'What would need to stay true between now and the horizon for this alignment to hold?',
+      closing:    'What is producing the movement — and what could stop it before the horizon?',
+      holding:    'What would need to change for the arc to start moving toward the intended state?',
+      widening:   'What is the arc actually pointing toward — and is that still acceptable?',
+      diverging:  'The arc and the stated intention are pulling in different directions. Which one reflects what actually matters now?',
+      no_baseline:'What does the intended state actually look like? One honest sentence about where you want to be.',
+    };
+
+    const projectedState = projectable
+      ? `[Projected — ${projConf}] ${GAP_DESC[gapType]||''}`
+      : null;
+
+    return {
+      map: { overall, openGaps, closedGaps, moving, stuck, isMoving, strength, loadLevel, loadSignals, hasDirection, entries, baseline },
+      horizon: {
+        horizon, projectable, projConf,
+        intendedState, projectedState,
+        gapType, gapDescription: GAP_DESC[gapType]||'',
+        planningPrompt: PLANNING_PROMPTS[gapType]||null,
+        activeBlockers: blockers,
+      },
+    };
+  }
+
+  return { run };
+})();
+
+
+// ════════════════════════════════════════════════════════
+// RENDER HELPERS
+// ════════════════════════════════════════════════════════
+
+const CONF_LABELS = {
+  strong:'supported across the period', supported:'supported across multiple entries',
+  partial:'partial — direction visible', thin:'thin — one or two mentions',
+  inferred:'inferred', not_readable:'not enough material',
+};
+const PROJ_LABELS = {
+  moderate:'moderate confidence', indicative:'indicative',
+  wide_uncertainty:'wide uncertainty — directional only',
+  not_projectable:'not projectable',
+};
+const GAP_LABELS = {
+  aligned:'Arc aligned with intention', closing:'Gap closing',
+  holding:'Gap holding', widening:'Gap widening',
+  diverging:'Arc diverging from intention', no_baseline:'No intended state',
+};
+
+function renderHorizonOutput(result) {
+  const el = document.getElementById('horizonOutput');
+  const em = document.getElementById('horizon-empty');
+  const h  = result.horizon;
+  el.style.display = 'block';
+  em.style.display = 'none';
+
+  if (!h.projectable) {
+    el.innerHTML = _renderNotProjectable(h);
+    return;
+  }
+
+  const gapClass = h.gapType || 'no_baseline';
+
+  el.innerHTML = `
+    ${_renderHorizonHero(h)}
+    ${_renderTwoCol(h)}
+    ${_renderGapBlock(h, gapClass)}
+    ${_renderBlockersBlock(h)}
+    ${_renderPromptBlock(h)}
+    ${_renderProjectionLimits()}
+  `;
+}
+
+function _renderHorizonHero(h) {
+  return `
+    <div class="horizon-block hero">
+      <p class="report-block-title">Horizon — ${safe(h.horizon.label)}</p>
+      <div class="gap-pill ${safe(h.gapType)}">${safe(GAP_LABELS[h.gapType]||h.gapType)}</div>
+      <p>${safe(h.gapDescription)}</p>
+      <p style="font-size:.78rem;opacity:.65;margin-top:.75rem;">
+        Projection confidence: ${safe(PROJ_LABELS[h.projConf]||h.projConf)}
+      </p>
+    </div>`;
+}
+
+function _renderTwoCol(h) {
+  return `
+    <div class="horizon-two-col">
+      <div class="horizon-col">
+        <p class="horizon-col-title">Where you said you want to be</p>
+        <p>${h.intendedState ? safe(h.intendedState) : '<em style="color:var(--faint)">Not yet stated. Add a direction to your baseline or an entry.</em>'}</p>
+      </div>
+      <div class="horizon-col">
+        <p class="horizon-col-title">Where the arc is pointing</p>
+        <p>${h.projectedState ? safe(h.projectedState) : '<em style="color:var(--faint)">Not projectable from current material.</em>'}</p>
+      </div>
+    </div>`;
+}
+
+function _renderGapBlock(h, gapClass) {
+  return `
+    <div class="horizon-block">
+      <p class="report-block-title">The gap</p>
+      <div class="gap-pill ${safe(gapClass)}">${safe(GAP_LABELS[h.gapType]||h.gapType)}</div>
+      <p style="font-size:.9rem;color:var(--text);line-height:1.7;">${safe(h.gapDescription)}</p>
+    </div>`;
+}
+
+function _renderBlockersBlock(h) {
+  if (!h.activeBlockers || !h.activeBlockers.length) return '';
+  const items = h.activeBlockers.map(b =>
+    `<div class="report-item ${b.severity==='critical'?'warn':''}">
+      <strong>${safe(b.label)}</strong> — ${safe(b.desc)}
+    </div>`
+  ).join('');
+  return `
+    <div class="horizon-block">
+      <p class="report-block-title">What is affecting the projection</p>
+      ${items}
+    </div>`;
+}
+
+function _renderPromptBlock(h) {
+  if (!h.planningPrompt) return '';
+  return `
+    <div class="horizon-block">
+      <p class="report-block-title">A question the gap raises</p>
+      <div class="horizon-prompt-block">
+        <p>${safe(h.planningPrompt)}</p>
+      </div>
+    </div>`;
+}
+
+function _renderProjectionLimits() {
+  return `
+    <div class="horizon-block">
+      <p class="report-block-title">What this projection cannot tell you</p>
+      <div class="report-item">This projection describes where the arc is pointing — not what will happen.</div>
+      <div class="report-item">A closing gap does not guarantee reaching the intended state.</div>
+      <div class="report-item">A widening gap does not mean the intended state is unreachable.</div>
+      <div class="report-item">Events outside the written material can change the trajectory at any point.</div>
+      <div class="report-item">This surface updates every time you add an entry.</div>
+    </div>`;
+}
+
+function _renderNotProjectable(h) {
+  const criticals = (h.activeBlockers||[]).filter(b=>b.severity==='critical');
+  const reasons = criticals.map(b=>`<div class="report-item warn"><strong>${safe(b.label)}</strong> — ${safe(b.desc)}</div>`).join('');
+  const helps = _whatWouldHelp(h);
+  return `
+    <div class="horizon-block">
+      <p class="report-block-title">Horizon — not yet readable</p>
+      <p style="color:var(--muted);font-size:.9rem;line-height:1.7;margin-bottom:1rem;">
+        A planning surface could not be produced from the current material. Below is what is needed.
+      </p>
+      <p class="report-block-title" style="margin-top:.5rem;">Why</p>
+      ${reasons}
+      <p class="report-block-title" style="margin-top:1rem;">What would make it readable</p>
+      ${helps.map(h=>`<div class="report-item">${safe(h)}</div>`).join('')}
+    </div>`;
+}
+
+function _whatWouldHelp(h) {
+  const help = [];
+  const keys = (h.activeBlockers||[]).map(b=>b.key);
+  if (keys.includes('no_direction'))  help.push('State where you want to be — one honest sentence in your baseline or an entry.');
+  if (keys.includes('thin_arc'))      help.push('Add at least 3 entries from separate days.');
+  if (keys.includes('arc_too_short')) help.push('The arc needs to span at least 21 days. Keep writing across multiple sessions.');
+  if (!help.length) help.push('Add more entries across multiple sessions. The arc needs time as well as volume.');
+  return help;
+}
+
+function renderMapOutput(result) {
+  const el = document.getElementById('reportOutput');
+  const em = document.getElementById('report-empty');
+  const m  = result.map;
+  if (!m.entries.length && !m.baseline) { el.style.display='none'; em.style.display='flex'; return; }
+  el.style.display='block'; em.style.display='none';
+
+  const conf = m.overall;
+  const badge = `<span class="confidence-badge ${safe(conf)}">${safe(CONF_LABELS[conf]||conf)}</span>`;
+
+  const movingItems = m.moving.slice(0,5).map(mv=>`<div class="report-item moving">${safe(mv.text.slice(0,120))}</div>`).join('');
+  const stuckItems  = m.stuck.slice(0,5).map(s=>`<div class="report-item">${safe(s.text.slice(0,120))}</div>`).join('');
+  const gapItems    = m.openGaps.map(g=>`<div class="report-item gap">${safe(g.name)}: ${safe(g.reason)}</div>`).join('');
+  const loadItems   = m.loadSignals.map(s=>`<div class="report-item warn">${safe(s.key.replace(/_/g,' '))}</div>`).join('');
+
+  el.innerHTML = `
+    <div class="report-block">
+      <p class="report-block-title">Map confidence</p>
+      ${badge}
+      <p style="margin-top:.75rem;font-size:.86rem;color:var(--muted);">
+        ${m.entries.length} entr${m.entries.length===1?'y':'ies'} read.
+        ${m.isMoving ? `Movement evidenced in ${m.moving.length} of ${m.entries.length} entries (${m.strength}).` : `No clear movement pattern — ${m.stuck.length} non-movement signal(s).`}
+      </p>
+    </div>
+    ${m.moving.length ? `<div class="report-block"><p class="report-block-title">What is moving</p>${movingItems}</div>` : ''}
+    ${m.stuck.length  ? `<div class="report-block"><p class="report-block-title">What is not moving</p>${stuckItems}</div>` : ''}
+    ${m.loadSignals.length ? `<div class="report-block"><p class="report-block-title">What is under load (${safe(m.loadLevel)})</p>${loadItems}</div>` : ''}
+    ${m.openGaps.length ? `<div class="report-block"><p class="report-block-title">Open gaps</p>${gapItems}</div>` : ''}
+    <div class="next-move-block">
+      <p class="report-block-title">One next useful move</p>
+      <h3 class="serif">${safe(_nextMove(m))}</h3>
+    </div>
+  `;
+}
+
+function _nextMove(m) {
+  if (!m.hasDirection)         return 'State the financial goal clearly — debt-free, stable, a specific target and timeline.';
+  if (m.openGaps.length)       return `Address the open gap: ${m.openGaps[0].name}.`;
+  if (!m.isMoving)             return 'Open the statements and name the real numbers. Everything else follows from that.';
+  if (m.loadLevel==='high')    return 'Address what is under most immediate pressure before planning longer-term movement.';
+  return 'Continue the current movement. The map shows evidence of concrete action on the position.';
+}
+
+
+// ════════════════════════════════════════════════════════
+// SHELL ACTIONS
+// ════════════════════════════════════════════════════════
+
+function boot() {
+  loadState();
+  if (_state.baseline) document.getElementById('baselineText').value = _state.baseline;
+  document.getElementById('entryDate').value    = todayISO();
+  document.getElementById('reportStart').value  = daysAgoISO(30);
+  document.getElementById('reportEnd').value    = todayISO();
+  renderEntries();
+  renderCorrections();
+  document.getElementById('screen-onboard').style.display = 'flex';
+}
+
+function startApp() {
+  document.getElementById('screen-onboard').style.display = 'none';
+  document.getElementById('screen-app').style.display     = 'block';
+}
+
+function showTab(id) {
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const pane = document.getElementById('tab-'+id);
+  if (pane) pane.classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    if (b.textContent.toLowerCase().includes(id)) b.classList.add('active');
+  });
+}
+
+function setHorizon(key) {
+  _state.activeHorizon = key;
+  document.querySelectorAll('.horizon-selector button').forEach(b=>b.classList.remove('active'));
+  const btn = document.getElementById('h-'+key);
+  if (btn) btn.classList.add('active');
+}
+
+function saveBaseline() {
+  _state.baseline = document.getElementById('baselineText').value.trim();
+  saveState();
+  const s = document.getElementById('baseline-status');
+  s.textContent='Saved.'; s.style.display='block';
+  setTimeout(()=>s.style.display='none', 2000);
+}
+
+function addEntry() {
+  const text = document.getElementById('entryText').value.trim();
+  if (!text) return;
+  _state.entries.push({ id:uid(), date: document.getElementById('entryDate').value || todayISO(), text, flagged:false });
+  saveState();
+  document.getElementById('entryText').value = '';
+  const s = document.getElementById('entry-status');
+  s.textContent='Entry saved.'; s.style.display='inline';
+  setTimeout(()=>s.style.display='none', 2000);
+  renderEntries();
+}
+
+function saveCorrection() {
+  const text = document.getElementById('correctionText').value.trim();
+  if (!text) return;
+  _state.corrections.push({ id:uid(), date:todayISO(), text });
+  saveState();
+  document.getElementById('correctionText').value = '';
+  renderCorrections();
+}
+
+function deleteEntry(id) {
+  if (confirm('Delete this entry?')) {
+    _state.entries = _state.entries.filter(e=>e.id!==id);
+    saveState(); renderEntries();
+  }
+}
+
+function deleteCorrection(id) {
+  _state.corrections = _state.corrections.filter(c=>c.id!==id);
+  saveState(); renderCorrections();
+}
+
+function generateHorizon() {
+  const result = Engine.run(_state, CARTRIDGE, _state.activeHorizon || 'medium');
+  renderHorizonOutput(result);
+}
+
+function generateReport() {
+  const result = Engine.run(_state, CARTRIDGE, _state.activeHorizon || 'medium');
+  renderMapOutput(result);
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(_state, null, 2)], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href=url; a.download=`horizon-financial-${todayISO()}.json`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function clearAll() {
+  if (confirm('Clear all data? This cannot be undone.')) {
+    _state.baseline=''; _state.entries=[]; _state.corrections=[];
+    saveState();
+    document.getElementById('baselineText').value='';
+    renderEntries(); renderCorrections();
+    document.getElementById('horizonOutput').style.display='none';
+    document.getElementById('horizon-empty').style.display='flex';
+    document.getElementById('reportOutput').style.display='none';
+    document.getElementById('report-empty').style.display='flex';
+  }
+}
+
+function loadSample() {
+  _state.baseline = CARTRIDGE.sampleBaseline;
+  _state.entries  = CARTRIDGE.sampleEntries.map(e=>({
+    id:uid(), date:daysAgoISO(e.daysAgo), text:e.text, flagged:false
+  }));
+  _state.corrections = [];
+  saveState();
+  document.getElementById('baselineText').value = _state.baseline;
+  renderEntries(); renderCorrections();
+  startApp(); showTab('horizon'); generateHorizon();
+}
+
+function renderEntries() {
+  const list  = document.getElementById('entries-list');
+  const count = document.getElementById('entry-count');
+  if (count) count.textContent = `${_state.entries.length} entr${_state.entries.length===1?'y':'ies'}`;
+  if (!list) return;
+  const sorted = [..._state.entries].sort((a,b)=>b.date.localeCompare(a.date));
+  if (!sorted.length) { list.innerHTML='<p class="empty-note">No entries yet.</p>'; return; }
+  list.innerHTML = sorted.map(e=>`
+    <div class="entry-item ${e.flagged?'flagged':''}" id="entry-${safe(e.id)}">
+      <div class="entry-meta"><strong>${safe(e.date)}</strong>${e.flagged?'<span>Significant</span>':''}</div>
+      <div class="entry-text">${safe(e.text.slice(0,280))}</div>
+      <div class="entry-actions">
+        <button class="btn btn-sm btn-danger" onclick="deleteEntry('${safe(e.id)}')">Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderCorrections() {
+  const list = document.getElementById('corrections-list');
+  if (!list) return;
+  if (!_state.corrections.length) { list.innerHTML='<p class="empty-note">No corrections yet.</p>'; return; }
+  list.innerHTML = _state.corrections.map(c=>`
+    <div class="correction-item">
+      <div><span class="correction-date">${safe(c.date)}</span><div style="margin-top:.3rem;">${safe(c.text)}</div></div>
+      <button class="btn btn-sm btn-danger" onclick="deleteCorrection('${safe(c.id)}')">Delete</button>
+    </div>`).join('');
+}
+
+document.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>

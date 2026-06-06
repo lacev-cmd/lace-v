@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus — Network Structural Engine v1.0</title>
+<style>
+/* ── TOKENS ─────────────────────────────────────── */
+:root {
+  --bg:         #0d0d0f;
+  --surface:    #13131a;
+  --surface2:   #1a1a24;
+  --surface3:   #22222f;
+  --ink:        #e8e6f0;
+  --text:       #c8c5d8;
+  --muted:      #7a778f;
+  --faint:      #4a4860;
+  --border:     #2a2838;
+  --border2:    #3a3850;
+  --accent:     #7c6aff;
+  --accent2:    #b09fff;
+  --accent-dim: rgba(124,106,255,.12);
+  --danger:     #ff5a6e;
+  --danger-dim: rgba(255,90,110,.12);
+  --warn:       #ffaa3a;
+  --warn-dim:   rgba(255,170,58,.10);
+  --good:       #3affb4;
+  --good-dim:   rgba(58,255,180,.10);
+  --node-r:     22;
+  --r:          10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'DM Mono',ui-monospace,monospace;
+  background:var(--bg); color:var(--text);
+  min-height:100vh; padding:0;
+  -webkit-font-smoothing:antialiased;
+}
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap');
+
+/* ── LAYOUT ──────────────────────────────────────── */
+#app{ max-width:1100px; margin:0 auto; padding:1.5rem 1rem 4rem; }
+
+.header{
+  display:flex; align-items:baseline; justify-content:space-between;
+  flex-wrap:wrap; gap:.75rem;
+  margin-bottom:2rem;
+  padding-bottom:1.25rem;
+  border-bottom:1px solid var(--border);
+}
+.header-left h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(1.6rem,4vw,2.4rem);
+  font-weight:800; letter-spacing:-.04em;
+  color:var(--ink);
+  line-height:1;
+}
+.header-left h1 span{ color:var(--accent); }
+.header-sub{
+  font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--faint); margin-top:.4rem;
+}
+.cartridge-tag{
+  font-size:.68rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:500; color:var(--accent2);
+  background:var(--accent-dim);
+  border:1px solid rgba(124,106,255,.25);
+  border-radius:999px; padding:.2rem .7rem;
+}
+
+/* ── TWO-COLUMN ──────────────────────────────────── */
+.workspace{
+  display:grid;
+  grid-template-columns:300px 1fr;
+  gap:1.25rem;
+  align-items:start;
+}
+@media(max-width:700px){
+  .workspace{ grid-template-columns:1fr; }
+}
+
+/* ── PANELS ──────────────────────────────────────── */
+.panel{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:1.1rem 1.2rem;
+  margin-bottom:1rem;
+}
+.panel-title{
+  font-size:.62rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--faint); margin-bottom:.85rem; font-weight:500;
+}
+
+/* ── FORM ────────────────────────────────────────── */
+input[type=text], select{
+  width:100%;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:6px;
+  color:var(--ink);
+  font-family:inherit;
+  font-size:.8rem;
+  padding:.52rem .75rem;
+  margin-bottom:.5rem;
+  transition:border-color .15s;
+}
+input:focus,select:focus{
+  outline:none;
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-dim);
+}
+.field-row{ display:flex; gap:.4rem; }
+.field-row input{ margin-bottom:0; }
+
+.btn{
+  display:inline-flex; align-items:center; gap:.4rem;
+  font-family:inherit; font-size:.76rem; font-weight:500;
+  padding:.48rem .9rem;
+  border-radius:6px;
+  border:1px solid var(--border2);
+  background:var(--surface2);
+  color:var(--text);
+  cursor:pointer;
+  transition:all .12s;
+  white-space:nowrap;
+}
+.btn:hover{ border-color:var(--border2); background:var(--surface3); color:var(--ink); }
+.btn-accent{ background:var(--accent); border-color:var(--accent); color:#fff; }
+.btn-accent:hover{ opacity:.88; }
+.btn-ghost{ background:none; border-color:transparent; color:var(--muted); }
+.btn-ghost:hover{ color:var(--text); background:var(--surface2); }
+.btn-danger{ color:var(--danger); border-color:transparent; background:none; }
+.btn-danger:hover{ background:var(--danger-dim); }
+.btn-sm{ padding:.3rem .6rem; font-size:.7rem; }
+.btn-row{ display:flex; gap:.4rem; flex-wrap:wrap; margin-top:.6rem; }
+
+/* ── NODE / EDGE LISTS ───────────────────────────── */
+.node-chip{
+  display:inline-flex; align-items:center; gap:.45rem;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:999px;
+  padding:.22rem .65rem .22rem .45rem;
+  font-size:.72rem; margin:.2rem .2rem 0 0;
+  color:var(--text);
+}
+.node-chip .dot{
+  width:8px; height:8px; border-radius:50%;
+  flex-shrink:0;
+}
+.node-chip button{
+  background:none; border:none; cursor:pointer;
+  color:var(--faint); padding:0; font-size:.8rem;
+  line-height:1;
+}
+.node-chip button:hover{ color:var(--danger); }
+
+.edge-row{
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:.75rem; color:var(--text);
+  padding:.38rem .5rem;
+  border-radius:6px;
+  border:1px solid transparent;
+  margin-bottom:.25rem;
+}
+.edge-row:hover{ background:var(--surface2); border-color:var(--border); }
+.edge-label{ color:var(--muted); font-size:.68rem; }
+
+/* ── CANVAS ──────────────────────────────────────── */
+#canvas-wrap{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  overflow:hidden;
+  position:relative;
+}
+canvas{
+  display:block;
+  width:100%; height:100%;
+}
+.canvas-hint{
+  position:absolute; bottom:.75rem; right:.9rem;
+  font-size:.65rem; color:var(--faint); letter-spacing:.06em;
+  pointer-events:none;
+}
+
+/* ── METRICS GRID ────────────────────────────────── */
+.metrics-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
+  gap:.6rem;
+  margin-top:.75rem;
+}
+.metric{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:.7rem .85rem;
+}
+.metric-label{ font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); margin-bottom:.3rem; }
+.metric-value{ font-size:1.5rem; font-weight:500; color:var(--ink); line-height:1; }
+.metric-value.good{ color:var(--good); }
+.metric-value.warn{ color:var(--warn); }
+.metric-value.danger{ color:var(--danger); }
+
+/* ── FINDINGS ────────────────────────────────────── */
+.finding{
+  padding:.7rem .9rem;
+  border-radius:8px;
+  border-left:3px solid;
+  font-size:.8rem;
+  line-height:1.65;
+  margin-bottom:.5rem;
+  color:var(--text);
+}
+.finding.critical{ border-color:var(--danger); background:var(--danger-dim); }
+.finding.warn{ border-color:var(--warn); background:var(--warn-dim); }
+.finding.good{ border-color:var(--good); background:var(--good-dim); }
+.finding.info{ border-color:var(--faint); background:var(--surface2); }
+.finding strong{ color:var(--ink); display:block; margin-bottom:.2rem; }
+
+/* ── NODE TABLE ──────────────────────────────────── */
+.node-table{ width:100%; border-collapse:collapse; font-size:.75rem; }
+.node-table th{
+  text-align:left; font-size:.62rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--faint);
+  padding:.4rem .5rem; border-bottom:1px solid var(--border);
+}
+.node-table td{
+  padding:.45rem .5rem;
+  border-bottom:1px solid var(--border);
+  color:var(--text);
+  vertical-align:middle;
+}
+.node-table tr:hover td{ background:var(--surface2); }
+.node-table td:first-child{ color:var(--ink); }
+.bar-wrap{ background:var(--surface3); border-radius:999px; height:4px; width:80px; }
+.bar-fill{ height:4px; border-radius:999px; background:var(--accent); }
+
+/* ── VERDICT ─────────────────────────────────────── */
+.verdict{
+  background:var(--surface3);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  padding:1rem 1.2rem;
+  margin-top:.75rem;
+  font-size:.82rem;
+  line-height:1.7;
+  color:var(--text);
+}
+.verdict strong{ color:var(--ink); }
+
+/* ── CARTRIDGE SELECTOR ──────────────────────────── */
+.cartridge-row{
+  display:flex; gap:.5rem; flex-wrap:wrap;
+  margin-bottom:1.2rem;
+}
+.cartridge-btn{
+  font-family:inherit; font-size:.72rem; font-weight:500;
+  padding:.38rem .8rem;
+  border-radius:999px;
+  border:1px solid var(--border2);
+  background:none; color:var(--muted);
+  cursor:pointer; transition:all .12s;
+}
+.cartridge-btn:hover{ color:var(--text); border-color:var(--faint); }
+.cartridge-btn.active{
+  background:var(--accent-dim);
+  border-color:var(--accent);
+  color:var(--accent2);
+}
+
+/* ── EMPTY STATE ─────────────────────────────────── */
+.empty{
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  min-height:280px;
+  color:var(--faint); font-size:.8rem;
+  text-align:center; gap:.5rem;
+}
+.empty-icon{ font-size:2rem; opacity:.3; }
+
+/* ── SCROLLBAR ───────────────────────────────────── */
+::-webkit-scrollbar{ width:6px; }
+::-webkit-scrollbar-track{ background:var(--surface); }
+::-webkit-scrollbar-thumb{ background:var(--border2); border-radius:3px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="header">
+    <div class="header-left">
+      <h1>NEX<span>US</span></h1>
+      <p class="header-sub">Network Structural Engine · v1.0</p>
+    </div>
+    <span class="cartridge-tag" id="cartridge-tag">org · default</span>
+  </div>
+
+  <!-- CARTRIDGE SELECTOR -->
+  <div class="cartridge-row" id="cartridge-row"></div>
+
+  <div class="workspace">
+
+    <!-- LEFT: INPUT PANEL -->
+    <div>
+      <div class="panel">
+        <p class="panel-title">Nodes</p>
+        <div class="field-row">
+          <input type="text" id="node-input" placeholder="Add a node…" maxlength="32">
+          <button class="btn btn-accent btn-sm" onclick="addNode()">+</button>
+        </div>
+        <div id="node-chips"></div>
+      </div>
+
+      <div class="panel">
+        <p class="panel-title">Connections</p>
+        <div style="display:flex;gap:.4rem;margin-bottom:.4rem;">
+          <select id="edge-from" style="margin:0;flex:1;"></select>
+          <select id="edge-to"   style="margin:0;flex:1;"></select>
+        </div>
+        <div style="display:flex;gap:.4rem;align-items:center;margin-bottom:.5rem;">
+          <select id="edge-weight" style="margin:0;flex:1;">
+            <option value="3">Strong</option>
+            <option value="2" selected>Medium</option>
+            <option value="1">Weak</option>
+          </select>
+          <button class="btn btn-accent btn-sm" onclick="addEdge()">Link</button>
+        </div>
+        <div id="edge-list"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-accent" onclick="analyse()">Analyse ↗</button>
+        <button class="btn" onclick="loadSample()">Load sample</button>
+        <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+      </div>
+    </div>
+
+    <!-- RIGHT: CANVAS + OUTPUT -->
+    <div>
+      <div id="canvas-wrap" style="height:340px;">
+        <canvas id="cv"></canvas>
+        <div class="canvas-hint">drag nodes · scroll zoom</div>
+        <div class="empty" id="canvas-empty">
+          <div class="empty-icon">◎</div>
+          <div>Add nodes and connections<br>then click Analyse</div>
+        </div>
+      </div>
+
+      <div class="metrics-grid" id="metrics-grid" style="display:none"></div>
+      <div id="findings" style="margin-top:.75rem;"></div>
+      <div id="node-breakdown" style="margin-top:.75rem;"></div>
+      <div id="verdict"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// CARTRIDGE DEFINITIONS
+// ══════════════════════════════════════════════════════
+
+const CARTRIDGES = {
+  org: {
+    id: 'org',
+    name: 'Organisation',
+    nodeLabel: 'Person / Role',
+    nodePlaceholder: 'e.g. CEO, Legal, Dev Lead…',
+    edgeLabel: 'Reports to / Works with',
+    sampleNodes: ['CEO','CTO','CFO','Legal','Dev Lead','Design','Sales','Ops'],
+    sampleEdges: [
+      [0,1,3],[0,2,3],[0,3,2],[1,4,3],[1,5,2],[0,6,2],[0,7,2],[4,5,2],[2,7,1],[6,7,1]
+    ],
+    findings: {
+      highBetweenness: (n,s) => `<strong>${n}</strong> sits on ${s}% of all paths between others. Information and decisions must flow through here — this is a structural bottleneck.`,
+      isolated: (n) => `<strong>${n}</strong> has only one connection. Remove that connection and this node is unreachable.`,
+      cluster: (ns) => `A tight cluster exists: ${ns.join(', ')}. These nodes are highly interconnected but may be insulated from the rest of the network.`,
+      vulnerable: (n) => `Removing <strong>${n}</strong> would disconnect the network. This is a single point of structural failure.`,
+      dense: () => 'The network is dense — many connections relative to nodes. Information flows easily but change propagates quickly too.',
+      sparse: () => 'The network is sparse. Some nodes are poorly connected; gaps may block flow or create silos.',
+    },
+    verdict: (r) => `This organisation has ${r.cliques > 1 ? 'visible sub-clusters that may operate as silos' : 'relatively open flow across all roles'}. ${r.bridges.length ? `Key bridges: ${r.bridges.slice(0,2).join(', ')} — losing these disrupts connectivity.` : 'No single bridge nodes detected.'} ${r.density > 0.5 ? 'High density suggests strong informal networks but potential for groupthink.' : 'Low density suggests formal channels dominate — informal connection is weak.'}`,
+  },
+
+  ecology: {
+    id: 'ecology',
+    name: 'Ecosystem',
+    nodeLabel: 'Species / Element',
+    nodePlaceholder: 'e.g. Oak, Deer, Wolf…',
+    edgeLabel: 'Feeds on / Depends on',
+    sampleNodes: ['Sun','Grass','Rabbit','Fox','Eagle','Beetle','Fungi','Oak'],
+    sampleEdges: [
+      [0,1,3],[0,7,2],[1,2,3],[2,3,2],[3,4,2],[1,5,2],[5,6,2],[7,5,2],[7,2,1],[6,7,1]
+    ],
+    findings: {
+      highBetweenness: (n,s) => `<strong>${n}</strong> mediates ${s}% of energy pathways. Collapse of this species could cascade through the network.`,
+      isolated: (n) => `<strong>${n}</strong> has only one dependency. Its survival is contingent on a single relationship.`,
+      cluster: (ns) => `Tight trophic cluster: ${ns.join(', ')}. This subweb is robust internally but may be fragile at its boundary.`,
+      vulnerable: (n) => `Removing <strong>${n}</strong> would fragment the ecosystem. Keystone species.`,
+      dense: () => 'The food web is complex with many redundant pathways — relatively resilient to single-species loss.',
+      sparse: () => 'The food web has few redundant pathways — loss of a single species could cascade unpredictably.',
+    },
+    verdict: (r) => `This ecosystem has ${r.bridges.length ? `${r.bridges.length} keystone node${r.bridges.length>1?'s':''} (${r.bridges.slice(0,2).join(', ')}) whose removal would fragment the web` : 'no single keystone bottleneck — distributed resilience'}. Density ${(r.density*100).toFixed(0)}% — ${r.density > 0.4 ? 'moderately connected, reasonable cascade resistance' : 'sparse, vulnerable to cascade failure'}.`,
+  },
+
+  supply: {
+    id: 'supply',
+    name: 'Supply Chain',
+    nodeLabel: 'Supplier / Node',
+    nodePlaceholder: 'e.g. Raw Material, Factory…',
+    edgeLabel: 'Supplies / Depends on',
+    sampleNodes: ['Mine A','Mine B','Processor','Factory 1','Factory 2','Logistics','Retail','End User'],
+    sampleEdges: [
+      [0,2,3],[1,2,2],[2,3,3],[2,4,2],[3,5,3],[4,5,2],[5,6,3],[6,7,3],[1,4,1],[3,6,1]
+    ],
+    findings: {
+      highBetweenness: (n,s) => `<strong>${n}</strong> handles ${s}% of supply routes. Disruption here — weather, strike, tariff — stalls the entire chain.`,
+      isolated: (n) => `<strong>${n}</strong> has only one supplier or customer. This is a single-source dependency with no fallback.`,
+      cluster: (ns) => `Tight dependency cluster: ${ns.join(', ')}. A disruption in one propagates immediately to the others.`,
+      vulnerable: (n) => `<strong>${n}</strong> is a chokepoint. Its failure disconnects upstream supply from downstream demand.`,
+      dense: () => 'Multiple redundant supply routes exist. The chain has reasonable resilience to individual node failures.',
+      sparse: () => 'Few redundant routes. The chain is lean but brittle — single node failures may propagate to the end customer.',
+    },
+    verdict: (r) => `Supply chain ${r.bridges.length ? `has ${r.bridges.length} chokepoint${r.bridges.length>1?'s':''} (${r.bridges.slice(0,2).join(', ')})` : 'has no single chokepoint — good structural redundancy'}. ${r.density < 0.3 ? 'Low density — efficiency is high but resilience is low.' : 'Moderate redundancy present.'} ${r.isolated.length ? `${r.isolated.length} single-dependency node${r.isolated.length>1?'s':''} need backup sourcing.` : ''}`,
+  },
+};
+
+// ══════════════════════════════════════════════════════
+// NEXUS ENGINE CORE
+// ══════════════════════════════════════════════════════
+
+const NexusEngine = (() => {
+
+  // ── Graph primitives ─────────────────────────────
+  function buildAdjacency(nodes, edges) {
+    const adj = {};
+    nodes.forEach(n => adj[n.id] = []);
+    edges.forEach(e => {
+      adj[e.from].push({ id: e.to,   w: e.weight });
+      adj[e.to  ].push({ id: e.from, w: e.weight });
+    });
+    return adj;
+  }
+
+  // ── Degree centrality ────────────────────────────
+  function degreeCentrality(nodes, edges) {
+    const deg = {};
+    nodes.forEach(n => deg[n.id] = 0);
+    edges.forEach(e => {
+      deg[e.from] += e.weight;
+      deg[e.to]   += e.weight;
+    });
+    const maxD = Math.max(...Object.values(deg), 1);
+    const norm = {};
+    Object.keys(deg).forEach(k => norm[k] = +(deg[k] / maxD).toFixed(3));
+    return { raw: deg, norm };
+  }
+
+  // ── Betweenness centrality (Brandes) ────────────
+  function betweennessCentrality(nodes, edges) {
+    const adj = buildAdjacency(nodes, edges);
+    const ids = nodes.map(n => n.id);
+    const cb = {};
+    ids.forEach(id => cb[id] = 0);
+
+    ids.forEach(s => {
+      const stack = [];
+      const pred  = {};
+      const sigma = {};
+      const dist  = {};
+      ids.forEach(id => { pred[id]=[]; sigma[id]=0; dist[id]=-1; });
+      sigma[s] = 1; dist[s] = 0;
+      const Q = [s];
+      while (Q.length) {
+        const v = Q.shift();
+        stack.push(v);
+        adj[v].forEach(({id:w}) => {
+          if (dist[w] < 0) { Q.push(w); dist[w] = dist[v]+1; }
+          if (dist[w] === dist[v]+1) { sigma[w] += sigma[v]; pred[w].push(v); }
+        });
+      }
+      const delta = {};
+      ids.forEach(id => delta[id] = 0);
+      while (stack.length) {
+        const w = stack.pop();
+        pred[w].forEach(v => {
+          delta[v] += (sigma[v]/sigma[w]) * (1+delta[w]);
+        });
+        if (w !== s) cb[w] += delta[w];
+      }
+    });
+
+    const n = ids.length;
+    const norm = {};
+    const scale = n > 2 ? 1 / ((n-1)*(n-2)) : 1;
+    Object.keys(cb).forEach(k => norm[k] = +(cb[k] * scale).toFixed(4));
+    return norm;
+  }
+
+  // ── Clustering coefficient ───────────────────────
+  function clusteringCoefficients(nodes, edges) {
+    const adj = buildAdjacency(nodes, edges);
+    const cc = {};
+    nodes.forEach(n => {
+      const nbrs = adj[n.id].map(e => e.id);
+      const k = nbrs.length;
+      if (k < 2) { cc[n.id] = 0; return; }
+      let triangles = 0;
+      for (let i = 0; i < nbrs.length; i++) {
+        for (let j = i+1; j < nbrs.length; j++) {
+          if (adj[nbrs[i]].some(e => e.id === nbrs[j])) triangles++;
+        }
+      }
+      cc[n.id] = +(2 * triangles / (k*(k-1))).toFixed(3);
+    });
+    return cc;
+  }
+
+  // ── Bridge detection (articulation points via DFS) ──
+  function findBridges(nodes, edges) {
+    const adj = buildAdjacency(nodes, edges);
+    const ids = nodes.map(n => n.id);
+    const visited = {}, disc = {}, low = {}, parent = {};
+    let timer = 0;
+    const bridges = [];
+
+    ids.forEach(id => { visited[id]=false; disc[id]=-1; low[id]=-1; parent[id]=-1; });
+
+    function dfs(u) {
+      visited[u] = true;
+      disc[u] = low[u] = timer++;
+      adj[u].forEach(({id:v}) => {
+        if (!visited[v]) {
+          parent[v] = u;
+          dfs(v);
+          low[u] = Math.min(low[u], low[v]);
+          if (low[v] > disc[u]) bridges.push([u, v]);
+        } else if (v !== parent[u]) {
+          low[u] = Math.min(low[u], disc[v]);
+        }
+      });
+    }
+    ids.forEach(id => { if (!visited[id]) dfs(id); });
+    return bridges;
+  }
+
+  // ── Articulation points ──────────────────────────
+  function findArticulationPoints(nodes, edges) {
+    const adj = buildAdjacency(nodes, edges);
+    const ids = nodes.map(n => n.id);
+    const visited = {}, disc = {}, low = {}, parent = {}, ap = new Set();
+    let timer = 0;
+
+    ids.forEach(id => { visited[id]=false; disc[id]=-1; low[id]=-1; parent[id]=-1; });
+
+    function dfs(u) {
+      visited[u] = true;
+      disc[u] = low[u] = timer++;
+      let children = 0;
+      adj[u].forEach(({id:v}) => {
+        if (!visited[v]) {
+          children++;
+          parent[v] = u;
+          dfs(v);
+          low[u] = Math.min(low[u], low[v]);
+          if (parent[u] === -1 && children > 1) ap.add(u);
+          if (parent[u] !== -1 && low[v] >= disc[u]) ap.add(u);
+        } else if (v !== parent[u]) {
+          low[u] = Math.min(low[u], disc[v]);
+        }
+      });
+    }
+    ids.forEach(id => { if (!visited[id]) dfs(id); });
+    return [...ap];
+  }
+
+  // ── Connected components ─────────────────────────
+  function connectedComponents(nodes, edges) {
+    const adj = buildAdjacency(nodes, edges);
+    const ids = nodes.map(n => n.id);
+    const visited = new Set();
+    const components = [];
+
+    function bfs(start) {
+      const comp = [];
+      const q = [start];
+      visited.add(start);
+      while (q.length) {
+        const u = q.shift();
+        comp.push(u);
+        adj[u].forEach(({id:v}) => {
+          if (!visited.has(v)) { visited.add(v); q.push(v); }
+        });
+      }
+      return comp;
+    }
+
+    ids.forEach(id => {
+      if (!visited.has(id)) components.push(bfs(id));
+    });
+    return components;
+  }
+
+  // ── Clique detection (Bron–Kerbosch, max 3-cliques) ─
+  function findCliques(nodes, edges) {
+    const adj = buildAdjacency(nodes, edges);
+    const adjSet = {};
+    nodes.forEach(n => adjSet[n.id] = new Set(adj[n.id].map(e => e.id)));
+    const cliques = [];
+
+    function bk(R, P, X) {
+      if (!P.length && !X.length) {
+        if (R.length >= 3) cliques.push([...R]);
+        return;
+      }
+      const pivot = [...P,...X].reduce((best,v) =>
+        (adjSet[v] ? [...P].filter(u => adjSet[v].has(u)).length : 0) >
+        (adjSet[best] ? [...P].filter(u => adjSet[best].has(u)).length : 0)
+        ? v : best, P[0]||X[0]);
+      const candidates = P.filter(v => !adjSet[pivot]?.has(v));
+      candidates.forEach(v => {
+        bk([...R,v], P.filter(u=>adjSet[v]?.has(u)), X.filter(u=>adjSet[v]?.has(u)));
+        P = P.filter(u=>u!==v);
+        X = [...X, v];
+      });
+    }
+
+    const ids = nodes.map(n => n.id);
+    bk([], ids, []);
+    return cliques;
+  }
+
+  // ── Network density ──────────────────────────────
+  function density(nodes, edges) {
+    const n = nodes.length;
+    if (n < 2) return 0;
+    return +(edges.length / (n*(n-1)/2)).toFixed(3);
+  }
+
+  // ── Full analysis ────────────────────────────────
+  function analyse(nodes, edges) {
+    if (nodes.length < 2) return null;
+
+    const deg    = degreeCentrality(nodes, edges);
+    const btwn   = betweennessCentrality(nodes, edges);
+    const clust  = clusteringCoefficients(nodes, edges);
+    const aps    = findArticulationPoints(nodes, edges);
+    const cliques= findCliques(nodes, edges);
+    const comps  = connectedComponents(nodes, edges);
+    const dens   = density(nodes, edges);
+
+    // Rank nodes by betweenness
+    const ranked = nodes.map(n => ({
+      id: n.id, name: n.name,
+      degree: deg.raw[n.id],
+      degreeNorm: deg.norm[n.id],
+      betweenness: btwn[n.id],
+      clustering: clust[n.id],
+      isAP: aps.includes(n.id),
+    })).sort((a,b) => b.betweenness - a.betweenness);
+
+    // Isolated nodes (degree 1)
+    const isolated = nodes.filter(n => deg.raw[n.id] <= 1).map(n => n.name);
+
+    // Bridge node names
+    const bridges = aps.map(id => nodes.find(n => n.id === id)?.name).filter(Boolean);
+
+    return {
+      ranked, isolated, bridges, cliques,
+      components: comps.length,
+      density: dens,
+      nodeCount: nodes.length,
+      edgeCount: edges.length,
+      clusterCount: cliques.length,
+    };
+  }
+
+  return { analyse };
+})();
+
+
+// ══════════════════════════════════════════════════════
+// APP STATE
+// ══════════════════════════════════════════════════════
+
+let state = {
+  cartridgeId: 'org',
+  nodes: [],   // { id, name, color }
+  edges: [],   // { from, to, weight }
+  result: null,
+  nodePositions: {},   // id -> {x,y,vx,vy}
+  dragNode: null,
+  animFrame: null,
+};
+
+const NODE_COLORS = [
+  '#7c6aff','#3affb4','#ffaa3a','#ff5a6e','#4ab8ff',
+  '#c97aff','#ffee5a','#ff8c5a','#5affee','#aaffaa',
+];
+
+let nodeIdCounter = 0;
+
+function cartridge() { return CARTRIDGES[state.cartridgeId]; }
+
+// ══════════════════════════════════════════════════════
+// NODE / EDGE MANAGEMENT
+// ══════════════════════════════════════════════════════
+
+function addNode(name) {
+  name = name || document.getElementById('node-input').value.trim();
+  if (!name) return;
+  if (state.nodes.find(n => n.name.toLowerCase() === name.toLowerCase())) return;
+  const id = ++nodeIdCounter;
+  const color = NODE_COLORS[state.nodes.length % NODE_COLORS.length];
+  state.nodes.push({ id, name, color });
+  document.getElementById('node-input').value = '';
+  renderNodeChips();
+  renderEdgeSelects();
+}
+
+function removeNode(id) {
+  state.nodes = state.nodes.filter(n => n.id !== id);
+  state.edges = state.edges.filter(e => e.from !== id && e.to !== id);
+  delete state.nodePositions[id];
+  renderNodeChips();
+  renderEdgeSelects();
+  renderEdgeList();
+}
+
+function addEdge() {
+  const from = parseInt(document.getElementById('edge-from').value);
+  const to   = parseInt(document.getElementById('edge-to').value);
+  const w    = parseInt(document.getElementById('edge-weight').value);
+  if (!from || !to || from === to) return;
+  if (state.edges.find(e => (e.from===from&&e.to===to)||(e.from===to&&e.to===from))) return;
+  state.edges.push({ from, to, weight: w });
+  renderEdgeList();
+}
+
+function removeEdge(i) {
+  state.edges.splice(i, 1);
+  renderEdgeList();
+}
+
+// ══════════════════════════════════════════════════════
+// RENDER CONTROLS
+// ══════════════════════════════════════════════════════
+
+function renderNodeChips() {
+  const el = document.getElementById('node-chips');
+  el.innerHTML = state.nodes.map(n => `
+    <span class="node-chip">
+      <span class="dot" style="background:${n.color}"></span>
+      ${escH(n.name)}
+      <button onclick="removeNode(${n.id})">×</button>
+    </span>`).join('');
+}
+
+function renderEdgeSelects() {
+  ['edge-from','edge-to'].forEach(id => {
+    const sel = document.getElementById(id);
+    const prev = sel.value;
+    sel.innerHTML = state.nodes.map(n =>
+      `<option value="${n.id}">${escH(n.name)}</option>`).join('');
+    sel.value = prev;
+  });
+}
+
+function renderEdgeList() {
+  const el = document.getElementById('edge-list');
+  if (!state.edges.length) { el.innerHTML = '<div style="font-size:.72rem;color:var(--faint);padding:.3rem 0;">No connections yet.</div>'; return; }
+  const weightLabel = {1:'weak',2:'medium',3:'strong'};
+  el.innerHTML = state.edges.map((e,i) => {
+    const fn = state.nodes.find(n=>n.id===e.from)?.name||'?';
+    const tn = state.nodes.find(n=>n.id===e.to)?.name||'?';
+    return `<div class="edge-row">
+      <span>${escH(fn)} <span style="color:var(--faint)">↔</span> ${escH(tn)}
+        <span class="edge-label"> · ${weightLabel[e.weight]||e.weight}</span>
+      </span>
+      <button class="btn btn-ghost btn-sm" onclick="removeEdge(${i})">×</button>
+    </div>`;
+  }).join('');
+}
+
+function renderCartridgeBtns() {
+  const el = document.getElementById('cartridge-row');
+  el.innerHTML = Object.values(CARTRIDGES).map(c =>
+    `<button class="cartridge-btn ${c.id===state.cartridgeId?'active':''}"
+      onclick="switchCartridge('${c.id}')">${c.name}</button>`
+  ).join('');
+  document.getElementById('cartridge-tag').textContent = cartridge().name.toLowerCase() + ' · v1.0';
+}
+
+function switchCartridge(id) {
+  state.cartridgeId = id;
+  renderCartridgeBtns();
+  document.getElementById('node-input').placeholder = cartridge().nodePlaceholder || 'Add a node…';
+}
+
+// ══════════════════════════════════════════════════════
+// ANALYSIS + OUTPUT
+// ══════════════════════════════════════════════════════
+
+function analyse() {
+  if (state.nodes.length < 3) {
+    alert('Add at least 3 nodes and some connections to analyse.');
+    return;
+  }
+
+  const result = NexusEngine.analyse(state.nodes, state.edges);
+  if (!result) return;
+  state.result = result;
+
+  renderMetrics(result);
+  renderFindings(result);
+  renderNodeBreakdown(result);
+  renderVerdict(result);
+  renderCanvas();
+
+  document.getElementById('metrics-grid').style.display = 'grid';
+  document.getElementById('canvas-empty').style.display = 'none';
+}
+
+function renderMetrics(r) {
+  const densityClass = r.density > 0.5 ? 'good' : r.density > 0.25 ? 'warn' : 'danger';
+  const bridgeClass  = r.bridges.length === 0 ? 'good' : r.bridges.length <= 2 ? 'warn' : 'danger';
+  const compClass    = r.components === 1 ? 'good' : 'danger';
+
+  document.getElementById('metrics-grid').innerHTML = `
+    <div class="metric"><div class="metric-label">Nodes</div><div class="metric-value">${r.nodeCount}</div></div>
+    <div class="metric"><div class="metric-label">Edges</div><div class="metric-value">${r.edgeCount}</div></div>
+    <div class="metric"><div class="metric-label">Density</div><div class="metric-value ${densityClass}">${(r.density*100).toFixed(0)}%</div></div>
+    <div class="metric"><div class="metric-label">Components</div><div class="metric-value ${compClass}">${r.components}</div></div>
+    <div class="metric"><div class="metric-label">Bridges</div><div class="metric-value ${bridgeClass}">${r.bridges.length}</div></div>
+    <div class="metric"><div class="metric-label">Clusters</div><div class="metric-value">${r.clusterCount}</div></div>
+  `;
+}
+
+function renderFindings(r) {
+  const el = document.getElementById('findings');
+  const c  = cartridge();
+  const html = [];
+
+  // Articulation points / bridges
+  if (r.bridges.length > 0) {
+    r.bridges.slice(0,2).forEach(name => {
+      html.push(`<div class="finding critical">${c.findings.vulnerable(name)}</div>`);
+    });
+  }
+
+  // High betweenness
+  const top = r.ranked[0];
+  if (top && top.betweenness > 0.1) {
+    const pct = (top.betweenness * 100).toFixed(0);
+    html.push(`<div class="finding warn">${c.findings.highBetweenness(top.name, pct)}</div>`);
+  }
+
+  // Isolated
+  if (r.isolated.length > 0) {
+    r.isolated.slice(0,2).forEach(name => {
+      html.push(`<div class="finding warn">${c.findings.isolated(name)}</div>`);
+    });
+  }
+
+  // Clusters
+  if (r.cliques.length > 0) {
+    const biggest = r.cliques.sort((a,b)=>b.length-a.length)[0];
+    const names = biggest.map(id => state.nodes.find(n=>n.id===id)?.name).filter(Boolean);
+    if (names.length >= 3) {
+      html.push(`<div class="finding info">${c.findings.cluster(names)}</div>`);
+    }
+  }
+
+  // Density
+  if (r.density > 0.5) {
+    html.push(`<div class="finding good">${c.findings.dense()}</div>`);
+  } else if (r.density < 0.25) {
+    html.push(`<div class="finding warn">${c.findings.sparse()}</div>`);
+  }
+
+  el.innerHTML = html.join('') || '<div class="finding info">No significant structural findings. Add more nodes and connections.</div>';
+}
+
+function renderNodeBreakdown(r) {
+  const el = document.getElementById('node-breakdown');
+  const maxB = Math.max(...r.ranked.map(n => n.betweenness), 0.001);
+  el.innerHTML = `<div class="panel" style="margin-top:0;">
+    <p class="panel-title">Node analysis</p>
+    <table class="node-table">
+      <thead><tr>
+        <th>Node</th><th>Degree</th><th>Betweenness</th><th>Clustering</th><th>Role</th>
+      </tr></thead>
+      <tbody>
+        ${r.ranked.map(n => {
+          const bPct = maxB > 0 ? n.betweenness / maxB : 0;
+          const role = n.isAP ? '⚠ bridge' : n.betweenness > maxB*0.6 ? '◎ central' : n.degree <= 1 ? '○ peripheral' : '· connected';
+          const roleColor = n.isAP ? 'var(--danger)' : n.betweenness > maxB*0.6 ? 'var(--accent2)' : n.degree <= 1 ? 'var(--faint)' : 'var(--muted)';
+          return `<tr>
+            <td>${escH(n.name)}</td>
+            <td>${n.degree}</td>
+            <td>
+              <div class="bar-wrap"><div class="bar-fill" style="width:${(bPct*100).toFixed(0)}%;background:${n.isAP?'var(--danger)':'var(--accent)'}"></div></div>
+            </td>
+            <td>${(n.clustering*100).toFixed(0)}%</td>
+            <td style="color:${roleColor};font-size:.68rem;">${role}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function renderVerdict(r) {
+  const c = cartridge();
+  document.getElementById('verdict').innerHTML =
+    `<div class="verdict"><strong>Structural read.</strong> ${c.verdict(r)}</div>`;
+}
+
+// ══════════════════════════════════════════════════════
+// CANVAS — FORCE-DIRECTED LAYOUT
+// ══════════════════════════════════════════════════════
+
+let canvasScale = 1, canvasOffX = 0, canvasOffY = 0;
+
+function initPositions() {
+  const wrap = document.getElementById('canvas-wrap');
+  const W = wrap.clientWidth, H = wrap.clientHeight;
+  state.nodes.forEach((n,i) => {
+    if (!state.nodePositions[n.id]) {
+      const angle = (i / state.nodes.length) * Math.PI * 2;
+      const r = Math.min(W,H) * 0.3;
+      state.nodePositions[n.id] = {
+        x: W/2 + Math.cos(angle)*r,
+        y: H/2 + Math.sin(angle)*r,
+        vx: 0, vy: 0,
+      };
+    }
+  });
+}
+
+function simulateStep() {
+  const wrap = document.getElementById('canvas-wrap');
+  const W = wrap.clientWidth, H = wrap.clientHeight;
+  const k = Math.sqrt(W * H / Math.max(state.nodes.length, 1)) * 0.9;
+  const positions = state.nodePositions;
+
+  // Repulsion
+  state.nodes.forEach(a => {
+    state.nodes.forEach(b => {
+      if (a.id === b.id) return;
+      const pa = positions[a.id], pb = positions[b.id];
+      const dx = pa.x - pb.x, dy = pa.y - pb.y;
+      const dist = Math.max(Math.hypot(dx,dy), 1);
+      const force = k*k / dist;
+      pa.vx += (dx/dist) * force * 0.012;
+      pa.vy += (dy/dist) * force * 0.012;
+    });
+  });
+
+  // Attraction
+  state.edges.forEach(e => {
+    const pa = positions[e.from], pb = positions[e.to];
+    if (!pa || !pb) return;
+    const dx = pb.x - pa.x, dy = pb.y - pa.y;
+    const dist = Math.max(Math.hypot(dx,dy), 1);
+    const force = dist*dist / k * e.weight * 0.018;
+    pa.vx += (dx/dist) * force;
+    pa.vy += (dy/dist) * force;
+    pb.vx -= (dx/dist) * force;
+    pb.vy -= (dy/dist) * force;
+  });
+
+  // Gravity toward center
+  state.nodes.forEach(n => {
+    const p = positions[n.id];
+    p.vx += (W/2 - p.x) * 0.003;
+    p.vy += (H/2 - p.y) * 0.003;
+  });
+
+  // Integrate + dampen
+  state.nodes.forEach(n => {
+    const p = positions[n.id];
+    p.vx *= 0.82; p.vy *= 0.82;
+    p.x = Math.max(32, Math.min(W-32, p.x + p.vx));
+    p.y = Math.max(32, Math.min(H-32, p.y + p.vy));
+  });
+}
+
+function drawCanvas() {
+  const wrap = document.getElementById('canvas-wrap');
+  const cv   = document.getElementById('cv');
+  const ctx  = cv.getContext('2d');
+  const W = wrap.clientWidth, H = wrap.clientHeight;
+  cv.width = W; cv.height = H;
+
+  ctx.clearRect(0,0,W,H);
+
+  const pos = state.nodePositions;
+  const result = state.result;
+
+  const bridgeSet = new Set(result ? state.nodes.filter(n =>
+    result.bridges.includes(n.name)).map(n=>n.id) : []);
+  const topId = result?.ranked[0]?.id;
+
+  // Edges
+  state.edges.forEach(e => {
+    const pa = pos[e.from], pb = pos[e.to];
+    if (!pa || !pb) return;
+    ctx.beginPath();
+    ctx.moveTo(pa.x, pa.y);
+    ctx.lineTo(pb.x, pb.y);
+    ctx.strokeStyle = e.weight === 3 ? 'rgba(124,106,255,.45)' :
+                      e.weight === 2 ? 'rgba(124,106,255,.25)' : 'rgba(124,106,255,.12)';
+    ctx.lineWidth = e.weight;
+    ctx.stroke();
+  });
+
+  // Nodes
+  const NR = 18;
+  state.nodes.forEach(n => {
+    const p = pos[n.id];
+    if (!p) return;
+
+    const isBridge = bridgeSet.has(n.id);
+    const isTop    = n.id === topId && result;
+
+    // Glow
+    if (isBridge || isTop) {
+      const gc = ctx.createRadialGradient(p.x,p.y,NR*0.5, p.x,p.y,NR*2.2);
+      gc.addColorStop(0, isBridge ? 'rgba(255,90,110,.22)' : 'rgba(124,106,255,.18)');
+      gc.addColorStop(1, 'transparent');
+      ctx.beginPath(); ctx.arc(p.x,p.y,NR*2.2,0,Math.PI*2);
+      ctx.fillStyle = gc; ctx.fill();
+    }
+
+    // Circle
+    ctx.beginPath(); ctx.arc(p.x,p.y,NR,0,Math.PI*2);
+    ctx.fillStyle = isBridge ? 'rgba(255,90,110,.18)' : 'rgba(30,30,40,.9)';
+    ctx.fill();
+    ctx.strokeStyle = isBridge ? '#ff5a6e' : isTop ? '#7c6aff' : n.color;
+    ctx.lineWidth = isBridge || isTop ? 2.5 : 1.5;
+    ctx.stroke();
+
+    // Label
+    ctx.fillStyle = '#e8e6f0';
+    ctx.font = `500 ${Math.max(9, Math.min(12, 220/Math.max(state.nodes.length,1)))}px 'DM Mono',monospace`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const label = n.name.length > 8 ? n.name.slice(0,7)+'…' : n.name;
+    ctx.fillText(label, p.x, p.y);
+  });
+}
+
+function renderCanvas() {
+  initPositions();
+
+  let steps = 0;
+  if (state.animFrame) cancelAnimationFrame(state.animFrame);
+
+  function loop() {
+    simulateStep();
+    drawCanvas();
+    steps++;
+    if (steps < 180) state.animFrame = requestAnimationFrame(loop);
+    else drawCanvas();
+  }
+  loop();
+}
+
+// ── Drag interaction ─────────────────────────────
+function setupCanvasDrag() {
+  const cv = document.getElementById('cv');
+
+  function getNode(mx, my) {
+    const rect = cv.getBoundingClientRect();
+    const x = (mx - rect.left), y = (my - rect.top);
+    const NR = 22;
+    return state.nodes.find(n => {
+      const p = state.nodePositions[n.id];
+      return p && Math.hypot(p.x-x, p.y-y) < NR;
+    });
+  }
+
+  cv.addEventListener('mousedown', e => {
+    const n = getNode(e.clientX, e.clientY);
+    if (n) { state.dragNode = n.id; e.preventDefault(); }
+  });
+  cv.addEventListener('mousemove', e => {
+    if (!state.dragNode) return;
+    const rect = cv.getBoundingClientRect();
+    const p = state.nodePositions[state.dragNode];
+    if (p) { p.x = e.clientX - rect.left; p.y = e.clientY - rect.top; p.vx=0; p.vy=0; }
+    drawCanvas();
+  });
+  cv.addEventListener('mouseup',   () => state.dragNode = null);
+  cv.addEventListener('mouseleave',() => state.dragNode = null);
+}
+
+// ══════════════════════════════════════════════════════
+// SAMPLE DATA
+// ══════════════════════════════════════════════════════
+
+function loadSample() {
+  clearAll(true);
+  const c = cartridge();
+  c.sampleNodes.forEach(name => addNode(name));
+  c.sampleEdges.forEach(([fi,ti,w]) => {
+    if (state.nodes[fi] && state.nodes[ti]) {
+      state.edges.push({ from: state.nodes[fi].id, to: state.nodes[ti].id, weight: w });
+    }
+  });
+  renderEdgeList();
+  analyse();
+}
+
+function clearAll(silent) {
+  if (!silent && !confirm('Clear all nodes and edges?')) return;
+  state.nodes = []; state.edges = []; state.result = null;
+  state.nodePositions = {}; nodeIdCounter = 0;
+  renderNodeChips(); renderEdgeSelects(); renderEdgeList();
+  document.getElementById('metrics-grid').style.display = 'none';
+  document.getElementById('metrics-grid').innerHTML = '';
+  document.getElementById('findings').innerHTML = '';
+  document.getElementById('node-breakdown').innerHTML = '';
+  document.getElementById('verdict').innerHTML = '';
+  document.getElementById('canvas-empty').style.display = 'flex';
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  ctx.clearRect(0,0,cv.width,cv.height);
+}
+
+// ══════════════════════════════════════════════════════
+// UTILITIES
+// ══════════════════════════════════════════════════════
+
+function escH(s) {
+  return String(s||'').replace(/[&<>"']/g,c=>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+}
+
+// Enter key on node input
+document.getElementById('node-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addNode();
+});
+
+// ── Boot ─────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  renderCartridgeBtns();
+  renderEdgeList();
+  switchCartridge('org');
+
+  const wrap = document.getElementById('canvas-wrap');
+  const cv   = document.getElementById('cv');
+  cv.width  = wrap.clientWidth;
+  cv.height = wrap.clientHeight;
+
+  setupCanvasDrag();
+
+  // Resize canvas
+  new ResizeObserver(() => {
+    cv.width  = wrap.clientWidth;
+    cv.height = wrap.clientHeight;
+    if (state.result) drawCanvas();
+  }).observe(wrap);
+});
+</script>
+</body>
+</html>

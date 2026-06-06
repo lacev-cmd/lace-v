@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LACE V — A pattern reading machine</title>
+<style>
+:root {
+  --bg:           #f3f1eb;
+  --surface:      #ffffff;
+  --surface2:     #f8f6f0;
+  --ink:          #171512;
+  --text:         #211f1a;
+  --muted:        #676157;
+  --faint:        #9b968c;
+  --border:       #e1dbcc;
+  --border-strong:#bfb7a6;
+  --black:        #14120f;
+  --cream:        #f6efe2;
+  --accent:       #2d5a3d;
+  --accent-light: #e8f0ea;
+  --r-lg:         20px;
+  --r-md:         14px;
+  --r-sm:         8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+.serif { font-family: Georgia, "Times New Roman", serif; }
+a { color: inherit; }
+
+/* ── LAYOUT ─────────────────────────────────────────── */
+.wrap {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ── HEADER ─────────────────────────────────────────── */
+.site-header {
+  padding: 2rem 0 0;
+}
+.site-header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--faint);
+  font-weight: 700;
+}
+
+/* ── HERO ────────────────────────────────────────────── */
+.hero {
+  padding: 5rem 0 4rem;
+  border-bottom: 1px solid var(--border);
+}
+.hero-kicker {
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 1.25rem;
+}
+.hero-headline {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 600;
+  letter-spacing: -.03em;
+  color: var(--ink);
+  line-height: 1.15;
+  margin-bottom: 1.5rem;
+}
+.hero-headline em {
+  font-style: normal;
+  color: var(--accent);
+}
+.hero-body {
+  font-size: 17px;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 540px;
+  margin-bottom: 2.5rem;
+}
+.hero-actions {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.btn-primary {
+  background: var(--black);
+  color: var(--cream);
+  border: none;
+  border-radius: 999px;
+  padding: .75rem 1.6rem;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: opacity .12s;
+}
+.btn-primary:hover { opacity: .85; }
+.btn-secondary {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: .75rem 1.6rem;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: border-color .12s, color .12s;
+}
+.btn-secondary:hover { border-color: var(--border-strong); color: var(--ink); }
+
+/* ── HOW IT WORKS ────────────────────────────────────── */
+.section {
+  padding: 4rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.section-label {
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+.how-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.step {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+.step-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--faint);
+  padding-top: .2rem;
+  letter-spacing: .05em;
+}
+.step-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: .35rem;
+}
+.step-body {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* ── WHAT IT READS ───────────────────────────────────── */
+.domain-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 1.5rem;
+}
+.domain-pill {
+  background: var(--surface2);
+  border: 0.5px solid var(--border);
+  border-radius: 999px;
+  padding: .3rem .85rem;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ── IDENTITY ────────────────────────────────────────── */
+.identity-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin-top: 1.5rem;
+}
+.identity-cell {
+  background: var(--surface);
+  padding: 1.25rem 1.4rem;
+}
+.identity-cell .i-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: .4rem;
+}
+.identity-cell .i-value {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.55;
+}
+.identity-cell.is-yes .i-value { color: var(--accent); font-weight: 600; }
+.identity-cell.is-no  .i-value { color: var(--muted); }
+
+/* ── CTA ─────────────────────────────────────────────── */
+.cta-section {
+  padding: 5rem 0 4rem;
+  text-align: center;
+}
+.cta-headline {
+  font-size: clamp(24px, 4vw, 34px);
+  font-weight: 600;
+  letter-spacing: -.03em;
+  color: var(--ink);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+.cta-body {
+  font-size: 15px;
+  color: var(--muted);
+  margin-bottom: 2rem;
+  line-height: 1.65;
+}
+
+/* ── FOOTER ─────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 0;
+}
+.site-footer .wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .75rem;
+}
+.footer-copy {
+  font-size: 12px;
+  color: var(--faint);
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────── */
+@media (max-width: 540px) {
+  .identity-grid { grid-template-columns: 1fr; }
+  .hero-headline { font-size: 28px; }
+  .cta-section { text-align: left; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <span class="brand">LACE V</span>
+  </div>
+</header>
+
+<!-- ── HERO ──────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="wrap">
+    <p class="hero-kicker">Pattern reading machine</p>
+    <h1 class="hero-headline serif">
+      A pattern reading machine<br>for <em>your specific needs.</em>
+    </h1>
+    <p class="hero-body">
+      Your input. Its read. Your map.
+    </p>
+    <div class="hero-actions">
+      <a href="lace-v-picker-v0_2_0.html" class="btn-primary">Pick your domain</a>
+      <a href="#how" class="btn-secondary">How it works</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ──────────────────────────────────────── -->
+<section class="section" id="how">
+  <div class="wrap">
+    <p class="section-label">How it works</p>
+    <div class="how-steps">
+      <div class="step">
+        <span class="step-num">01</span>
+        <div>
+          <p class="step-title">Your input</p>
+          <p class="step-body">Set a baseline — where things stand right now. Add to it over time. The more honestly you put in, the more clearly it reads back.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <div>
+          <p class="step-title">The machine reads</p>
+          <p class="step-body">It works through your material. It counts what appears independently. It finds what is consistent, what conflicts, what is building, and what is absent. It does not generate, guess, or fill gaps.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <div>
+          <p class="step-title">Your output</p>
+          <p class="step-body">A map of what it found — bounded entirely by what you wrote. Every claim carries a confidence label. Nothing is invented. Nothing is added.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="step-num">04</span>
+        <div>
+          <p class="step-title">You stay in control</p>
+          <p class="step-body">If the map misreads something, you correct it. Corrections govern every subsequent reading. The machine does not override you.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHAT IT READS ─────────────────────────────────────── -->
+<section class="section">
+  <div class="wrap">
+    <p class="section-label">What it reads</p>
+    <p class="step-body" style="max-width:520px;">
+      The same reading engine works across any domain where something is moving, stuck, or under load. Pick the cartridge for your context — each one carries the domain knowledge specific to that situation.
+    </p>
+    <div class="domain-strip">
+      <span class="domain-pill">Reentry</span>
+      <span class="domain-pill">Financial</span>
+      <span class="domain-pill">Legal</span>
+      <span class="domain-pill">Medical</span>
+      <span class="domain-pill">Grief</span>
+      <span class="domain-pill">Relationships</span>
+      <span class="domain-pill">Mental health</span>
+      <span class="domain-pill">Addiction recovery</span>
+      <span class="domain-pill">Engineering</span>
+      <span class="domain-pill">Team dynamics</span>
+      <span class="domain-pill">Employment</span>
+      <span class="domain-pill">Creative</span>
+      <span class="domain-pill">Education</span>
+      <span class="domain-pill">Lab evidence</span>
+      <span class="domain-pill">Robotics</span>
+      <span class="domain-pill">Asset integrity</span>
+      <span class="domain-pill">Code release</span>
+      <span class="domain-pill">Game / narrative</span>
+      <span class="domain-pill">AI agent</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHAT IT IS AND ISN'T ──────────────────────────────── -->
+<section class="section">
+  <div class="wrap">
+    <p class="section-label">What this is — and isn't</p>
+    <div class="identity-grid">
+      <div class="identity-cell is-yes">
+        <p class="i-label">It is</p>
+        <p class="i-value">A reading and sorting tool</p>
+      </div>
+      <div class="identity-cell is-no">
+        <p class="i-label">It is not</p>
+        <p class="i-value">An AI generating responses</p>
+      </div>
+      <div class="identity-cell is-yes">
+        <p class="i-label">It is</p>
+        <p class="i-value">Evidence-bound — reads only what you put in</p>
+      </div>
+      <div class="identity-cell is-no">
+        <p class="i-label">It is not</p>
+        <p class="i-value">A scoring or assessment tool</p>
+      </div>
+      <div class="identity-cell is-yes">
+        <p class="i-label">It is</p>
+        <p class="i-value">Private — nothing leaves your device</p>
+      </div>
+      <div class="identity-cell is-no">
+        <p class="i-label">It is not</p>
+        <p class="i-value">A decision-maker — you stay in control</p>
+      </div>
+      <div class="identity-cell is-yes">
+        <p class="i-label">It is</p>
+        <p class="i-value">A single file — no account, no server</p>
+      </div>
+      <div class="identity-cell is-no">
+        <p class="i-label">It is not</p>
+        <p class="i-value">A substitute for your own judgement</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ───────────────────────────────────────────────── -->
+<section class="cta-section">
+  <div class="wrap">
+    <h2 class="cta-headline serif">Pick your domain.<br>Open your map.</h2>
+    <p class="cta-body">25 domains. One reading engine. One file per map.<br>No account. No server. Works offline.</p>
+    <a href="lace-v-picker-v0_2_0.html" class="btn-primary">Get started</a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span class="footer-copy">LACE V — pattern reading machine</span>
+    <span class="footer-copy">Nothing leaves your device.</span>
+  </div>
+</footer>
+
+</body>
+</html>

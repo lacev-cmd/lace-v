@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sorter Stack — Technical Overview</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:           #f3f1eb;
+    --surface:      #ffffff;
+    --surface2:     #f8f6f0;
+    --ink:          #171512;
+    --text:         #2a2620;
+    --muted:        #676157;
+    --faint:        #9b968c;
+    --border:       #e1dbcc;
+    --border-strong:#bfb7a6;
+    --accent:       #2d5a3d;
+    --accent-light: #e8f0ea;
+    --warn:         #92601a;
+    --warn-light:   #fdf3e3;
+    --danger:       #7a1a1a;
+  }
+
+  html { background: var(--bg); color: var(--text); font-family: 'Fraunces', Georgia, serif; font-size: 16px; line-height: 1.7; }
+
+  body { max-width: 860px; margin: 0 auto; padding: 4rem 2rem 8rem; }
+
+  /* ── Header ── */
+  .header { border-bottom: 2px solid var(--ink); padding-bottom: 2rem; margin-bottom: 3rem; }
+  .header-label { font-family: 'DM Mono', monospace; font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-bottom: .75rem; }
+  h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 300; line-height: 1.15; color: var(--ink); }
+  h1 em { font-style: italic; color: var(--accent); }
+  .header-sub { margin-top: 1rem; font-size: 1.05rem; color: var(--muted); font-weight: 300; max-width: 560px; }
+
+  /* ── Section headings ── */
+  h2 { font-family: 'DM Mono', monospace; font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 3rem 0 1.25rem; padding-bottom: .5rem; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1.15rem; font-weight: 600; color: var(--ink); margin: 1.75rem 0 .5rem; }
+
+  p { margin-bottom: 1rem; }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── Three-layer diagram ── */
+  .layers { display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 1.5rem 0; }
+  .layer { background: var(--surface); padding: 1.25rem 1.5rem; display: grid; grid-template-columns: 2fr 3fr; gap: 1.5rem; align-items: start; }
+  .layer:nth-child(2) { background: var(--surface2); }
+  .layer-name { font-family: 'DM Mono', monospace; font-size: .78rem; font-weight: 500; color: var(--ink); }
+  .layer-count { font-family: 'DM Mono', monospace; font-size: .68rem; color: var(--muted); margin-top: .2rem; }
+  .layer-desc { font-size: .9rem; color: var(--text); line-height: 1.6; }
+
+  /* ── Key point boxes ── */
+  .callout { background: var(--accent-light); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin: 1.5rem 0; font-size: .95rem; }
+  .callout strong { color: var(--accent); }
+
+  .warn-box { background: var(--warn-light); border-left: 3px solid var(--warn); border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin: 1.5rem 0; font-size: .95rem; color: var(--warn); }
+
+  /* ── File count table ── */
+  .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .5rem; margin: 1.25rem 0; }
+  .file-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: .6rem .85rem; }
+  .file-item .fi-label { font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: .2rem; }
+  .file-item .fi-count { font-size: 1.4rem; font-weight: 300; color: var(--ink); font-family: 'Fraunces', serif; }
+
+  /* ── Separation proof ── */
+  .sep-proof { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; margin: 1.5rem 0; }
+  .sep-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; }
+  .sep-box h4 { font-family: 'DM Mono', monospace; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: .5rem; }
+  .sep-box p { font-size: .88rem; color: var(--muted); margin: 0; }
+  .sep-arrow { font-size: 1.5rem; color: var(--border-strong); text-align: center; }
+
+  /* ── What's included list ── */
+  .included { list-style: none; display: grid; gap: .4rem; margin: 1rem 0; }
+  .included li { display: flex; gap: .75rem; align-items: baseline; font-size: .95rem; }
+  .included li::before { content: '—'; font-family: 'DM Mono', monospace; color: var(--accent); flex-shrink: 0; }
+
+  /* ── Not included ── */
+  .not-included { list-style: none; display: grid; gap: .4rem; margin: 1rem 0; }
+  .not-included li { display: flex; gap: .75rem; align-items: baseline; font-size: .95rem; color: var(--muted); }
+  .not-included li::before { content: '×'; font-family: 'DM Mono', monospace; color: var(--faint); flex-shrink: 0; }
+
+  /* ── Assembly flow ── */
+  .flow { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; margin: 1.25rem 0; font-family: 'DM Mono', monospace; font-size: .8rem; }
+  .flow-step { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: .4rem .75rem; color: var(--ink); }
+  .flow-arrow { color: var(--faint); }
+
+  /* ── Sector grid ── */
+  .sector-grid { display: flex; flex-wrap: wrap; gap: .4rem; margin: 1rem 0; }
+  .sector-tag { background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: .25rem .75rem; font-size: .82rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  /* ── Use cases ── */
+  .use-cases { display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 1.25rem 0; }
+  .use-case { background: var(--surface); padding: 1rem 1.25rem; }
+  .use-case:nth-child(even) { background: var(--surface2); }
+  .use-case h4 { font-size: .95rem; font-weight: 600; color: var(--ink); margin-bottom: .25rem; }
+  .use-case p { font-size: .88rem; color: var(--muted); margin: 0; }
+
+  /* ── Footer ── */
+  .footer { margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border); font-family: 'DM Mono', monospace; font-size: .72rem; color: var(--faint); letter-spacing: .06em; }
+
+  /* ── Print / responsive ── */
+  @media (max-width: 600px) {
+    .layer { grid-template-columns: 1fr; gap: .5rem; }
+    .sep-proof { grid-template-columns: 1fr; }
+    .sep-arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">Sorter Stack — Technical Overview v1.0</div>
+  <h1>A domain-agnostic <em>reading layer</em><br>for longitudinal human input.</h1>
+  <p class="header-sub">What it is, how it's built, what's included, and what a buyer gets.</p>
+</div>
+
+
+<!-- ── THE PROBLEM ── -->
+<h2>The problem it solves</h2>
+
+<p>Most systems that process human-written material either bake domain assumptions into the model layer — through fine-tuning, prompt engineering that mixes domain logic with reasoning, or separate models per domain — or they produce generic output that doesn't hold up under real-world complexity.</p>
+
+<p>None of them handle the specific problem of reading <em>unstructured longitudinal input</em> — material written over time, in fragments, from a person under load — with the epistemological honesty that real-world consequential use requires.</p>
+
+<div class="callout">
+  <strong>The core insight:</strong> separate <em>how to read</em> from <em>what to read for</em>. The reading primitives are domain-agnostic. The domain knowledge lives in a thin steering layer. The two compose at runtime without either knowing about the other.
+</div>
+
+
+<!-- ── ARCHITECTURE ── -->
+<h2>Three-layer architecture</h2>
+
+<p>The stack has three distinct layers with clean contracts between them. This is the architectural decision that makes the whole thing work.</p>
+
+<div class="layers">
+  <div class="layer">
+    <div>
+      <div class="layer-name">Layer 1 — Behaviours</div>
+      <div class="layer-count">16 behaviour modules</div>
+    </div>
+    <div class="layer-desc">Domain-agnostic reading primitives. Each behaviour asks a single epistemological question: is this movement or stuck, is this avoidance or constraint, is this confidence supported or performed, what connects across time. Behaviours have no domain knowledge. They run identically across every sector.</div>
+  </div>
+  <div class="layer">
+    <div>
+      <div class="layer-name">Layer 2 — Guides</div>
+      <div class="layer-count">22 sector guides</div>
+    </div>
+    <div class="layer-desc">Domain knowledge as steering rules. Each guide defines what movement looks like in this sector, what avoidance looks like here, what confidence requires here, which signals are load vs choice. Guides contain no engine logic. They steer — they don't run.</div>
+  </div>
+  <div class="layer">
+    <div>
+      <div class="layer-name">Layer 3 — Components</div>
+      <div class="layer-count">12 adaptive components</div>
+    </div>
+    <div class="layer-desc">Upper-layer response modules that act on a completed map. Report writers, handover generators, consent gates, confidence-gated output. Components never touch the reading layer — they receive a map and produce output appropriate for the described audience and context.</div>
+  </div>
+</div>
+
+<div class="sep-proof">
+  <div class="sep-box">
+    <h4>Behaviour knows</h4>
+    <p>How to detect movement, avoidance, contradiction, confidence, load, state change, correction</p>
+  </div>
+  <div class="sep-arrow">→</div>
+  <div class="sep-box">
+    <h4>Guide knows</h4>
+    <p>What those things look like in legal, grief, reentry, STEM, gaming, clinical — any sector</p>
+  </div>
+</div>
+
+<p>The spine composes them. A behaviour reads the material using the guide's steering rules without importing the guide. The guide calibrates the behaviour without containing any reading logic. This means the same 16 behaviours read a reentry case, a legal brief, a grief map, and a game narrative — and produce correctly calibrated reads for each — without any behaviour knowing which domain it's in.</p>
+
+
+<!-- ── WHAT'S IN THE STACK ── -->
+<h2>What's in the stack</h2>
+
+<div class="file-grid">
+  <div class="file-item"><div class="fi-label">Behaviour modules</div><div class="fi-count">16</div></div>
+  <div class="file-item"><div class="fi-label">Sector guides</div><div class="fi-count">22</div></div>
+  <div class="file-item"><div class="fi-label">Adaptive components</div><div class="fi-count">12</div></div>
+  <div class="file-item"><div class="fi-label">Report writers</div><div class="fi-count">8</div></div>
+  <div class="file-item"><div class="fi-label">Assembled HTML maps</div><div class="fi-count">17+</div></div>
+  <div class="file-item"><div class="fi-label">Sectors covered</div><div class="fi-count">22</div></div>
+</div>
+
+<h3>Sectors covered</h3>
+<div class="sector-grid">
+  <span class="sector-tag">reentry</span>
+  <span class="sector-tag">legal</span>
+  <span class="sector-tag">medical</span>
+  <span class="sector-tag">financial</span>
+  <span class="sector-tag">grief</span>
+  <span class="sector-tag">relationships</span>
+  <span class="sector-tag">mental health</span>
+  <span class="sector-tag">addiction recovery</span>
+  <span class="sector-tag">criminal justice</span>
+  <span class="sector-tag">employment</span>
+  <span class="sector-tag">education</span>
+  <span class="sector-tag">team dynamics</span>
+  <span class="sector-tag">creative</span>
+  <span class="sector-tag">engineering</span>
+  <span class="sector-tag">STEM — lab evidence</span>
+  <span class="sector-tag">STEM — robotics</span>
+  <span class="sector-tag">STEM — asset integrity</span>
+  <span class="sector-tag">STEM — battery transition</span>
+  <span class="sector-tag">STEM — code release</span>
+  <span class="sector-tag">STEM — procurement</span>
+  <span class="sector-tag">game narrative</span>
+  <span class="sector-tag">AI agent</span>
+</div>
+
+<h3>The 16 behaviours</h3>
+<p>Each behaviour is a self-contained module that reads one aspect of the input. They run independently and their signals combine in the map.</p>
+<ul class="included">
+  <li>Independent signal counting — what appears across sources without coordination</li>
+  <li>Baseline vs live material — distinguishing the starting state from movement</li>
+  <li>Correction as governance — user corrections override and propagate forward</li>
+  <li>Avoidance detection — distinguishing avoidance from genuine constraint</li>
+  <li>Load-sensitive capability — what becomes harder under high load</li>
+  <li>Contradiction holding — surfacing tension without resolving it</li>
+  <li>Open gap discipline — what's absent and why it matters</li>
+  <li>Connections across time — what links across entries</li>
+  <li>Movement vs non-movement reading — what is and isn't actual progress</li>
+  <li>Next useful move — what the map suggests without prescribing</li>
+  <li>Private record to optional handover — consent and output routing</li>
+  <li>Confidence calibration — six-level evidence-bound confidence ladder</li>
+  <li>State change detection — genuine shift vs noise</li>
+  <li>Competing priorities — what is costing what</li>
+  <li>External constraint reading — what is outside the person's control</li>
+  <li>Meta-reading — when the person is performing rather than describing</li>
+</ul>
+
+<h3>The 8 report writers</h3>
+<ul class="included">
+  <li>Personal map — for the individual</li>
+  <li>Professional handover — for the receiving professional</li>
+  <li>Case worker — for support workers at volume</li>
+  <li>Legal prep — bounded, caveated, for legal contexts</li>
+  <li>Governance audit — for organisational review</li>
+  <li>Progress arc — longitudinal view over time</li>
+  <li>STEM technical evidence readiness — for engineering and science contexts</li>
+  <li>Base report writer — the core output contract all writers extend</li>
+</ul>
+
+
+<!-- ── KEY MECHANISMS ── -->
+<h2>Key mechanisms worth knowing</h2>
+
+<h3>Confidence calibration</h3>
+<p>Six levels: <code>not_readable → inferred → thin → partial → supported → strong</code>. Each claim in the output carries a confidence label derived from how many independent signals support it, not from a model's self-assessment. A <code>highStakes</code> gate suppresses output below a threshold in high-risk sectors. The system can say "I cannot read this reliably enough" — structurally, not as a disclaimer.</p>
+
+<h3>Correction as governance</h3>
+<p>User corrections are first-class signals, not overrides. When a user says the map has misread something, that correction propagates forward and changes how subsequent material is weighted. The user's authority over their own material is built into the reading layer, not bolted on.</p>
+
+<h3>Simulation isolation</h3>
+<p>The gaming and simulation components (hidden agenda, faction memory, dramatic timing, trust drift) cannot activate in clinical, legal, or real-world deployments. The spine rejects them at attachment unless the operator explicitly sets <code>allowSimulationComponents: true</code>. This is a hard architectural boundary, not a policy note in a README.</p>
+
+<h3>The assembly pipeline</h3>
+<p>A guide file is a plain JS object. Running the assembler against it produces a complete single-file deployable HTML application — no server, no build step, no dependencies, works offline.</p>
+
+<div class="flow">
+  <span class="flow-step">Guide (.js)</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">assemble.js</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">Cartridge</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">Single HTML file</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">Deploy anywhere</span>
+</div>
+
+<p>Adding a new sector means writing one guide file and running one command. The reading layer requires no changes.</p>
+
+
+<!-- ── WHAT A BUYER GETS ── -->
+<h2>What a buyer gets</h2>
+
+<ul class="included">
+  <li>The complete source — all 16 behaviours, 22 guides, 12 components, 8 report writers</li>
+  <li>The spine and runtime — the composition and execution layer</li>
+  <li>The assembly pipeline — assemble.js, the cartridge shell, build-index.js</li>
+  <li>17+ pre-assembled single-file HTML deployables, ready to ship</li>
+  <li>The landing and picker UI (lace-v-landing, lace-v-picker)</li>
+  <li>The design token system (lace-tokens.css)</li>
+  <li>ASSEMBLY.md — technical documentation for the build pipeline</li>
+  <li>The consent gate module</li>
+  <li>All guides at consistent spec — gaps, skills, contradictions, direction patterns, steer blocks</li>
+</ul>
+
+<ul class="not-included" style="margin-top:.75rem">
+  <li>Payment or auth infrastructure — not included, not required for core operation</li>
+  <li>Backend or database — the stack is intentionally client-side</li>
+  <li>Ongoing support — this is a codebase sale, not a service</li>
+  <li>Rights to the lace-v.com domain or brand — licence covers the stack only</li>
+</ul>
+
+
+<!-- ── USE CASES ── -->
+<h2>What a buyer can build with it</h2>
+
+<div class="use-cases">
+  <div class="use-case">
+    <h4>Deploy the maps as a consumer product</h4>
+    <p>The 17+ assembled HTML files are ready to ship. Add a payment gate on report export. Zero infrastructure cost. Works offline.</p>
+  </div>
+  <div class="use-case">
+    <h4>Add new sectors without touching the engine</h4>
+    <p>Write a guide file for your domain. Run the assembler. The reading layer requires no changes. New deployable in hours.</p>
+  </div>
+  <div class="use-case">
+    <h4>Embed the reading layer in an existing product</h4>
+    <p>The spine and behaviours are importable as a module. Drop them into an existing application and steer with a guide that matches your data model.</p>
+  </div>
+  <div class="use-case">
+    <h4>Build clinical, legal, or social care tooling</h4>
+    <p>The report writers, confidence calibration, consent gate, and governance audit layer are already built for exactly these contexts. The hard compliance-adjacent work is done.</p>
+  </div>
+  <div class="use-case">
+    <h4>Build adaptive game systems</h4>
+    <p>Hidden agenda, faction memory, dramatic timing, consequence propagation — these are working components, not design documents. Narrative games get a complete NPC state reading system.</p>
+  </div>
+  <div class="use-case">
+    <h4>Use as AI agent governance infrastructure</h4>
+    <p>Escalation timing, confidence-gated output, tool routing, handover trigger — the components that every serious agent deployment needs and most currently don't have.</p>
+  </div>
+</div>
+
+
+<!-- ── WHAT THIS IS NOT ── -->
+<h2>What this is not</h2>
+
+<div class="warn-box">
+  This is not a wrapper around a language model. The stack does not call any AI API. It is a deterministic reading engine — pattern matching, signal counting, confidence calculation — that runs entirely in the client. No model, no inference cost, no latency, no hallucination risk.
+</div>
+
+<p>That is both a constraint and a strength. The constraint: it reads what is written, not what might be meant. The strength: the output is fully deterministic, fully auditable, fully explainable, and costs nothing to run at scale.</p>
+
+
+<!-- ── THE POSITION ── -->
+<h2>The position</h2>
+
+<p>Most AI system design doesn't separate <em>how to read</em> from <em>what to read for</em>. The domain knowledge and the reasoning logic get coupled — in the model, in the prompt, in the fine-tune. When you need to add a domain, you rebuild the reading layer. When the reading layer needs improving, you risk breaking domain knowledge that was embedded in it.</p>
+
+<p>This stack solves that problem with a clean three-layer separation. The reading layer is stable and domain-agnostic. The domain knowledge is a thin, auditable, replaceable steering file. The composition is the spine's job. None of the three layers needs to know about the other two.</p>
+
+<p>That separation is the asset. Everything else — the 22 sectors, the 17 assembled maps, the report writers, the confidence system — is built on top of it and is therefore extensible in the same way.</p>
+
+<p>A buyer who understands the architecture can add a sector in a day, deploy a map in minutes, and extend the reading layer without touching the domain knowledge they've already built.</p>
+
+
+<div class="footer">
+  Sorter Stack — Technical Overview v1.0 &nbsp;·&nbsp; lace-v.com &nbsp;·&nbsp; All rights reserved
+</div>
+
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LACE V — Pick your domain</title>
+<style>
+:root {
+  --bg:           #f3f1eb;
+  --surface:      #ffffff;
+  --ink:          #171512;
+  --text:         #211f1a;
+  --muted:        #676157;
+  --faint:        #9b968c;
+  --border:       #e1dbcc;
+  --border-strong:#bfb7a6;
+  --accent:       #2d5a3d;
+  --accent-light: #e8f0ea;
+  --info:         #1a3a5c;
+  --info-light:   #edf2f8;
+  --r-lg:         14px;
+  --r-md:         8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+button, input { font: inherit; }
+button { cursor: pointer; }
+
+.wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.kicker {
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: .4rem;
+}
+h1 {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -.03em;
+  color: var(--ink);
+  margin-bottom: .5rem;
+}
+.lead {
+  font-size: 15px;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+  line-height: 1.65;
+}
+
+.group { margin-bottom: 2rem; }
+.group-label {
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: .75rem;
+  font-weight: 600;
+}
+
+.domain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  gap: 8px;
+}
+
+.domain-card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: .85rem 1rem;
+  cursor: pointer;
+  transition: border-color .12s, background .12s;
+  text-align: left;
+  user-select: none;
+}
+.domain-card:hover { border-color: var(--border-strong); background: #faf8f3; }
+.domain-card.selected {
+  border: 1.5px solid var(--accent);
+  background: var(--accent-light);
+}
+.domain-card .d-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  display: block;
+  margin-bottom: .2rem;
+}
+.domain-card .d-hint {
+  font-size: 11px;
+  color: var(--faint);
+  display: block;
+  line-height: 1.4;
+}
+.domain-card.selected .d-name { color: var(--accent); }
+.domain-card.coming {
+  opacity: .4;
+  cursor: default;
+}
+.domain-card.coming:hover {
+  border-color: var(--border);
+  background: var(--surface);
+}
+
+.action-bar {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-build {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-md);
+  padding: .6rem 1.4rem;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  transition: opacity .12s;
+}
+.btn-build:disabled { opacity: .35; cursor: default; }
+.btn-build:not(:disabled):hover { opacity: .88; }
+
+.sel-note {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.footer-note {
+  margin-top: 3rem;
+  font-size: 12px;
+  color: var(--faint);
+  line-height: 1.7;
+  border-top: 1px solid var(--border);
+  padding-top: 1.25rem;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="kicker">LACE V</p>
+  <h1>What are you building a map for?</h1>
+  <p class="lead">Pick a domain. You get a single HTML file — no server, no account, works offline.</p>
+
+  <div class="group">
+    <p class="group-label">Personal support</p>
+    <div class="domain-grid">
+      <div class="domain-card" data-id="reentry" data-guide="sorter-guide-reentry-v0_4_0.js" onclick="pick(this)">
+        <span class="d-name">Reentry</span>
+        <span class="d-hint">Post-release transition</span>
+      </div>
+      <div class="domain-card" data-id="financial" data-guide="sorter-guide-financial-v0_3_0.js" onclick="pick(this)">
+        <span class="d-name">Financial</span>
+        <span class="d-hint">Debt, stability, numbers</span>
+      </div>
+      <div class="domain-card" data-id="legal" data-guide="sorter-guide-legal-v0_3_0.js" onclick="pick(this)">
+        <span class="d-name">Legal</span>
+        <span class="d-hint">Cases, process, evidence</span>
+      </div>
+      <div class="domain-card" data-id="medical" data-guide="sorter-guide-medical-v0_3_0.js" onclick="pick(this)">
+        <span class="d-name">Medical</span>
+        <span class="d-hint">Symptoms, treatment, care</span>
+      </div>
+      <div class="domain-card" data-id="grief" data-guide="sorter-guide-grief-v0_2_0.js" onclick="pick(this)">
+        <span class="d-name">Grief</span>
+        <span class="d-hint">Loss, adjustment, time</span>
+      </div>
+      <div class="domain-card" data-id="relationships" data-guide="sorter-guide-relationships-v0_2_0.js" onclick="pick(this)">
+        <span class="d-name">Relationships</span>
+        <span class="d-hint">Patterns, repair, distance</span>
+      </div>
+      <div class="domain-card" data-id="mental-health" onclick="pick(this)">
+        <span class="d-name">Mental health</span>
+        <span class="d-hint">Load, function, coping</span>
+      </div>
+      <div class="domain-card" data-id="addiction" onclick="pick(this)">
+        <span class="d-name">Addiction recovery</span>
+        <span class="d-hint">Patterns, triggers, movement</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group">
+    <p class="group-label">Work &amp; teams</p>
+    <div class="domain-grid">
+      <div class="domain-card" data-id="engineering" onclick="pick(this)">
+        <span class="d-name">Engineering</span>
+        <span class="d-hint">Delivery, blockers, debt</span>
+      </div>
+      <div class="domain-card" data-id="team-dynamics" data-guide="sorter-guide-team-dynamics-v0_2_0.js" onclick="pick(this)">
+        <span class="d-name">Team dynamics</span>
+        <span class="d-hint">Trust, load, communication</span>
+      </div>
+      <div class="domain-card" data-id="employment" onclick="pick(this)">
+        <span class="d-name">Employment</span>
+        <span class="d-hint">Job search, transitions</span>
+      </div>
+      <div class="domain-card" data-id="creative" data-guide="sorter-guide-creative-v0_2_0.js" onclick="pick(this)">
+        <span class="d-name">Creative</span>
+        <span class="d-hint">Block, output, process</span>
+      </div>
+      <div class="domain-card" data-id="education" onclick="pick(this)">
+        <span class="d-name">Education</span>
+        <span class="d-hint">Study, progress, gaps</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group">
+    <p class="group-label">STEM &amp; technical</p>
+    <div class="domain-grid">
+      <div class="domain-card" data-id="stem-lab-evidence" data-guide="sorter-guide-stem-lab-evidence-v0_1_0.js" onclick="pick(this)">
+        <span class="d-name">Lab evidence</span>
+        <span class="d-hint">Readiness, gaps, claims</span>
+      </div>
+      <div class="domain-card" data-id="stem-robotics" data-guide="sorter-guide-stem-robotics-v0_1_0.js" onclick="pick(this)">
+        <span class="d-name">Robotics</span>
+        <span class="d-hint">Testing, integration</span>
+      </div>
+      <div class="domain-card" data-id="stem-asset-integrity" data-guide="sorter-guide-stem-asset-integrity-v0_1_0.js" onclick="pick(this)">
+        <span class="d-name">Asset integrity</span>
+        <span class="d-hint">Inspection, risk, condition</span>
+      </div>
+      <div class="domain-card" data-id="stem-battery-transition" data-guide="sorter-guide-stem-battery-transition-v0_1_0.js" onclick="pick(this)">
+        <span class="d-name">Battery transition</span>
+        <span class="d-hint">Migration, evidence</span>
+      </div>
+      <div class="domain-card" data-id="stem-code-release" data-guide="sorter-guide-stem-code-release-v0_1_0.js" onclick="pick(this)">
+        <span class="d-name">Code release</span>
+        <span class="d-hint">Readiness, sign-off</span>
+      </div>
+      <div class="domain-card" data-id="stem-procurement" data-guide="sorter-guide-stem-technical-procurement-v0_1_0.js" onclick="pick(this)">
+        <span class="d-name">Procurement</span>
+        <span class="d-hint">Technical, compliance</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group">
+    <p class="group-label">Coming</p>
+    <div class="domain-grid">
+      <div class="domain-card coming">
+        <span class="d-name">Game / narrative</span>
+        <span class="d-hint">Adaptive NPCs, factions</span>
+      </div>
+      <div class="domain-card coming">
+        <span class="d-name">AI agent</span>
+        <span class="d-hint">Capability profiles</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <button class="btn-build" id="build-btn" disabled onclick="buildIt()">Build cartridge</button>
+    <span class="sel-note" id="sel-note">No domain selected</span>
+  </div>
+
+  <p class="footer-note">
+    Each cartridge is a single HTML file. No server required. No data leaves your device.<br>
+    The map reads what you write — nothing more, nothing less.
+  </p>
+
+</div>
+<script>
+let selected = null;
+
+function pick(el) {
+  document.querySelectorAll('.domain-card.selected').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selected = { id: el.dataset.id, guide: el.dataset.guide || null, name: el.querySelector('.d-name').textContent };
+  document.getElementById('sel-note').textContent = selected.name + ' selected';
+  document.getElementById('build-btn').disabled = false;
+}
+
+function buildIt() {
+  if (!selected) return;
+  // Placeholder — in production this triggers the assembler
+  // and serves the resulting HTML as a download.
+  alert(
+    'Selected: ' + selected.name + '\n' +
+    'Guide file: ' + (selected.guide || 'not yet mapped') + '\n\n' +
+    'Assembly pipeline not yet connected.\n' +
+    'Run: node assemble.js ' + (selected.guide || '<guide-file>.js')
+  );
+}
+</script>
+</body>
+</html>
