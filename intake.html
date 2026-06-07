@@ -7,224 +7,41 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #F5F1E8;
-    --accent: #6B1A2A;
-    --ink: #2a1a1a;
-    --mid: #5a4a3a;
-    --muted: #7a6a5a;
-    --faint: #9a7a6a;
-    --border: #d4c4b4;
-    --white: #ffffff;
+    --bg: #F5F1E8; --accent: #6B1A2A; --ink: #2a1a1a; --mid: #5a4a3a;
+    --muted: #7a6a5a; --faint: #9a7a6a; --border: #d4c4b4; --white: #ffffff;
     --font: 'Inter', sans-serif;
   }
-
-  body {
-    background: var(--bg);
-    font-family: var(--font);
-    color: var(--ink);
-    min-height: 100vh;
-  }
-
-  nav {
-    padding: 1.5rem 3rem;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-    text-decoration: none;
-  }
-
-  .logo-text p:first-child {
-    font-size: 18px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    color: var(--accent);
-  }
-
-  .logo-text p:last-child {
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--faint);
-    text-transform: uppercase;
-  }
-
-  .intake {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 4rem 2rem;
-  }
-
-  .intro {
-    margin-bottom: 3rem;
-  }
-
-  .intro h1 {
-    font-size: 26px;
-    font-weight: 500;
-    color: var(--ink);
-    line-height: 1.4;
-  }
-
-  .question {
-    border-top: 1px solid var(--border);
-    padding-top: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .question-number {
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--faint);
-    margin-bottom: 0.75rem;
-  }
-
-  .question h2 {
-    font-size: 17px;
-    font-weight: 500;
-    color: var(--ink);
-    margin-bottom: 1rem;
-  }
-
-  .question p.hint {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 1rem;
-  }
-
-  .options {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .option-btn {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.65rem 1.5rem;
-    font-family: var(--font);
-    font-size: 14px;
-    color: var(--mid);
-    cursor: pointer;
-    transition: border-color 0.15s, color 0.15s;
-  }
-
-  .option-btn:hover,
-  .option-btn.selected {
-    border-color: var(--accent);
-    color: var(--accent);
-    font-weight: 500;
-  }
-
-  textarea {
-    width: 100%;
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.85rem 1rem;
-    font-family: var(--font);
-    font-size: 14px;
-    color: var(--ink);
-    resize: vertical;
-    min-height: 90px;
-    transition: border-color 0.15s;
-  }
-
-  textarea:focus {
-    outline: none;
-    border-color: var(--accent);
-  }
-
-  .output-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  .output-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.85rem 1rem;
-    cursor: pointer;
-    transition: border-color 0.15s;
-  }
-
-  .output-card:hover,
-  .output-card.selected {
-    border-color: var(--accent);
-  }
-
-  .output-card h3 {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--ink);
-    margin-bottom: 3px;
-  }
-
-  .output-card p {
-    font-size: 12px;
-    color: var(--muted);
-  }
-
-  .upload-area {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    background: var(--white);
-    border: 1px dashed var(--border);
-    border-radius: 8px;
-    padding: 1.75rem;
-    cursor: pointer;
-    font-size: 14px;
-    color: var(--muted);
-    transition: border-color 0.15s;
-  }
-
-  .upload-area:hover { border-color: var(--accent); }
-
-  .upload-area input { display: none; }
-
-  .btn-complete {
-    background: var(--accent);
-    color: var(--bg);
-    border: none;
-    border-radius: 8px;
-    padding: 0.9rem 2.5rem;
-    font-family: var(--font);
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    width: 100%;
-    transition: opacity 0.15s;
-    margin-top: 2.5rem;
-  }
-
+  body { background: var(--bg); font-family: var(--font); color: var(--ink); min-height: 100vh; }
+  nav { padding: 1.5rem 3rem; display: flex; align-items: center; border-bottom: 1px solid var(--border); }
+  .logo { display: flex; align-items: center; gap: 1.25rem; text-decoration: none; }
+  .logo-text p:first-child { font-size: 18px; font-weight: 500; letter-spacing: 0.16em; color: var(--accent); }
+  .logo-text p:last-child { font-size: 9px; letter-spacing: 0.2em; color: var(--faint); text-transform: uppercase; }
+  .intake { max-width: 640px; margin: 0 auto; padding: 4rem 2rem; }
+  .intro h1 { font-size: 26px; font-weight: 500; color: var(--ink); line-height: 1.4; margin-bottom: 3rem; }
+  .question { border-top: 1px solid var(--border); padding-top: 2rem; margin-bottom: 2rem; }
+  .question-number { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 0.75rem; }
+  .question h2 { font-size: 17px; font-weight: 500; color: var(--ink); margin-bottom: 1rem; }
+  .options { display: flex; gap: 12px; flex-wrap: wrap; }
+  .option-btn { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 0.65rem 1.5rem; font-family: var(--font); font-size: 14px; color: var(--mid); cursor: pointer; transition: border-color 0.15s, color 0.15s; }
+  .option-btn:hover, .option-btn.selected { border-color: var(--accent); color: var(--accent); font-weight: 500; }
+  .domain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .domain-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1rem; cursor: pointer; font-size: 14px; color: var(--ink); transition: border-color 0.15s, color 0.15s; }
+  .domain-card:hover, .domain-card.selected { border-color: var(--accent); color: var(--accent); font-weight: 500; }
+  .output-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .output-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1rem; cursor: pointer; transition: border-color 0.15s; }
+  .output-card:hover, .output-card.selected { border-color: var(--accent); }
+  .output-card h3 { font-size: 14px; font-weight: 500; color: var(--ink); margin-bottom: 3px; }
+  .output-card p { font-size: 12px; color: var(--muted); }
+  .btn-complete { background: var(--accent); color: var(--bg); border: none; border-radius: 8px; padding: 0.9rem 2.5rem; font-family: var(--font); font-size: 15px; font-weight: 500; cursor: pointer; width: 100%; margin-top: 2.5rem; transition: opacity 0.15s; }
   .btn-complete:hover { opacity: 0.88; }
-
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 2rem 3rem;
-  }
-
-  footer p {
-    font-size: 13px;
-    color: var(--faint);
-  }
-
+  .hidden { display: none; }
+  footer { border-top: 1px solid var(--border); padding: 2rem 3rem; }
+  footer p { font-size: 13px; color: var(--faint); }
   @media (max-width: 600px) {
     nav { padding: 1rem 1.25rem; }
     .intake { padding: 2rem 1.25rem; }
-    .output-grid { grid-template-columns: 1fr; }
+    .domain-grid, .output-grid { grid-template-columns: 1fr; }
     footer { padding: 1.5rem 1.25rem; }
   }
 </style>
@@ -246,97 +63,42 @@
 </nav>
 
 <div class="intake">
-
   <div class="intro">
     <h1>Lace V reads patterns. To build the right tool for you, we need to ask a few questions. It takes two minutes.</h1>
   </div>
 
   <div class="question">
     <p class="question-number">01</p>
-    <h2>Is this for you personally or for work?</h2>
+    <h2>What is this for?</h2>
     <div class="options">
-      <button class="option-btn" onclick="select(this, 'q1')">Personal</button>
-      <button class="option-btn" onclick="select(this, 'q1')">Work</button>
+      <button class="option-btn" onclick="pickCategory('personal', this)">Personal</button>
+      <button class="option-btn" onclick="pickCategory('professional', this)">Professional</button>
+      <button class="option-btn" onclick="pickCategory('data', this)">Data gathering</button>
     </div>
   </div>
 
-  <div class="question">
+  <div class="question hidden" id="q2">
     <p class="question-number">02</p>
-    <h2>What is the decision or situation you need mapped?</h2>
-    <textarea placeholder="Describe it briefly."></textarea>
+    <h2>What domain?</h2>
+    <div class="domain-grid" id="domain-list"></div>
   </div>
 
-  <div class="question">
+  <div class="question hidden" id="q3">
     <p class="question-number">03</p>
-    <h2>Is this an existing situation or something new?</h2>
-    <div class="options">
-      <button class="option-btn" onclick="select(this, 'q3')">Existing</button>
-      <button class="option-btn" onclick="select(this, 'q3')">New</button>
-    </div>
-  </div>
-
-  <div class="question">
-    <p class="question-number">04</p>
-    <h2>Any background worth knowing?</h2>
-    <textarea placeholder="Optional."></textarea>
-  </div>
-
-  <div class="question">
-    <p class="question-number">05</p>
     <h2>What would you like delivered?</h2>
     <div class="output-grid">
-      <div class="output-card" onclick="selectCard(this, 'q5')">
-        <h3>Personal map</h3>
-        <p>For you. Private. No audience.</p>
-      </div>
-      <div class="output-card" onclick="selectCard(this, 'q5')">
-        <h3>Professional handover</h3>
-        <p>Structured for the person receiving your case.</p>
-      </div>
-      <div class="output-card" onclick="selectCard(this, 'q5')">
-        <h3>Case worker</h3>
-        <p>For a support worker managing your situation.</p>
-      </div>
-      <div class="output-card" onclick="selectCard(this, 'q5')">
-        <h3>Legal prep</h3>
-        <p>Bounded and caveated for a legal context.</p>
-      </div>
-      <div class="output-card" onclick="selectCard(this, 'q5')">
-        <h3>Governance audit</h3>
-        <p>For an organisation or review process.</p>
-      </div>
-      <div class="output-card" onclick="selectCard(this, 'q5')">
-        <h3>Progress arc</h3>
-        <p>A longitudinal read across time.</p>
-      </div>
-      <div class="output-card" onclick="selectCard(this, 'q5')">
-        <h3>STEM technical evidence readiness</h3>
-        <p>For engineering and technical decisions.</p>
-      </div>
-      <div class="output-card" onclick="selectCard(this, 'q5')">
-        <h3>Horizon</h3>
-        <p>A forward-facing read of where things are headed.</p>
-      </div>
+      <div class="output-card" onclick="pickOutput(this, 'personal-map')"><h3>Personal map</h3><p>For you. Private. No audience.</p></div>
+      <div class="output-card" onclick="pickOutput(this, 'professional-handover')"><h3>Professional handover</h3><p>Structured for the person receiving your case.</p></div>
+      <div class="output-card" onclick="pickOutput(this, 'case-worker')"><h3>Case worker</h3><p>For a support worker managing your situation.</p></div>
+      <div class="output-card" onclick="pickOutput(this, 'legal-prep')"><h3>Legal prep</h3><p>Bounded and caveated for a legal context.</p></div>
+      <div class="output-card" onclick="pickOutput(this, 'governance-audit')"><h3>Governance audit</h3><p>For an organisation or review process.</p></div>
+      <div class="output-card" onclick="pickOutput(this, 'progress-arc')"><h3>Progress arc</h3><p>A longitudinal read across time.</p></div>
+      <div class="output-card" onclick="pickOutput(this, 'stem')"><h3>STEM technical evidence readiness</h3><p>For engineering and technical decisions.</p></div>
+      <div class="output-card" onclick="pickOutput(this, 'horizon')"><h3>Horizon</h3><p>A forward-facing read of where things are headed.</p></div>
     </div>
   </div>
 
-  <div class="question">
-    <p class="question-number">06</p>
-    <h2>Do you have any documents to include?</h2>
-    <p class="hint">Optional. PDF, Word, or text files.</p>
-    <label class="upload-area">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9a7a6a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-        <polyline points="17 8 12 3 7 8"/>
-        <line x1="12" y1="3" x2="12" y2="15"/>
-      </svg>
-      Upload files or drag and drop
-      <input type="file" multiple accept=".pdf,.doc,.docx,.txt">
-    </label>
-  </div>
-
-  <button class="btn-complete">Complete</button>
-
+  <button class="btn-complete hidden" id="complete-btn" onclick="complete()">Complete</button>
 </div>
 
 <footer>
@@ -344,25 +106,116 @@
 </footer>
 
 <script>
-  function select(btn, group) {
-    document.querySelectorAll('[data-group="' + group + '"]').forEach(b => b.classList.remove('selected'));
-    btn.setAttribute('data-group', group);
-    document.querySelectorAll('[data-group="' + group + '"]').forEach(b => b.classList.remove('selected'));
-    btn.classList.toggle('selected');
-  }
+  const domains = {
+    personal: [
+      { label: 'Loss or bereavement', key: 'grief' },
+      { label: 'Relationships — personal or family', key: 'relationships' },
+      { label: 'Mental health', key: 'mental-health' },
+      { label: 'Addiction or recovery', key: 'addiction-recovery' },
+      { label: 'Coming out of the justice system', key: 'reentry' },
+      { label: 'Work, jobs, or employment', key: 'employment' },
+      { label: 'Health or medical', key: 'medical' },
+      { label: 'Money, debt, or financial decisions', key: 'financial' },
+      { label: 'A legal situation', key: 'legal' },
+      { label: 'Creative work or a creative block', key: 'creative' },
+      { label: 'Learning or education', key: 'education' },
+    ],
+    professional: [
+      { label: 'Engineering or technical work', key: 'engineering' },
+      { label: 'Teams or workplace dynamics', key: 'team-dynamics' },
+      { label: 'Code, software, or a release', key: 'code-release' },
+      { label: 'Asset integrity or inspection', key: 'asset-integrity' },
+      { label: 'Robotics', key: 'robotics' },
+      { label: 'Lab or scientific evidence', key: 'lab-evidence' },
+      { label: 'AI systems or agents', key: 'ai-agent' },
+      { label: 'Game design or narrative', key: 'game-narrative' },
+      { label: 'Criminal justice', key: 'criminal-justice' },
+    ],
+    data: [
+      { label: 'Loss or bereavement', key: 'grief' },
+      { label: 'Relationships — personal or family', key: 'relationships' },
+      { label: 'Mental health', key: 'mental-health' },
+      { label: 'Addiction or recovery', key: 'addiction-recovery' },
+      { label: 'Coming out of the justice system', key: 'reentry' },
+      { label: 'Work, jobs, or employment', key: 'employment' },
+      { label: 'Health or medical', key: 'medical' },
+      { label: 'Money, debt, or financial decisions', key: 'financial' },
+      { label: 'A legal situation', key: 'legal' },
+      { label: 'Engineering or technical work', key: 'engineering' },
+      { label: 'Teams or workplace dynamics', key: 'team-dynamics' },
+      { label: 'Code, software, or a release', key: 'code-release' },
+      { label: 'Criminal justice', key: 'criminal-justice' },
+    ]
+  };
 
-  function selectCard(card, group) {
-    document.querySelectorAll('.output-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-  }
+  const fileMap = {
+    'grief':             'sorter-assembled-grief-v0_1_0.html',
+    'relationships':     'sorter-assembled-relationships-v0_1_0.html',
+    'mental-health':     'sorter-assembled-mental-health-v0_1_0.html',
+    'addiction-recovery':'sorter-assembled-addiction-recovery-v0_1_0.html',
+    'reentry':           'sorter-assembled-reentry-v0_1_0.html',
+    'employment':        'sorter-assembled-employment-v0_1_0.html',
+    'medical':           'sorter-assembled-medical-v0_1_0.html',
+    'financial':         'sorter-assembled-financial-v0_1_0.html',
+    'legal':             'sorter-assembled-legal-v0_1_0.html',
+    'creative':          'sorter-assembled-creative-v0_1_0.html',
+    'education':         'sorter-assembled-education-v0_1_0.html',
+    'engineering':       'sorter-assembled-engineering-v0_1_0.html',
+    'team-dynamics':     'sorter-assembled-team-dynamics-v0_1_0.html',
+    'code-release':      'sorter-assembled-code-release-v0_1_0.html',
+    'asset-integrity':   'sorter-assembled-asset-integrity-v0_1_0.html',
+    'robotics':          'sorter-assembled-robotics-v0_1_0.html',
+    'lab-evidence':      'sorter-assembled-lab-evidence-v0_1_0.html',
+    'ai-agent':          'sorter-assembled-ai-agent-v0_1_0.html',
+    'game-narrative':    'sorter-assembled-game-narrative-v0_1_0.html',
+    'criminal-justice':  'sorter-assembled-criminal-justice-v0_1_0.html',
+  };
 
-  document.querySelectorAll('.option-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const siblings = this.closest('.options').querySelectorAll('.option-btn');
-      siblings.forEach(s => s.classList.remove('selected'));
-      this.classList.add('selected');
+  let selectedDomain = null;
+  let selectedOutput = null;
+
+  function pickCategory(cat, btn) {
+    document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    const list = document.getElementById('domain-list');
+    list.innerHTML = '';
+    domains[cat].forEach(d => {
+      const div = document.createElement('div');
+      div.className = 'domain-card';
+      div.textContent = d.label;
+      div.onclick = () => pickDomain(div, d.key);
+      list.appendChild(div);
     });
-  });
+    document.getElementById('q2').classList.remove('hidden');
+    document.getElementById('q3').classList.add('hidden');
+    document.getElementById('complete-btn').classList.add('hidden');
+    selectedDomain = null;
+    selectedOutput = null;
+  }
+
+  function pickDomain(el, key) {
+    document.querySelectorAll('.domain-card').forEach(d => d.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedDomain = key;
+    document.getElementById('q3').classList.remove('hidden');
+    document.getElementById('complete-btn').classList.add('hidden');
+    selectedOutput = null;
+  }
+
+  function pickOutput(el, key) {
+    document.querySelectorAll('.output-card').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedOutput = key;
+    document.getElementById('complete-btn').classList.remove('hidden');
+  }
+
+  function complete() {
+    if (!selectedDomain || !selectedOutput) return;
+    const file = fileMap[selectedDomain];
+    if (file) {
+      window.location.href = file;
+    }
+  }
 </script>
 
 </body>
