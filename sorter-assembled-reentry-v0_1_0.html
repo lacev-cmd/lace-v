@@ -396,39 +396,20 @@ label {
 <!-- ── ONBOARD SCREEN ──────────────────────────────────────── -->
 <div id="screen-onboard">
   <div class="onboard-wrap">
+    <p class="brand-kicker">LACE V</p>
+    <h1 class="onboard-title serif" id="onboard-title">Personal Map</h1>
+    <p class="onboard-lead" id="onboard-lead">A reading and sorting tool. You write. It reads what you wrote.</p>
 
-    <!-- WELCOME SCREEN 1 -->
-    <div id="onboard-s1">
-      <p class="brand-kicker">LACE V</p>
-      <h1 class="onboard-title serif" id="onboard-title">Welcome.</h1>
-      <p class="onboard-lead">Lace V is a bootstrap start-up founded in 2025 with a single question: what does AI look like when it stops generating and starts reading? We build precise, evidence-bound tools that map what's actually there — not what a model thinks you want to hear. No subscriptions to a chatbot. No black box. Just your material, read carefully, returned to you as a map.</p>
-      <p class="onboard-lead" style="margin-top:-.5rem;" id="onboard-lead">This tool has been built for your domain. It reads what you submit and maps what it finds — movement, stagnation, load, gaps, and the next useful move. It takes a baseline and entries over time. The more specific the material, the more precise the read.</p>
-      <div class="onboard-actions">
-        <button class="btn btn-primary" onclick="document.getElementById('onboard-s1').style.display='none'; document.getElementById('onboard-s2').style.display='block';">Next</button>
-        <button class="btn btn-sm" onclick="loadSample()">See a sample</button>
-      </div>
+    <div class="what-this-is">
+      <p><strong>What this is.</strong> This map is built from what you wrote. Nothing more. It cannot see what you did not give it. It cannot fill gaps you left empty. It cannot read what you held back. The more honestly you write, the more honestly it reads.</p>
+      <p>It does not generate, predict, or guess. It reads your material, counts what appears independently, maps what is moving and what is not, holds what contradicts without resolving it, and surfaces what is missing.</p>
+      <p><strong>This is your record.</strong> Nothing leaves this device. No account required. No data stored anywhere but here.</p>
     </div>
 
-    <!-- WELCOME SCREEN 2 -->
-    <div id="onboard-s2" style="display:none;">
-      <p class="brand-kicker">HOW TO USE THIS TOOL</p>
-
-      <div class="what-this-is">
-        <p><strong>Baseline.</strong> Your starting point. State where things are now — the situation, the pressure, what has led to this point. Be specific. Vague baselines produce vague reads.</p>
-        <p><strong>Entries.</strong> Dated material added over time. What happened, what was decided, what changed, what didn't. One entry can be a single sentence or several paragraphs. The tool reads across all of them.</p>
-        <p><strong>Corrections.</strong> If the map misreads something, correct it here. Corrections are not cosmetic — they propagate forward and change how subsequent material is weighted.</p>
-        <p><strong>Read map.</strong> Generates your reading from everything submitted. Run it when you have enough material — a baseline and at least one entry.</p>
-        <p><strong>Report.</strong> Produces a structured document from the reading. Format depends on the output type you selected.</p>
-        <p><strong>What this tool does not do.</strong> It does not give advice. It does not diagnose. It does not generate a response. It reads what you submit and maps what it finds — no more, no less.</p>
-        <p><strong>Best results.</strong> Submit material that describes rather than summarises. The tool reads signal in specific language — dates, decisions, named constraints, actual events. General statements produce thin reads.</p>
-      </div>
-
-      <div class="onboard-actions">
-        <button class="btn btn-primary" onclick="startApp()">Enter tool</button>
-        <button class="btn btn-sm" onclick="document.getElementById('onboard-s2').style.display='none'; document.getElementById('onboard-s1').style.display='block';">Back</button>
-      </div>
+    <div class="onboard-actions">
+      <button class="btn btn-primary" onclick="startApp()">Start your map</button>
+      <button class="btn btn-sm" onclick="loadSample()">See a sample</button>
     </div>
-
   </div>
 </div>
 
@@ -600,140 +581,82 @@ label {
 // Assembly replaces everything between these markers.
 /* CARTRIDGE_START */
 window.SORTER_CARTRIDGE = {
-  id: "re-entry",
-  name: "Reentry Map",
-  tagline: "private · evidence-bound · non-moralising",
-  desc: "Individual, support worker, probation officer, re-entry mentor, or case worker.. Key pressures: Housing instability immediately post-release.; Licence and supervision conditions as structural constraints.; Stigma and disclosure burden..",
-  accent: "#3a4a3a",
-  accentLight: "#eef2ee",
-  baselineTitle: "Set your baseline",
-  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: current licence or order conditions not described; housing status not described; risk environment not named. Movement in this domain looks like: appointment attended; reporting kept.",
-  baselinePlaceholder: "Where are you now? What has led to this point? Include: current licence or order conditions not described.",
-  entryTitle: "Add an entry",
-  entryDesc: "Honest. Non-moralising. Evidence-bound. No flattery. No risk-score language.",
-  entryPlaceholder: "What is on your mind?",
-  reportDesc: "The map reads what is moving, stuck, and under load based on what you wrote.",
-  reportEmptyDesc: "Add a baseline and at least one entry, then read your map.",
+
+  id:          'reentry',
+  name:        'Reentry Map',
+  tagline:     'private · evidence-bound · non-moralising',
+    desc: "",
+  accent:      '#3a4a3a',
+  accentLight: '#eef2ee',
+
+  baselineTitle:       'Set your baseline',
+  baselineDesc:        'When you got out and where you are now. Housing, money, work, who is around you. What the original pattern was that led to custody — and whether the conditions for it are present now. What you are carrying that you have not told anyone.',
+  baselinePlaceholder: 'When did you get out? Where are you now — housing, money, work, people around you? What is already under pressure?',
+
+  entryTitle:       'Add an entry',
+  entryDesc:        'What is on your mind. What happened. What you noticed. What you are carrying.',
+  entryPlaceholder: 'What is on your mind?',
+
+  reportDesc:      'The map reads what is moving, stuck, and under load in the adjustment period based on what you wrote.',
+  reportEmptyDesc: 'Add a baseline and at least one entry, then read your map.',
+
   crisisCheck: true,
-  crisisRx: /\b(kill myself|end my life|suicide|suicidal|I want to die|don't want to be here|hurt myself|harm myself|can't go on|not worth it|overdose)\b/i,
+  crisisRx: /\b(kill myself|end my life|suicide|suicidal|I want to die|don't want to be here|hurt myself|harm myself|can't go on|not worth it|overdose|going to hurt myself|going to hurt someone)\b/i,
+
   gaps: [
-    {
-      key: "housing",
-      name: "Housing status",
-      rx: /\b(where I am living|my accommodation|I have a place|I am staying|the housing|I have a room|I am in|supported accommodation|I have an address|where I live)\b/i,
-      reason: "Housing is the foundation of everything in the post-release period. Without it described the map cannot read stability or risk level."
-    },
-    {
-      key: "licence_conditions",
-      name: "Licence or order conditions",
-      rx: /\b(my conditions|I have to report|the order|my licence|I am not allowed|supervision|probation|parole|community corrections|I must|my requirements)\b/i,
-      reason: "The licence conditions are the structural constraint on this period. Without them named the map cannot read compliance, constraint, or what the real movement space is."
-    },
-    {
-      key: "avoidance",
-      name: "Avoidance pattern",
-      rx: /\b(avoiding|I have not done|I keep putting off|I know I should|I have not started|I should have|I have not followed up|I have not called|I have not gone|still not done|I keep meaning to)\b/i,
-      reason: "Practical tasks being deferred compound quickly in the post-release period. The licence not sorted, the form not filled, the appointment not made — each deferred task is a gap in the structure."
-    },
-    {
-      key: "support_network",
-      name: "Support network",
-      rx: /\b(I have|support|people around me|my family|my key worker|my support worker|someone I can|I am not alone|I have people|the programme|who I can call)\b/i,
-      reason: "Whether the person is navigating this alone or has support changes what the map can read. Isolation is one of the most significant pressure factors in this period."
-    },
-    {
-      key: "direction",
-      name: "Stated direction",
-      rx: /\b(I want|my goal|what I am working toward|different life|what I am building|where I want to get to|I am trying to|the future|what I want|I am aiming)\b/i,
-      reason: "Without a stated direction the map cannot assess whether current activity is building toward something or managing the immediate constraints."
-    }
+    { key: 'housing',       name: 'Housing stability',         rx: /\b(where I am living|my place|the flat|the house|staying at|housing|accommodation|somewhere to live|my room|hostel|I have a place|roof over|I am staying)\b/i,           reason: 'Housing is not described. Stable housing is the foundation everything else sits on in this period.' },
+    { key: 'money',         name: 'Income or financial position', rx: /\b(money|income|work|job|Centrelink|benefits|welfare|payment|what I have|what comes in|finances|broke|debt|I am earning|I get paid|financial)\b/i,             reason: 'Income or financial position is not visible. Financial pressure in this period is often the same pressure that was present when the original pattern formed.' },
+    { key: 'pattern',       name: 'Original pattern',          rx: /\b(the pattern|what got me|what led to|the reason I|the original|what happened before|why I ended up|what I need to avoid|the old pattern|same situation)\b/i,          reason: 'The pattern or conditions that led to custody are not described. Without it the map cannot read whether the current environment is reproducing those conditions.' },
+    { key: 'support',       name: 'Support or accountability', rx: /\b(support|someone I can talk to|people around me|my family|my kids|case worker|parole officer|counsellor|I am not alone|who I can call|someone knows)\b/i,           reason: 'No support network or accountability structure is described. Isolation in this period is a significant risk factor.' },
+    { key: 'direction',     name: 'Direction or goal',         rx: /\b(what I want|my goal|where I am going|what I am working toward|the plan|what comes next|I want to|trying to|building toward|direction|I am aiming)\b/i,            reason: 'No direction or goal is stated. The map cannot assess whether the current pattern is moving toward or away from where things need to go without one.' },
+    { key: 'licence',       name: 'Licence or order conditions', rx: /\b(my conditions|I have to report|the order|my licence|I am not allowed|supervision|probation|parole|community corrections|I must|my requirements)\b/i,              reason: 'Licence conditions are the structural constraint on this period. Without them named the map cannot read compliance, movement space, or risk.' },
   ],
+
   skills: [
-    {
-      key: "structure",
-      name: "Holding a daily structure",
-      rx: /\b(routine|structure|getting up|keeping to|showing up|went to work|stayed on|I kept|I maintained|I did not stop|I forced myself|the routine|I have been|regular)\b/i,
-      loadSensitive: true,
-      isStructureSkill: true,
-      works: "Keeping a functional daily structure — work, routine, movement — especially when it is effortful.",
-      breaks: "Pressure, boredom, or the wrong environment collapses structure and the days start to blur."
-    },
-    {
-      key: "avoiding_original_conditions",
-      name: "Avoiding the original conditions",
-      rx: /\b(stayed away from|did not go back|avoided|kept my distance|said no to|I did not contact|I did not go|I walked away from|I chose not to|cut contact|I am not in that|I kept clear|gave it a wide berth)\b/i,
-      loadSensitive: true,
-      isStructureSkill: false,
-      works: "Actively keeping away from the people, places, and situations that were part of the original pattern.",
-      breaks: "Loneliness, financial pressure, or boredom pulls back toward familiar environments and people."
-    },
-    {
-      key: "honest_reporting",
-      name: "Honest self-reporting",
-      rx: /\b(I have to be honest|if I am honest|the truth is|I did|I went|I contacted|I nearly|I was tempted|I have not been|it is worse than|I need to admit|I slipped|I am struggling)\b/i,
-      loadSensitive: false,
-      isStructureSkill: false,
-      works: "Describing what is actually happening rather than the version that looks like progress.",
-      breaks: "Entries shift toward performing okayness — the map starts reading the performance, not the reality."
-    },
-    {
-      key: "navigating_triggers",
-      name: "Navigating trigger situations",
-      rx: /\b(I managed|I kept my head|I walked away|I did not react|I held it|I stayed calm|I noticed and did not|I chose not to|I handled it|kept my head down|gave it a wide berth)\b/i,
-      loadSensitive: true,
-      isStructureSkill: false,
-      works: "Encountering a situation that would previously have triggered the original pattern and responding differently.",
-      breaks: "High load, isolation, or the right combination of triggers causes the old response to reassert."
-    }
+    { key: 'structure',   name: 'Holding a daily structure',    rx: /\b(routine|structure|getting up|keeping to|showing up|went to work|stayed on|I kept|I maintained|I did not stop|I forced myself|the routine|I have been|regular)\b/i,    loadSensitive:true,  isStructureSkill:true,  works:'Keeping a functional daily structure — work, routine, movement — especially when it is effortful.', breaks:'Pressure, boredom, or the wrong environment collapses structure and the days start to blur.' },
+    { key: 'avoidance',   name: 'Avoiding original conditions', rx: /\b(stayed away from|did not go back|avoided|kept my distance|said no to|I did not contact|I did not go|I walked away from|gave it a wide berth|kept clear|cut contact)\b/i, loadSensitive:true,  isStructureSkill:false, works:'Actively keeping away from the people, places, and situations that were part of the original pattern.', breaks:'Loneliness, boredom, or financial pressure pulls back toward familiar environments and people.' },
+    { key: 'honesty',     name: 'Honest self-reporting',        rx: /\b(I have to be honest|if I am honest|the truth is|I did|I went|I nearly|I was tempted|I have not been|it is worse than|I need to admit|I slipped|I am struggling)\b/i,  loadSensitive:false, isStructureSkill:false, works:'Describing what is actually happening rather than the version that looks like progress.', breaks:'Entries shift toward performing okayness — the map starts reading the performance, not the reality.' },
+    { key: 'practical',   name: 'Getting practical things done', rx: /\b(sorted|applied|called|went to|signed up|got the|handed in|completed|registered|got an appointment|I have now|I arranged|I followed up|I dealt with)\b/i,           loadSensitive:true,  isStructureSkill:false, works:'Moving through the practical tasks of reentry — housing, employment, benefits, appointments — despite the load.', breaks:'Overwhelm, shame, or avoidance causes practical tasks to pile up until they become crises.' },
+    { key: 'patternaware', name: 'Recognising the pattern early', rx: /\b(I noticed|I saw it|I caught myself|I recognised|I knew what was happening|I could feel it|earlier than before|I was aware|I saw it coming|I stopped before|I know this feeling)\b/i, loadSensitive:false, isStructureSkill:false, works:'Seeing the original pattern starting to reassert before it is too late to change course.', breaks:'Pattern only visible in retrospect, after the situation has already reproduced itself.' },
   ],
-  contradictions: [
-    {
-      a: /\b(I have changed|I am different|I understand now|I know what I did|I won't do it again|I have learned)\b/i,
-      b: /\b(same pattern|I did it again|same mistake|keeps happening|I always|got into trouble|incident|I lost it again)\b/i,
-      text: "Stated change and the same pattern both appear. Both can be true at once — insight and behaviour change at different speeds. The map holds both without deciding which is more real."
-    },
-    {
-      a: /\b(I have a plan|I know what I need to do|I have it worked out|I am clear|the plan is|my goal is)\b/i,
-      b: /\b(I have not done|I keep putting off|I have been avoiding|I have not started|I have not followed up|it has not happened|still not)\b/i,
-      text: "A stated plan and consistent inaction on that plan both appear. Having the plan and executing it are different things. The gap between them is where the next useful entry sits."
-    },
-    {
-      a: /\b(moving forward|things are moving|I am making progress|it is going well|I am getting there|things are coming together)\b/i,
-      b: /\b(still not done|I have not sorted|I keep putting off|still not started|the form|the licence|the appointment|still not followed up|I have not dealt with)\b/i,
-      text: "A general sense of forward movement and specific practical tasks still undone both appear. Progress and avoidance can coexist — the map reads both. Deferred practical tasks in this period have real consequences that compound the longer they sit."
-    },
-    {
-      a: /\b(different life|I have changed|I am not that person|I want something different|I am building|new start|fresh start)\b/i,
-      b: /\b(old crowd|same people|they called|I ran into|back in contact|familiar|I know where this goes|same environment|same place|old mob|old haunts)\b/i,
-      text: "A stated commitment to a different life and any contact with the original environment both appear — even if the contact seems casual or one-sided. The map is not saying the contact is a decision. It is noting that the original conditions and the stated direction are in the same picture at the same time."
-    }
+
+  pressureSignals: [
+    { key:'money',       rx:/\b(broke|no money|can't pay|running out|short|nothing left|financial pressure|debt|I owe|I borrowed|can't afford|welfare|not enough)\b/i,                                                                                                  label:'financial pressure' },
+    { key:'pattern',     rx:/\b(same people|old crowd|back in contact|they called|I ran into|same place|same environment|I went back|it is starting again|familiar|I know where this goes)\b/i,                                                                          label:'original pattern reasserting' },
+    { key:'isolation',   rx:/\b(alone|no one|nobody|isolated|not talking to anyone|haven't told anyone|keeping it to myself|on my own|no support|I have no one|nobody knows|I am dealing with this alone)\b/i,                                                           label:'isolation' },
+    { key:'system',      rx:/\b(parole|conditions|reporting|breach|officer|compliance|supervision|curfew|they are watching|the conditions|I have to|I am required|I cannot)\b/i,                                                                                         label:'supervision or system pressure' },
+    { key:'shame',       rx:/\b(I am marked|they know|everyone knows|I will always be|I cannot escape|what I did|who I am now|I am not worth|I do not deserve|I will never be normal|they see it)\b/i,                                                                  label:'shame' },
+    { key:'mental',      rx:/\b(struggling|low|depressed|anxious|overwhelmed|not coping|not okay|dark|can't see|no energy|I can't|it is too much|everything is too much)\b/i,                                                                                            label:'mental load' },
+    { key:'complacency', rx:/\b(it is going well|I am relaxing|I feel safe now|it is easier|I am less worried|I have got this|the pressure is less|things are okay now|I am not thinking about it|I feel normal)\b/i,                                                   label:'complacency — vigilance dropping' },
   ],
+
   directionPatterns: [
-    {
-      rx: /get back to|return to|reunite|my family|my kids|be there for/i,
-      label: "toward family and relationships"
-    },
-    {
-      rx: /work|job|employment|career|trade|qualification|earn/i,
-      label: "toward stable employment"
-    },
-    {
-      rx: /stay out|not come back|never again|this is the last|clean record/i,
-      label: "toward not returning"
-    },
-    {
-      rx: /different life|change|new start|fresh start|rebuild/i,
-      label: "toward a different life"
-    },
-    {
-      rx: /settle|stable|normal|ordinary|quiet life|just want to|peace/i,
-      label: "toward a stable ordinary life"
-    }
+    { rx:/stable work|find work|get a job|employed|earning/i,               label:'toward stable employment' },
+    { rx:/stay out|not go back|never again|clean record|this is the last/i, label:'toward not returning' },
+    { rx:/my kids|my family|be there|rebuild|repair|reconnect/i,            label:'toward family reconnection' },
+    { rx:/different life|new start|fresh start|change|rebuild myself/i,     label:'toward building a different life' },
+    { rx:/not sure|one day at a time|just getting through|taking it slowly/i, label:'direction not yet visible — surviving the period' },
   ],
-  pressureSignals: [],
-  stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
-  sampleBaseline: "",
-  sampleEntries: [],
+
+  contradictions: [
+    { a:/\b(I am doing well|it is going okay|better than expected|I am managing|handling it|fine|okay|not bad)\b/i,                                                                                 b:/\b(same people|old crowd|back in contact|I went back|same place|same environment|it is starting again|I nearly|I was tempted)\b/i,                                         text:'A general assessment of doing well and specific signals that the original pattern is reasserting both appear. The general read and the specific material are not matching. The specific material is the more reliable signal.' },
+    { a:/\b(I want to stay out|I am not going back|never again|this is the last time|I have changed|I am different now)\b/i,                                                                        b:/\b(same people|old crowd|back in contact|same environment|I went back|I contacted them|they called and I)\b/i,                                                              text:'A stated commitment to a different life and contact with the original environment both appear. The commitment is real and the pull is also real. The map holds both — it is noting that both are present and the gap between them is where the risk sits.' },
+    { a:/\b(I have a plan|I know what I need to do|I have it worked out|I am clear|the plan is|my goal is)\b/i,                                                                                     b:/\b(I have not done|I keep putting off|I have been avoiding|I have not started|I have not followed up|it has not happened|still not)\b/i,                                    text:'A stated plan and consistent inaction on that plan both appear. Having the plan and executing it are different things. The gap between them is where the next useful entry sits.' },
+  ],
+
+  stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|keeps happening|I always end up|no progress|still the same|back to square one|what is the point|nothing moves|doing my head in|same mob|cooked it)\b/i,
+
+  sampleBaseline: `Got out six weeks ago. Living in a halfway house — it is not ideal but it is a roof. No job yet. I have been applying but nothing back. Money is very tight — I have benefits coming in but it barely covers what I need. I have two kids, eight and ten. I do not have custody but I see them on weekends when it works out. My ex is civil about it. The pattern that got me in: I was running with the wrong people for about two years before it caught up with me. The environment, the decisions, the money pressure — I know all of it. The people I was with are still around. I have avoided contact so far. What I am carrying that I have not told anyone: I am more scared than I let on. I do not know if I can hold this together. I have been here before — well, not exactly here, but close — and I know how fast it can go wrong.`,
+
+  sampleEntries: [
+    { daysAgo:12, text:"Ran into someone from the old crew yesterday. They did not say anything directly — just made it clear there was work if I wanted it. I said I was busy. I walked away. Felt it for the rest of the day. Not proud that I was tempted. That is the honest version." },
+    { daysAgo:8,  text:"Job interview at a warehouse. It went okay I think. They asked about the gap in my CV. I said I had been dealing with personal matters. They did not push. Will hear back in a week. Went to see the kids on Saturday. It was good. The eight year old made me a drawing." },
+    { daysAgo:4,  text:"Did not get the warehouse job. No reason given. Back to the applications. I have sent twelve now. The money is getting tight faster than I expected — there are costs I did not account for. I have not called the old crew. I have not called the old crew. I keep saying that to myself like a rule." },
+    { daysAgo:1,  text:"Met with my parole officer. Routine check-in. She said I am compliant. I have been. I told her about the job applications. She gave me a contact at an employment service. I will follow up this week. I need to actually follow up this week — not just say I will." },
+  ],
+
+  sampleCorrection: "Treat the contact with the old crew as a current and active pressure — not a past event. The job situation is ongoing. The housing is functional but not stable — treat as partial.",
+
 };
 /* CARTRIDGE_END */
 
@@ -1255,7 +1178,7 @@ const MercatorEngine = (() => {
   function saveBaseline() {
     MercatorEngine.saveBaseline($('baselineText').value.trim());
     const s = $('baseline-status');
-    s.textContent = 'Saved.'; s.style.display = 'block';
+    s.textContent = 'Thank you — come back and edit this anytime if you remember anything more.'; s.style.display = 'block';
     setTimeout(() => s.style.display='none', 2000);
   }
 
@@ -1269,7 +1192,7 @@ const MercatorEngine = (() => {
     MercatorEngine.addEntry($('entryDate').value || todayISO(), text);
     $('entryText').value = '';
     const s = $('entry-status');
-    s.textContent = 'Entry saved.'; s.style.display = 'inline';
+    s.textContent = 'Thank you — come back and edit this anytime if you remember anything more.'; s.style.display = 'inline';
     setTimeout(() => s.style.display='none', 2000);
     renderEntries();
   }

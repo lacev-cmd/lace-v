@@ -400,9 +400,9 @@ label {
     <!-- WELCOME SCREEN 1 -->
     <div id="onboard-s1">
       <p class="brand-kicker">LACE V</p>
-      <h1 class="onboard-title serif" id="onboard-title">Welcome.</h1>
-      <p class="onboard-lead">Lace V is a bootstrap start-up founded in 2025 with a single question: what does AI look like when it stops generating and starts reading? We build precise, evidence-bound tools that map what's actually there — not what a model thinks you want to hear. No subscriptions to a chatbot. No black box. Just your material, read carefully, returned to you as a map.</p>
-      <p class="onboard-lead" style="margin-top:-.5rem;" id="onboard-lead">This tool has been built for your domain. It reads what you submit and maps what it finds — movement, stagnation, load, gaps, and the next useful move. It takes a baseline and entries over time. The more specific the material, the more precise the read.</p>
+      <h1 class="onboard-title serif" id="onboard-title">Mental Health Map</h1>
+      <p class="onboard-lead" id="onboard-lead">Some days are harder to describe than others. This tool doesn't ask you to explain yourself or make sense of what's happening. It reads what you give it and maps what it finds — what's functioning, what isn't, what's shifting, what's staying the same.</p>
+      <p class="onboard-lead" style="margin-top:-.5rem;">Write what you can. That's enough.</p>
       <div class="onboard-actions">
         <button class="btn btn-primary" onclick="document.getElementById('onboard-s1').style.display='none'; document.getElementById('onboard-s2').style.display='block';">Next</button>
         <button class="btn btn-sm" onclick="loadSample()">See a sample</button>
@@ -414,13 +414,9 @@ label {
       <p class="brand-kicker">HOW TO USE THIS TOOL</p>
 
       <div class="what-this-is">
-        <p><strong>Baseline.</strong> Your starting point. State where things are now — the situation, the pressure, what has led to this point. Be specific. Vague baselines produce vague reads.</p>
-        <p><strong>Entries.</strong> Dated material added over time. What happened, what was decided, what changed, what didn't. One entry can be a single sentence or several paragraphs. The tool reads across all of them.</p>
-        <p><strong>Corrections.</strong> If the map misreads something, correct it here. Corrections are not cosmetic — they propagate forward and change how subsequent material is weighted.</p>
-        <p><strong>Read map.</strong> Generates your reading from everything submitted. Run it when you have enough material — a baseline and at least one entry.</p>
-        <p><strong>Report.</strong> Produces a structured document from the reading. Format depends on the output type you selected.</p>
-        <p><strong>What this tool does not do.</strong> It does not give advice. It does not diagnose. It does not generate a response. It reads what you submit and maps what it finds — no more, no less.</p>
-        <p><strong>Best results.</strong> Submit material that describes rather than summarises. The tool reads signal in specific language — dates, decisions, named constraints, actual events. General statements produce thin reads.</p>
+        <p>Write where things are today. Come back when something changes — a hard day, a better one, a decision made or avoided. The map reads across all of it.</p>
+        <p><strong>A minimum baseline might look like this:</strong><br>"I've been struggling for a few months. Some days I function fine, others I can't get out of bed. I'm not sure if what I'm experiencing has a name. I haven't told anyone how bad it gets."</p>
+        <p>Write more if you have it. That's enough if you don't.</p>
       </div>
 
       <div class="onboard-actions">
@@ -603,7 +599,7 @@ window.SORTER_CARTRIDGE = {
   id: "mental-health",
   name: "Mental Health Map",
   tagline: "private · evidence-bound · function-led",
-  desc: "Individual, mental health worker, care coordinator, GP support context, or crisis planning.. Key pressures: Symptom load that varies day to day or hour to hour.; Functional capacity — what the person can actually do — not matching stated intentions.; Treatment disengagement without explicit acknowledgement..",
+    desc: "",
   accent: "#3a2a5a",
   accentLight: "#f0edf8",
   baselineTitle: "Set your baseline",
@@ -762,8 +758,21 @@ window.SORTER_CARTRIDGE = {
     }
   ],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
-  sampleBaseline: "",
-  sampleEntries: [],
+  sampleBaseline: "I've been struggling for about four months. I function most days — I go to work, I do the basics — but there's something underneath that doesn't shift. I don't sleep well. I've started cancelling things I used to look forward to. I haven't told my GP how bad it actually gets. I don't know if what I'm experiencing has a name or if I'm just not coping.",
+  sampleEntries: [
+    {
+      daysAgo: 19,
+      text: "Bad week. I got through work but that was about it. I didn't leave the house at the weekend. I told my partner I was tired. That's true but it's not the whole truth. I didn't eat properly for two days and I didn't tell anyone."
+    },
+    {
+      daysAgo: 11,
+      text: "I made myself go for a walk. It didn't fix anything but I felt slightly less like I was disappearing. I've been thinking about making a GP appointment. I keep putting it off because I don't know what I'd say."
+    },
+    {
+      daysAgo: 3,
+      text: "I booked the appointment. It's next week. I don't know what will come of it but I've been managing this alone for long enough. I wrote down some notes so I don't talk myself out of saying the hard parts."
+    },
+  ],
 };
 /* CARTRIDGE_END */
 
@@ -1285,7 +1294,7 @@ const MercatorEngine = (() => {
   function saveBaseline() {
     MercatorEngine.saveBaseline($('baselineText').value.trim());
     const s = $('baseline-status');
-    s.textContent = 'Saved.'; s.style.display = 'block';
+    s.textContent = 'Thank you — come back and edit this anytime if you remember anything more.'; s.style.display = 'block';
     setTimeout(() => s.style.display='none', 2000);
   }
 
@@ -1299,7 +1308,7 @@ const MercatorEngine = (() => {
     MercatorEngine.addEntry($('entryDate').value || todayISO(), text);
     $('entryText').value = '';
     const s = $('entry-status');
-    s.textContent = 'Entry saved.'; s.style.display = 'inline';
+    s.textContent = 'Thank you — come back and edit this anytime if you remember anything more.'; s.style.display = 'inline';
     setTimeout(() => s.style.display='none', 2000);
     renderEntries();
   }

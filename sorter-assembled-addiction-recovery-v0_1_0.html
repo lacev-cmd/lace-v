@@ -400,9 +400,9 @@ label {
     <!-- WELCOME SCREEN 1 -->
     <div id="onboard-s1">
       <p class="brand-kicker">LACE V</p>
-      <h1 class="onboard-title serif" id="onboard-title">Welcome.</h1>
-      <p class="onboard-lead">Lace V is a bootstrap start-up founded in 2025 with a single question: what does AI look like when it stops generating and starts reading? We build precise, evidence-bound tools that map what's actually there — not what a model thinks you want to hear. No subscriptions to a chatbot. No black box. Just your material, read carefully, returned to you as a map.</p>
-      <p class="onboard-lead" style="margin-top:-.5rem;" id="onboard-lead">This tool has been built for your domain. It reads what you submit and maps what it finds — movement, stagnation, load, gaps, and the next useful move. It takes a baseline and entries over time. The more specific the material, the more precise the read.</p>
+      <h1 class="onboard-title serif" id="onboard-title">Addiction Recovery Map</h1>
+      <p class="onboard-lead" id="onboard-lead">This tool doesn't judge where you are in your recovery. It doesn't know what you've been through and it won't tell you what to do. It reads what you write and maps what's actually there — what's moving, what's under pressure, what the pattern looks like right now.</p>
+      <p class="onboard-lead" style="margin-top:-.5rem;">Write honestly. That's all it needs.</p>
       <div class="onboard-actions">
         <button class="btn btn-primary" onclick="document.getElementById('onboard-s1').style.display='none'; document.getElementById('onboard-s2').style.display='block';">Next</button>
         <button class="btn btn-sm" onclick="loadSample()">See a sample</button>
@@ -414,13 +414,9 @@ label {
       <p class="brand-kicker">HOW TO USE THIS TOOL</p>
 
       <div class="what-this-is">
-        <p><strong>Baseline.</strong> Your starting point. State where things are now — the situation, the pressure, what has led to this point. Be specific. Vague baselines produce vague reads.</p>
-        <p><strong>Entries.</strong> Dated material added over time. What happened, what was decided, what changed, what didn't. One entry can be a single sentence or several paragraphs. The tool reads across all of them.</p>
-        <p><strong>Corrections.</strong> If the map misreads something, correct it here. Corrections are not cosmetic — they propagate forward and change how subsequent material is weighted.</p>
-        <p><strong>Read map.</strong> Generates your reading from everything submitted. Run it when you have enough material — a baseline and at least one entry.</p>
-        <p><strong>Report.</strong> Produces a structured document from the reading. Format depends on the output type you selected.</p>
-        <p><strong>What this tool does not do.</strong> It does not give advice. It does not diagnose. It does not generate a response. It reads what you submit and maps what it finds — no more, no less.</p>
-        <p><strong>Best results.</strong> Submit material that describes rather than summarises. The tool reads signal in specific language — dates, decisions, named constraints, actual events. General statements produce thin reads.</p>
+        <p>Write where things stand today. Come back when something shifts — a hard moment, a good one, a close call, a decision. The map reads across everything you give it.</p>
+        <p><strong>A minimum baseline might look like this:</strong><br>"I've been clean for three months. It's going okay mostly but there are days when it doesn't feel real. The people and places I need to avoid are still there. I haven't told my family how close it still feels sometimes."</p>
+        <p>Write more if you have it. That's enough if you don't.</p>
       </div>
 
       <div class="onboard-actions">
@@ -603,7 +599,7 @@ window.SORTER_CARTRIDGE = {
   id: "addiction-recovery",
   name: "Addiction Recovery Map",
   tagline: "private · evidence-bound · non-moralising",
-  desc: "Individual, recovery support worker, sponsor, case manager, or treatment coordinator.. Key pressures: Trigger environments and people that have not changed.; Relapse — actual or narrowly avoided — not named directly.; Programme or support disengagement without explicit acknowledgement..",
+    desc: "",
   accent: "#2a3a4a",
   accentLight: "#edf0f4",
   baselineTitle: "Set your baseline",
@@ -762,8 +758,21 @@ window.SORTER_CARTRIDGE = {
     }
   ],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
-  sampleBaseline: "",
-  sampleEntries: [],
+  sampleBaseline: "I've been clean for eleven weeks. It's the longest I've managed. The programme is helping but I don't go to every session — sometimes I can't face it. The people I used with are still around. I haven't cut contact properly. I tell myself I can handle it but I'm not sure that's true. My family thinks I'm doing better than I am.",
+  sampleEntries: [
+    {
+      daysAgo: 17,
+      text: "I ran into someone from before. We didn't use but we talked for a while and I could feel the pull of it. I didn't tell my key worker. I told myself it was nothing. I'm not sure it was nothing."
+    },
+    {
+      daysAgo: 10,
+      text: "I went to the session. Stayed the whole time. I told them about running into that person. It helped more than I expected — just saying it out loud made it smaller. I'm trying to be more honest about what's actually happening rather than the version that sounds like progress."
+    },
+    {
+      daysAgo: 4,
+      text: "Blocked the contact. It took longer than it should have but I did it. I don't know if it holds but it's done for now. One thing at a time."
+    },
+  ],
 };
 /* CARTRIDGE_END */
 
@@ -1285,7 +1294,7 @@ const MercatorEngine = (() => {
   function saveBaseline() {
     MercatorEngine.saveBaseline($('baselineText').value.trim());
     const s = $('baseline-status');
-    s.textContent = 'Saved.'; s.style.display = 'block';
+    s.textContent = 'Thank you — come back and edit this anytime if you remember anything more.'; s.style.display = 'block';
     setTimeout(() => s.style.display='none', 2000);
   }
 
@@ -1299,7 +1308,7 @@ const MercatorEngine = (() => {
     MercatorEngine.addEntry($('entryDate').value || todayISO(), text);
     $('entryText').value = '';
     const s = $('entry-status');
-    s.textContent = 'Entry saved.'; s.style.display = 'inline';
+    s.textContent = 'Thank you — come back and edit this anytime if you remember anything more.'; s.style.display = 'inline';
     setTimeout(() => s.style.display='none', 2000);
     renderEntries();
   }
