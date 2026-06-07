@@ -600,17 +600,17 @@ label {
 // Assembly replaces everything between these markers.
 /* CARTRIDGE_START */
 window.SORTER_CARTRIDGE = {
-  id: "game-narrative",
+  id: "stem-lab-evidence",
   name: "Personal Map",
   tagline: "private · evidence-bound",
-  desc: "Game designer, narrative director, NPC behaviour system, or adaptive storytelling engine.. Key pressures: Player intent not yet visible — the map cannot read direction without it.; Faction loyalties unresolved — competing pulls on NPC behaviour.; Hidden agenda approaching surface — timing of reveal is load-sensitive..",
+  desc: "Lab technician, scientist, engineer, QA reviewer, method developer, product reviewer, technical auditor, procurement reviewer, release reviewer, or governance reviewer.. Key pressures: A test result is treated as proof beyond the method boundary.; A method is used before validation, calibration, or repeatability is clear.; A sample result is extended to a batch, asset, product family, population, or environment without support..",
   accent: "#2d5a3d",
   accentLight: "#e8f0ea",
   baselineTitle: "Set your baseline",
-  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: player intent not named — what the player is actually trying to achieve; faction relationships not mapped — who is aligned with whom and why; hidden agendas not listed — what each npc is concealing and from whom. Movement in this domain looks like: hidden agenda surfaced — partial or full reveal; faction relationship shifted — alliance formed, strained, or broken.",
-  baselinePlaceholder: "Where are you now? What has led to this point? Include: player intent not named — what the player is actually trying to achieve.",
+  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: test question not stated; sample identity or condition not defined; method, version, or protocol not named. Movement in this domain looks like: the test question is stated precisely; the sample, batch, asset, product, or condition under test is identified.",
+  baselinePlaceholder: "Where are you now? What has led to this point? Include: test question not stated.",
   entryTitle: "Add an entry",
-  entryDesc: "Precise about state. Non-prescriptive about story. Evidence-bound about what has happened. Does not invent motivation — reads what is in the material.",
+  entryDesc: "Precise. Method-bound. Evidence-readiness focused. No false certainty. No claim expansion beyond sample, method, calibration, and acceptance boundary.",
   entryPlaceholder: "What is on your mind?",
   reportDesc: "The map reads what is moving, stuck, and under load based on what you wrote.",
   reportEmptyDesc: "Add a baseline and at least one entry, then read your map.",
@@ -618,169 +618,230 @@ window.SORTER_CARTRIDGE = {
   crisisRx: /\b(kill myself|end my life|suicide|suicidal|I want to die|don't want to be here|hurt myself|harm myself|can't go on|not worth it|overdose)\b/i,
   gaps: [
     {
-      key: "player_intent",
-      name: "Player intent",
-      rx: /\b(player wants|player is trying|player goal|player objective|what the player|player direction|player is building toward|player has chosen|player keeps|player pattern)\b/i,
-      reason: "Without player intent named the map cannot read whether NPC behaviour is serving or obstructing the narrative. Intent is the baseline everything else is measured against."
+      key: "test_question",
+      name: "Test question",
+      rx: /\b(test question|we need to know|the question is|testing whether|purpose of test|objective|what we are testing|hypothesis|analysis objective)\b/i,
+      reason: "The map needs the exact question before it can assess whether the method and result answer it."
     },
     {
-      key: "faction_map",
-      name: "Faction relationships",
-      rx: /\b(faction|alliance|aligned with|loyal to|hostile to|neutral|faction relationship|standing with|reputation with|the factions|who controls|who is with|who is against)\b/i,
-      reason: "Faction relationships are the structural map of the world. Without them the sorter cannot read whether NPC actions are coherent, contradictory, or consequential."
+      key: "sample_identity",
+      name: "Sample identity",
+      rx: /\b(sample|specimen|batch|lot|asset|component|coupon|cell|material|product|unit under test|UUT|sample ID|serial|variant)\b/i,
+      reason: "The result must attach to a defined sample, batch, asset, or unit. Without identity, result-to-claim mapping is weak."
     },
     {
-      key: "hidden_agendas",
-      name: "Hidden agendas defined",
-      rx: /\b(hidden agenda|secret goal|concealing|does not reveal|privately wants|what they are not saying|true motivation|ulterior|what they are really after|the real reason)\b/i,
-      reason: "Hidden agendas drive NPC behaviour in ways that appear inconsistent without them named. Without them mapped the sorter reads contradiction where there is only concealment."
+      key: "sample_condition",
+      name: "Sample condition",
+      rx: /\b(condition|storage|handling|age|temperature|humidity|preparation|contamination|transport|chain of custody|as received|preconditioned|exposed|degraded)\b/i,
+      reason: "Sample condition affects what the result means. Handling, storage, age, exposure, or contamination can change the evidence value."
     },
     {
-      key: "consequence_chains",
-      name: "Active consequence chains",
-      rx: /\b(consequence|downstream|because of the decision|ripple|what that means for|what follows from|the result of|triggered by|set in motion|what was started|the chain)\b/i,
-      reason: "Decisions already made are still in motion. Without consequence chains traced the map cannot read what is moving and what is held."
+      key: "method_identity",
+      name: "Method identity",
+      rx: /\b(method|protocol|procedure|standard operating procedure|SOP|test method|method version|assay|workflow|test standard|analysis method)\b/i,
+      reason: "The map needs the method and version. A result without a method boundary cannot be read safely."
     },
     {
-      key: "trust_baseline",
-      name: "Trust baselines established",
-      rx: /\b(trust level|trust baseline|where the relationship started|initial standing|they trusted|they did not trust|starting point|before the|when they first met|the relationship began)\b/i,
-      reason: "Trust movement is only readable against a baseline. Without it named the map cannot tell whether a relationship is improving, degrading, or holding."
+      key: "method_validation",
+      name: "Method validation status",
+      rx: /\b(validated|validation|verified method|method verification|qualification|fit for purpose|not validated|development method|screening method|research use only)\b/i,
+      reason: "A validated method and an exploratory method do not carry the same claim weight. Method status must remain visible."
     },
     {
-      key: "dramatic_arc",
-      name: "Dramatic arc",
-      rx: /\b(arc|story arc|building toward|what this is about|the theme|what this story|the narrative direction|where this is going|what the climax|the turning point|what changes)\b/i,
-      reason: "Without the dramatic arc named the map cannot distinguish held tension from stuck narrative, or deliberate pacing from loss of momentum."
+      key: "instrument_calibration",
+      name: "Instrument calibration status",
+      rx: /\b(calibration|calibrated|instrument status|calibration due|calibration expired|standard curve|reference standard|traceable standard|instrument check|maintenance record)\b/i,
+      reason: "Instrument output depends on calibration and status. Without calibration context, confidence must be capped."
+    },
+    {
+      key: "controls_and_qc",
+      name: "Controls and quality checks",
+      rx: /\b(control|blank|standard|reference|positive control|negative control|QC|quality control|check sample|spike|recovery|duplicate|replicate|control chart)\b/i,
+      reason: "Controls and QC show whether the method behaved as expected during the run."
+    },
+    {
+      key: "replicates_repeatability",
+      name: "Replicates or repeatability",
+      rx: /\b(replicate|duplicate|repeat|repeatability|reproducibility|precision|run again|second run|n=|triplicate|inter-lab|intra-lab)\b/i,
+      reason: "A single result may be too thin for a strong claim. Replicate or repeat evidence improves confidence."
+    },
+    {
+      key: "acceptance_criteria",
+      name: "Acceptance criteria",
+      rx: /\b(acceptance criteria|pass fail|threshold|limit|tolerance|specification|within spec|out of spec|criterion|criteria|allowable|decision limit)\b/i,
+      reason: "A result needs criteria before it can support pass/fail, readiness, release, or compliance-adjacent language."
+    },
+    {
+      key: "uncertainty_detection_limit",
+      name: "Uncertainty, sensitivity, or detection limit",
+      rx: /\b(uncertainty|confidence interval|error margin|LOD|LOQ|detection limit|sensitivity|specificity|resolution|noise floor|measurement error|precision)\b/i,
+      reason: "Measurement uncertainty and detection limits determine what the result can and cannot support."
+    },
+    {
+      key: "raw_data_or_primary_record",
+      name: "Raw data or primary record",
+      rx: /\b(raw data|primary record|instrument file|chromatogram|spectrum|image file|log file|notebook|ELN|audit trail|source data|original data)\b/i,
+      reason: "Primary records carry more weight than summaries, screenshots, or copied tables. Evidence lineage matters."
+    },
+    {
+      key: "anomaly_or_exclusion",
+      name: "Anomalies, exclusions, or failed runs",
+      rx: /\b(anomaly|outlier|failed run|excluded|discarded|invalid run|repeat because|contamination|drift|unexpected|deviation|nonconformance|investigation)\b/i,
+      reason: "Anomalies and exclusions must be visible. A clean report that hides failed runs or exclusions weakens confidence."
+    },
+    {
+      key: "result_to_claim_mapping",
+      name: "Result-to-claim mapping",
+      rx: /\b(this result shows|supports the claim|does not prove|result means|interpretation|claim supported|evidence for|cannot conclude|only supports|limited to)\b/i,
+      reason: "The map must know what claim is being made from the result. Data alone is not the same as a reliance claim."
+    },
+    {
+      key: "timing_or_expiry",
+      name: "Timing, expiry, or validity window",
+      rx: /\b(expiry|valid until|calibration due|sample age|holding time|stability window|test date|run date|review date|time-sensitive|shelf life|retest)\b/i,
+      reason: "Lab confidence can decay with sample age, reagent expiry, calibration status, or validity window."
+    },
+    {
+      key: "qualified_boundary",
+      name: "Qualified lab or authority boundary",
+      rx: /\b(accredited|ISO 17025|qualified analyst|lab manager|QA approval|regulator|certification|formal validation|technical sign-off|peer review|competent authority)\b/i,
+      reason: "The map must not imply accreditation, formal validation, regulatory approval, or qualified sign-off. Boundaries must remain visible."
+    },
+    {
+      key: "direction",
+      name: "Stated lab-evidence decision",
+      rx: /\b(can we rely|is this valid|is this enough|should we retest|release based on|accept the result|reject the result|needs validation|what evidence is missing|decision from this test)\b/i,
+      reason: "The map needs the decision being made from the lab evidence: accept, reject, retest, validate, release, investigate, or withhold confidence."
     }
   ],
   skills: [
     {
-      key: "agenda_concealment",
-      name: "Holding a hidden agenda under pressure",
-      rx: /\b(did not reveal|kept it hidden|deflected|changed the subject|said enough|gave nothing away|maintained the cover|stayed in character|did not break|held the secret|concealed|the player does not know)\b/i,
-      loadSensitive: true,
-      isStructureSkill: false,
-      works: "NPC maintains concealment consistently — answers questions without lying outright, deflects without revealing, stays in character under interrogation.",
-      breaks: "High trust from player, extreme pressure, or conflicting faction loyalties causes partial or full agenda surfacing before the designed reveal moment."
-    },
-    {
-      key: "faction_consistency",
-      name: "Behaving consistently with faction loyalty",
-      rx: /\b(loyal to|acting for|serving|reporting back|in line with|consistent with faction|faction interest|the faction wants|faction directive|faction alignment)\b/i,
-      loadSensitive: true,
+      key: "method_boundary_setting",
+      name: "Setting method boundary",
+      rx: /\b(method only shows|limited to this method|fit for purpose|method boundary|does not prove|only valid for|screening only|confirmatory method|required confirmation)\b/i,
+      loadSensitive: false,
       isStructureSkill: true,
-      works: "NPC behaviour is legible as factionally motivated — player can eventually read the pattern even if they do not yet know the faction.",
-      breaks: "Conflicting faction loyalties, player trust that exceeds faction loyalty threshold, or unresolved dramatic arc creates inconsistent behaviour that reads as broken rather than complex."
+      works: "The user states what the method can and cannot support.",
+      breaks: "The result is treated as proof beyond the method boundary."
     },
     {
-      key: "trust_management",
-      name: "Managing trust level across interactions",
-      rx: /\b(trust increased|trust decreased|player trusts|they trust me|I have their trust|trust level|building trust|losing trust|earned trust|trust dropped|trust rose|reliable|consistent|they believe)\b/i,
+      key: "calibration_checking",
+      name: "Checking calibration and instrument status",
+      rx: /\b(calibration checked|instrument calibrated|standard curve accepted|reference standard passed|instrument check passed|calibration valid|maintenance current)\b/i,
       loadSensitive: false,
-      isStructureSkill: false,
-      works: "NPC actions and stated positions are consistent enough that player trust moves in a readable direction — either building or eroding in ways that feel earned.",
-      breaks: "Contradiction between NPC stated position and action, or between faction directive and player-facing behaviour, collapses trust in ways that feel arbitrary rather than consequential."
+      isStructureSkill: true,
+      works: "Calibration and instrument status are checked before the result is relied upon.",
+      breaks: "Instrument output is trusted without calibration or status context."
     },
     {
-      key: "consequence_tracking",
-      name: "Tracking and surfacing consequences",
-      rx: /\b(remember when|because of what happened|as a result of|the decision you made|that changed|you did|the last time|I have not forgotten|what you chose|that is why|the consequence of)\b/i,
+      key: "qc_reading",
+      name: "Reading controls and QC",
+      rx: /\b(control passed|blank clean|standard passed|QC passed|recovery within|duplicate matched|control chart|quality check passed|QC failed)\b/i,
       loadSensitive: false,
-      isStructureSkill: false,
-      works: "Prior decisions surface naturally in NPC behaviour — the world remembers what the player did and the NPC reflects it without breaking the fourth wall.",
-      breaks: "Memory gap — NPC fails to connect a prior decision to current behaviour, making the world feel amnesiac and consequence-free."
+      isStructureSkill: true,
+      works: "Controls and QC are used to judge whether the run behaved properly.",
+      breaks: "The sample result is read without checking whether controls, blanks, standards, or QC behaved correctly."
     },
     {
-      key: "dramatic_timing",
-      name: "Timing reveals and escalations",
-      rx: /\b(not yet|not the right moment|holding back|waiting for|when the time comes|the reveal|the moment|building to|when they are ready|the right time|before the climax|after the|timing)\b/i,
+      key: "repeatability_checking",
+      name: "Checking repeatability",
+      rx: /\b(repeated|replicate|duplicate|same result|repeatability|reproducible|confirmed on second run|triplicate|inter-lab|intra-lab)\b/i,
+      loadSensitive: false,
+      isStructureSkill: true,
+      works: "The result is checked for repeatability or reproducibility where claim strength requires it.",
+      breaks: "A single result is treated as stable evidence without enough repeat support."
+    },
+    {
+      key: "anomaly_visibility",
+      name: "Making anomalies visible",
+      rx: /\b(anomaly noted|outlier investigated|failed run disclosed|deviation recorded|exclusion justified|nonconformance logged|investigation opened)\b/i,
+      loadSensitive: false,
+      isStructureSkill: true,
+      works: "Anomalies, exclusions, deviations, and failed runs are recorded and carried forward.",
+      breaks: "Uncomfortable or messy run details are removed from the evidence picture."
+    },
+    {
+      key: "result_claim_discipline",
+      name: "Mapping result to claim",
+      rx: /\b(result supports|does not support|cannot conclude|only shows|evidence for|claim limited|interpretation limited|not enough evidence|confidence withheld)\b/i,
+      loadSensitive: false,
+      isStructureSkill: true,
+      works: "The result is tied to a bounded claim and does not expand beyond it.",
+      breaks: "The output moves from result to broad conclusion without showing the bridge."
+    },
+    {
+      key: "retest_or_investigation_decision",
+      name: "Calling for retest or investigation",
+      rx: /\b(retest|repeat the test|investigate|method review|deviation investigation|confirmatory test|additional sample|new run|hold decision)\b/i,
       loadSensitive: true,
       isStructureSkill: false,
-      works: "Information, reveals, and escalations arrive when they create maximum narrative effect — not too early (defusing tension) or too late (losing the player).",
-      breaks: "Pressure from player progress, pacing miscalculation, or consequence chains arriving out of order causes reveals to land flat or too abruptly."
+      works: "The reviewer identifies when more evidence is needed before reliance.",
+      breaks: "A weak or anomalous result is forced into a conclusion because a decision is needed."
     }
   ],
   contradictions: [
     {
-      a: /\b(I am on your side|I want to help you|you can trust me|I am with you|your ally|I am working for you|your interests matter)\b/i,
-      b: /\b(hidden agenda|reporting to|faction directive|concealing|the player does not know|ulterior|what they are really after|secretly)\b/i,
-      text: "Stated alliance and a hidden agenda that works against the player both appear. This is not a flaw — it is the core dramatic tension of a duplicitous NPC. The map holds both. The question is whether the contradiction has been designed into the arc or has arrived by accident."
+      a: /\b(pass|passed|within spec|valid result|accepted|confirmed|shows|proves|supports)\b/i,
+      b: /\b(no calibration|calibration expired|QC failed|control failed|blank contaminated|uncertainty unknown|method not validated|single run)\b/i,
+      text: "A positive result claim and a method or QC weakness both appear. The result may be real, but confidence must be capped until the method weakness is resolved."
     },
     {
-      a: /\b(faction loyalty|loyal to the faction|serving the faction|faction directive|faction interest|the faction comes first)\b/i,
-      b: /\b(player trust|I trust the player|the player has earned|I believe the player|I am choosing the player|player over faction|defecting|turning)\b/i,
-      text: "Faction loyalty and player trust pulling in opposite directions both appear. This is the threshold moment — faction vs relationship. The map is reading an active tension, not a contradiction to be resolved. Whether this is the designed turning point or an unplanned drift matters."
+      a: /\b(sample shows|test shows|result shows|this proves|batch is|product is|asset is)\b/i,
+      b: /\b(one sample|single result|not representative|different batch|different condition|not repeated|sample only|limited sample)\b/i,
+      text: "A broad conclusion and limited sample evidence both appear. The map should keep the claim tied to the sample boundary."
     },
     {
-      a: /\b(the player does not know|player is unaware|concealed from player|player has not discovered|player trust is high|player believes)\b/i,
-      b: /\b(player has figured out|player suspects|player asked directly|player chose not to trust|player is testing|player already knows|player has evidence)\b/i,
-      text: "Player ignorance assumed and player awareness signals both appear. The NPC may be operating on an outdated model of what the player knows. This is a state change — the concealment dynamic may already be broken."
+      a: /\b(validated|accredited|approved method|standard method|ISO|certified lab)\b/i,
+      b: /\b(modified method|deviation|different matrix|different condition|outside scope|research use|screening only|not in scope)\b/i,
+      text: "Formal method confidence and a scope change both appear. Method authority may not transfer if the matrix, condition, or procedure has changed."
     },
     {
-      a: /\b(held tension|building toward|not yet|the arc is|this is deliberate|pacing|the reveal is coming|setting up)\b/i,
-      b: /\b(player disengaged|player skipped|player lost interest|player frustrated|player confused|nothing is happening|too slow|what is the point|player abandoned)\b/i,
-      text: "Deliberate narrative holding and player disengagement signals both appear. Held tension and stalled narrative look identical from the outside. The map cannot decide which this is — but it can surface that both signals are present at the same time."
+      a: /\b(clean report|summary|graph|screenshot|table|export|briefing|dashboard)\b/i,
+      b: /\b(raw data missing|primary record missing|audit trail missing|instrument file not provided|source data unavailable)\b/i,
+      text: "A clean secondary output and missing primary record both appear. Summaries can be useful, but primary data absence weakens evidence lineage."
+    },
+    {
+      a: /\b(no issue|normal|stable|acceptable|within tolerance|no concern)\b/i,
+      b: /\b(anomaly|outlier|failed run|excluded|deviation|unexpected|repeat failed|investigation)\b/i,
+      text: "Reassuring interpretation and anomaly evidence both appear. The anomaly must be held, not smoothed away."
+    },
+    {
+      a: /\b(urgent|need decision|release today|project deadline|commercial deadline|cannot wait)\b/i,
+      b: /\b(needs retest|needs validation|awaiting calibration|QC unresolved|sample issue|uncertainty high)\b/i,
+      text: "Decision pressure and unresolved evidence both appear. Timing pressure does not make the result more admissible."
     }
   ],
   directionPatterns: [
     {
-      rx: /reveal|surface|expose|the truth comes out|the player discovers/i,
-      label: "toward revelation"
+      rx: /method validation|validated method|method verification|fit for purpose/i,
+      label: "toward method validation or verification"
     },
     {
-      rx: /alliance|trust|align|join forces|player and NPC|working together/i,
-      label: "toward alliance"
+      rx: /calibration|instrument status|standard curve|reference standard/i,
+      label: "toward calibration or instrument-readiness review"
     },
     {
-      rx: /betrayal|turning point|defection|the faction|choosing sides/i,
-      label: "toward betrayal or faction break"
+      rx: /QC|control|blank|standard|replicate|duplicate|recovery/i,
+      label: "toward run-quality review"
     },
     {
-      rx: /consequence|reckoning|what was set in motion|downstream|the result/i,
-      label: "toward consequence arrival"
+      rx: /sample|specimen|batch|lot|chain of custody|handling|storage/i,
+      label: "toward sample evidence review"
     },
     {
-      rx: /climax|final|the end|resolution|what it was all building toward/i,
-      label: "toward dramatic resolution"
+      rx: /result|interpretation|claim|supports|does not prove|cannot conclude/i,
+      label: "toward result-to-claim mapping"
     },
     {
-      rx: /player is steering away|avoiding|not engaging|side-stepping|ignoring/i,
-      label: "player avoiding the designed arc"
+      rx: /retest|repeat|confirmatory|investigate|deviation|nonconformance/i,
+      label: "toward retest or investigation decision"
+    },
+    {
+      rx: /release|procurement|acceptance|reject|approve|decision/i,
+      label: "toward decision-use evidence readiness"
     }
   ],
-  pressureSignals: [
-    {
-      key: "trust_critical",
-      rx: /\b(trust is gone|trust has collapsed|player does not trust|trust level critical|they do not believe|I have lost them|player is hostile)\b/i,
-      label: "trust at critical level"
-    },
-    {
-      key: "agenda_surface",
-      rx: /\b(agenda surfacing|player suspects|almost revealed|close to breaking|nearly slipped|the cover is|beginning to show|player is close to knowing)\b/i,
-      label: "hidden agenda near surface"
-    },
-    {
-      key: "faction_conflict",
-      rx: /\b(faction conflict|loyalty torn|two factions|caught between|serving two|cannot serve both|faction pressure|forced to choose)\b/i,
-      label: "faction loyalty conflict active"
-    },
-    {
-      key: "consequence_due",
-      rx: /\b(consequence is due|the decision is catching up|downstream arriving|what was started|ripple reaching|the chain has reached|cannot be undone now)\b/i,
-      label: "consequence chain arriving"
-    },
-    {
-      key: "player_drift",
-      rx: /\b(player is drifting|player off arc|player ignoring|player going their own way|player not engaging|player has stopped|player lost interest)\b/i,
-      label: "player drifting from arc"
-    },
-    {
-      key: "memory_gap",
-      rx: /\b(forgot|does not remember|memory gap|inconsistent|contradicted themselves|said something different|earlier they said|that is not what|contradiction in the record)\b/i,
-      label: "NPC memory gap"
-    }
-  ],
+  pressureSignals: [],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
   sampleBaseline: "",
   sampleEntries: [],

@@ -600,17 +600,17 @@ label {
 // Assembly replaces everything between these markers.
 /* CARTRIDGE_START */
 window.SORTER_CARTRIDGE = {
-  id: "game-narrative",
+  id: "stem-code-release",
   name: "Personal Map",
   tagline: "private · evidence-bound",
-  desc: "Game designer, narrative director, NPC behaviour system, or adaptive storytelling engine.. Key pressures: Player intent not yet visible — the map cannot read direction without it.; Faction loyalties unresolved — competing pulls on NPC behaviour.; Hidden agenda approaching surface — timing of reveal is load-sensitive..",
+  desc: "Developer, tech lead, release manager, DevSecOps reviewer, QA lead, engineering manager, auditor, or governance reviewer.. Key pressures: AI-assisted code is produced faster than review can verify.; A code change compiles and passes shallow tests but changes behaviour outside the authorised task.; Generated code introduces dependency, security, data, or configuration drift..",
   accent: "#2d5a3d",
   accentLight: "#e8f0ea",
   baselineTitle: "Set your baseline",
-  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: player intent not named — what the player is actually trying to achieve; faction relationships not mapped — who is aligned with whom and why; hidden agendas not listed — what each npc is concealing and from whom. Movement in this domain looks like: hidden agenda surfaced — partial or full reveal; faction relationship shifted — alliance formed, strained, or broken.",
-  baselinePlaceholder: "Where are you now? What has led to this point? Include: player intent not named — what the player is actually trying to achieve.",
+  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: the release claim is not stated; authorised source is not linked; material behavioural changes are not listed. Movement in this domain looks like: the release claim is stated precisely; the authorised task, ticket, requirement, design note, or change request is identified.",
+  baselinePlaceholder: "Where are you now? What has led to this point? Include: the release claim is not stated.",
   entryTitle: "Add an entry",
-  entryDesc: "Precise about state. Non-prescriptive about story. Evidence-bound about what has happened. Does not invent motivation — reads what is in the material.",
+  entryDesc: "Precise. Release-gate focused. Evidence-bound. No “looks good” language. No claim that passing tests proves admissibility.",
   entryPlaceholder: "What is on your mind?",
   reportDesc: "The map reads what is moving, stuck, and under load based on what you wrote.",
   reportEmptyDesc: "Add a baseline and at least one entry, then read your map.",
@@ -618,169 +618,212 @@ window.SORTER_CARTRIDGE = {
   crisisRx: /\b(kill myself|end my life|suicide|suicidal|I want to die|don't want to be here|hurt myself|harm myself|can't go on|not worth it|overdose)\b/i,
   gaps: [
     {
-      key: "player_intent",
-      name: "Player intent",
-      rx: /\b(player wants|player is trying|player goal|player objective|what the player|player direction|player is building toward|player has chosen|player keeps|player pattern)\b/i,
-      reason: "Without player intent named the map cannot read whether NPC behaviour is serving or obstructing the narrative. Intent is the baseline everything else is measured against."
+      key: "release_claim",
+      name: "Release claim",
+      rx: /\b(release|merge|deploy|ship|go live|release candidate|PR|pull request|change set|patch|commit|deployment)\b/i,
+      reason: "The map needs to know what release decision is being requested: merge, deploy, ship, approve, rollback, or hold."
     },
     {
-      key: "faction_map",
-      name: "Faction relationships",
-      rx: /\b(faction|alliance|aligned with|loyal to|hostile to|neutral|faction relationship|standing with|reputation with|the factions|who controls|who is with|who is against)\b/i,
-      reason: "Faction relationships are the structural map of the world. Without them the sorter cannot read whether NPC actions are coherent, contradictory, or consequential."
+      key: "authorised_source",
+      name: "Authorised source",
+      rx: /\b(ticket|issue|requirement|design record|change request|approved task|spec|acceptance criteria|Jira|GitHub issue|authorised|authorized|source of change)\b/i,
+      reason: "A material behavioural change should be traceable to an authorised task, requirement, design record, or change request. Otherwise the change may be plausible but unauthorised."
     },
     {
-      key: "hidden_agendas",
-      name: "Hidden agendas defined",
-      rx: /\b(hidden agenda|secret goal|concealing|does not reveal|privately wants|what they are not saying|true motivation|ulterior|what they are really after|the real reason)\b/i,
-      reason: "Hidden agendas drive NPC behaviour in ways that appear inconsistent without them named. Without them mapped the sorter reads contradiction where there is only concealment."
+      key: "behavioural_change_map",
+      name: "Behavioural change map",
+      rx: /\b(behaviour change|behavior change|changes behaviour|changes behavior|new behaviour|changed logic|side effect|material change|what changed|diff summary|impact summary)\b/i,
+      reason: "The map needs the actual behavioural change, not just that files changed. Release admissibility depends on what the code now does."
     },
     {
-      key: "consequence_chains",
-      name: "Active consequence chains",
-      rx: /\b(consequence|downstream|because of the decision|ripple|what that means for|what follows from|the result of|triggered by|set in motion|what was started|the chain)\b/i,
-      reason: "Decisions already made are still in motion. Without consequence chains traced the map cannot read what is moving and what is held."
+      key: "system_invariants",
+      name: "System invariants",
+      rx: /\b(invariant|must never|guarantee|atomicity|idempotency|auditability|authorization|authentication|permission|data integrity|rollback|consistency|safety property|business rule)\b/i,
+      reason: "The review must know which system rules cannot be weakened. A passing patch can still be inadmissible if it bypasses a governing invariant."
     },
     {
-      key: "trust_baseline",
-      name: "Trust baselines established",
-      rx: /\b(trust level|trust baseline|where the relationship started|initial standing|they trusted|they did not trust|starting point|before the|when they first met|the relationship began)\b/i,
-      reason: "Trust movement is only readable against a baseline. Without it named the map cannot tell whether a relationship is improving, degrading, or holding."
+      key: "test_evidence",
+      name: "Test evidence",
+      rx: /\b(test|unit test|integration test|e2e|regression|test result|coverage|CI|pipeline passed|failing test|acceptance test|manual test|QA)\b/i,
+      reason: "Tests are necessary but must map to the behaviour changed. Passing unrelated tests does not prove release admissibility."
     },
     {
-      key: "dramatic_arc",
-      name: "Dramatic arc",
-      rx: /\b(arc|story arc|building toward|what this is about|the theme|what this story|the narrative direction|where this is going|what the climax|the turning point|what changes)\b/i,
-      reason: "Without the dramatic arc named the map cannot distinguish held tension from stuck narrative, or deliberate pacing from loss of momentum."
+      key: "security_scan_evidence",
+      name: "Security or scan evidence",
+      rx: /\b(SAST|DAST|SCA|dependency scan|security scan|vulnerability|CVE|secret scan|lint|static analysis|code scanning|supply chain|license scan)\b/i,
+      reason: "AI-assisted code can introduce security, dependency, or supply-chain risk. Scan evidence should be visible where relevant."
+    },
+    {
+      key: "dependency_or_config_change",
+      name: "Dependency or configuration change",
+      rx: /\b(dependency|package|library|version bump|lockfile|config|configuration|environment variable|permission|migration|schema|feature flag|setting|infrastructure)\b/i,
+      reason: "Dependency, configuration, permission, schema, and environment changes often carry release risk beyond the code diff itself."
+    },
+    {
+      key: "data_or_privacy_effect",
+      name: "Data, privacy, or permission effect",
+      rx: /\b(data|privacy|PII|personal information|customer data|permission|role|access control|token|secret|credential|logging|retention|export|audit log)\b/i,
+      reason: "Changes touching data, permissions, privacy, credentials, logs, or audit trails require explicit evidence and review boundaries."
+    },
+    {
+      key: "review_evidence",
+      name: "Human review evidence",
+      rx: /\b(reviewed by|approved by|code review|review note|maintainer|tech lead|security review|QA signoff|approval|review comment|LGTM)\b/i,
+      reason: "Human review must be more than ceremonial. The map needs evidence that the review considered the material change and its boundaries."
+    },
+    {
+      key: "ai_assistance_boundary",
+      name: "AI assistance boundary",
+      rx: /\b(AI-generated|AI assisted|Copilot|Claude|ChatGPT|generated code|model suggested|LLM|assistant wrote|prompted|automated refactor)\b/i,
+      reason: "If AI assistance is material, the review should know which parts were generated, edited, or influenced so scope drift and unsupported logic can be checked."
+    },
+    {
+      key: "rollback_or_recovery",
+      name: "Rollback or recovery path",
+      rx: /\b(rollback|revert|recovery|feature flag|kill switch|canary|blue green|staged rollout|backout|restore|migration rollback|safe deploy)\b/i,
+      reason: "Release admissibility improves when the system has a bounded recovery path. Irreversible releases need stronger evidence before confidence is granted."
+    },
+    {
+      key: "release_gate_authority",
+      name: "Release gate authority",
+      rx: /\b(release manager|approval gate|change advisory|CAB|owner approval|merge permission|deployment approval|signoff|release authority|production approval)\b/i,
+      reason: "The map must know who has authority to accept the release risk. A structured read is not itself a release approval."
+    },
+    {
+      key: "direction",
+      name: "Stated code-release decision",
+      rx: /\b(should we merge|should we deploy|is this ready|can this ship|approve this PR|hold the release|rollback|release decision|admissible for release)\b/i,
+      reason: "The map needs the actual decision: merge, deploy, hold, split, test further, escalate, or roll back."
     }
   ],
   skills: [
     {
-      key: "agenda_concealment",
-      name: "Holding a hidden agenda under pressure",
-      rx: /\b(did not reveal|kept it hidden|deflected|changed the subject|said enough|gave nothing away|maintained the cover|stayed in character|did not break|held the secret|concealed|the player does not know)\b/i,
-      loadSensitive: true,
-      isStructureSkill: false,
-      works: "NPC maintains concealment consistently — answers questions without lying outright, deflects without revealing, stays in character under interrogation.",
-      breaks: "High trust from player, extreme pressure, or conflicting faction loyalties causes partial or full agenda surfacing before the designed reveal moment."
-    },
-    {
-      key: "faction_consistency",
-      name: "Behaving consistently with faction loyalty",
-      rx: /\b(loyal to|acting for|serving|reporting back|in line with|consistent with faction|faction interest|the faction wants|faction directive|faction alignment)\b/i,
-      loadSensitive: true,
+      key: "source_traceability",
+      name: "Tracing change to authorised source",
+      rx: /\b(traceable to|linked to ticket|matches requirement|acceptance criteria|authorised by|approved task|design record|source of change|ticket covers)\b/i,
+      loadSensitive: false,
       isStructureSkill: true,
-      works: "NPC behaviour is legible as factionally motivated — player can eventually read the pattern even if they do not yet know the faction.",
-      breaks: "Conflicting faction loyalties, player trust that exceeds faction loyalty threshold, or unresolved dramatic arc creates inconsistent behaviour that reads as broken rather than complex."
+      works: "Material behavioural changes are linked to an authorised source rather than accepted because they look useful.",
+      breaks: "A generated or refactored change expands beyond the task without being noticed."
     },
     {
-      key: "trust_management",
-      name: "Managing trust level across interactions",
-      rx: /\b(trust increased|trust decreased|player trusts|they trust me|I have their trust|trust level|building trust|losing trust|earned trust|trust dropped|trust rose|reliable|consistent|they believe)\b/i,
+      key: "invariant_checking",
+      name: "Checking governing invariants",
+      rx: /\b(invariant checked|does not bypass|preserves|no weakening|auditability preserved|authorization preserved|idempotency preserved|business rule preserved|security boundary preserved)\b/i,
+      loadSensitive: false,
+      isStructureSkill: true,
+      works: "The reviewer checks whether governing system rules survive the change.",
+      breaks: "The review focuses on whether the code works, while missing that it changed a rule the system depends on."
+    },
+    {
+      key: "test_mapping",
+      name: "Mapping tests to changed behaviour",
+      rx: /\b(test covers|coverage for|regression test|test maps to|acceptance test proves|added test for|failing test reproduced|test demonstrates)\b/i,
+      loadSensitive: false,
+      isStructureSkill: true,
+      works: "Tests are connected to the behaviour changed and the risk being carried into release.",
+      breaks: "The pipeline passes, but the relevant behaviour is not directly tested."
+    },
+    {
+      key: "scope_drift_detection",
+      name: "Detecting scope drift",
+      rx: /\b(scope drift|out of scope|unrelated change|extra change|refactor included|helper added|not part of ticket|separate PR|split the change)\b/i,
+      loadSensitive: false,
+      isStructureSkill: true,
+      works: "Unrelated or unauthorised changes are named, removed, split, or justified.",
+      breaks: "AI-generated helpers, refactors, or “cleanup” changes silently enter the release candidate."
+    },
+    {
+      key: "dependency_review",
+      name: "Reviewing dependency and configuration drift",
+      rx: /\b(reviewed dependency|lockfile checked|version bump checked|config change reviewed|migration reviewed|permissions reviewed|dependency risk|configuration risk)\b/i,
       loadSensitive: false,
       isStructureSkill: false,
-      works: "NPC actions and stated positions are consistent enough that player trust moves in a readable direction — either building or eroding in ways that feel earned.",
-      breaks: "Contradiction between NPC stated position and action, or between faction directive and player-facing behaviour, collapses trust in ways that feel arbitrary rather than consequential."
+      works: "Dependency, configuration, permission, and migration changes are reviewed as release risks.",
+      breaks: "Release review treats dependency or configuration changes as incidental."
     },
     {
-      key: "consequence_tracking",
-      name: "Tracking and surfacing consequences",
-      rx: /\b(remember when|because of what happened|as a result of|the decision you made|that changed|you did|the last time|I have not forgotten|what you chose|that is why|the consequence of)\b/i,
-      loadSensitive: false,
-      isStructureSkill: false,
-      works: "Prior decisions surface naturally in NPC behaviour — the world remembers what the player did and the NPC reflects it without breaking the fourth wall.",
-      breaks: "Memory gap — NPC fails to connect a prior decision to current behaviour, making the world feel amnesiac and consequence-free."
-    },
-    {
-      key: "dramatic_timing",
-      name: "Timing reveals and escalations",
-      rx: /\b(not yet|not the right moment|holding back|waiting for|when the time comes|the reveal|the moment|building to|when they are ready|the right time|before the climax|after the|timing)\b/i,
+      key: "recovery_planning",
+      name: "Preparing rollback or recovery",
+      rx: /\b(rollback plan|revert plan|feature flag|canary|staged rollout|backout plan|kill switch|recovery plan|safe deploy)\b/i,
       loadSensitive: true,
       isStructureSkill: false,
-      works: "Information, reveals, and escalations arrive when they create maximum narrative effect — not too early (defusing tension) or too late (losing the player).",
-      breaks: "Pressure from player progress, pacing miscalculation, or consequence chains arriving out of order causes reveals to land flat or too abruptly."
+      works: "The release has a bounded recovery route if the change behaves incorrectly.",
+      breaks: "The release is treated as reversible without a tested or stated recovery path."
+    },
+    {
+      key: "withholding_release_confidence",
+      name: "Withholding release confidence",
+      rx: /\b(not release ready|hold release|do not merge|needs tests|needs review|insufficient evidence|not admissible|conditional release|provisional|blocked)\b/i,
+      loadSensitive: false,
+      isStructureSkill: true,
+      works: "Release confidence is withheld when source, invariant, or evidence gaps remain.",
+      breaks: "The change is merged because it looks plausible, compiles, or passes shallow checks."
     }
   ],
   contradictions: [
     {
-      a: /\b(I am on your side|I want to help you|you can trust me|I am with you|your ally|I am working for you|your interests matter)\b/i,
-      b: /\b(hidden agenda|reporting to|faction directive|concealing|the player does not know|ulterior|what they are really after|secretly)\b/i,
-      text: "Stated alliance and a hidden agenda that works against the player both appear. This is not a flaw — it is the core dramatic tension of a duplicitous NPC. The map holds both. The question is whether the contradiction has been designed into the arc or has arrived by accident."
+      a: /\b(compiles|build passes|CI passed|tests pass|green pipeline|works locally|all checks passed)\b/i,
+      b: /\b(no requirement|not authorised|not authorized|out of scope|invariant|untested behaviour|behavior not tested|no review|missing evidence)\b/i,
+      text: "Passing checks and release-admissibility gaps both appear. Build success is necessary but not sufficient for release confidence."
     },
     {
-      a: /\b(faction loyalty|loyal to the faction|serving the faction|faction directive|faction interest|the faction comes first)\b/i,
-      b: /\b(player trust|I trust the player|the player has earned|I believe the player|I am choosing the player|player over faction|defecting|turning)\b/i,
-      text: "Faction loyalty and player trust pulling in opposite directions both appear. This is the threshold moment — faction vs relationship. The map is reading an active tension, not a contradiction to be resolved. Whether this is the designed turning point or an unplanned drift matters."
+      a: /\b(fixes the issue|solves the bug|works|passes acceptance|successful patch)\b/i,
+      b: /\b(changed permission|changed dependency|new config|schema change|side effect|breaks invariant|bypasses|weakens|scope drift)\b/i,
+      text: "The patch appears to solve the immediate issue while introducing a wider release concern. The fix and the drift must be held together."
     },
     {
-      a: /\b(the player does not know|player is unaware|concealed from player|player has not discovered|player trust is high|player believes)\b/i,
-      b: /\b(player has figured out|player suspects|player asked directly|player chose not to trust|player is testing|player already knows|player has evidence)\b/i,
-      text: "Player ignorance assumed and player awareness signals both appear. The NPC may be operating on an outdated model of what the player knows. This is a state change — the concealment dynamic may already be broken."
+      a: /\b(AI-generated|AI assisted|model suggested|assistant wrote|generated patch|automated refactor)\b/i,
+      b: /\b(not reviewed|unclear why|no source|no ticket|hallucinated|invented|unsupported|unexplained logic)\b/i,
+      text: "AI assistance and weak source/review evidence both appear. The issue is not that AI was used; the issue is whether the generated change is traceable, reviewed, and evidenced."
     },
     {
-      a: /\b(held tension|building toward|not yet|the arc is|this is deliberate|pacing|the reveal is coming|setting up)\b/i,
-      b: /\b(player disengaged|player skipped|player lost interest|player frustrated|player confused|nothing is happening|too slow|what is the point|player abandoned)\b/i,
-      text: "Deliberate narrative holding and player disengagement signals both appear. Held tension and stalled narrative look identical from the outside. The map cannot decide which this is — but it can surface that both signals are present at the same time."
+      a: /\b(reviewed|approved|LGTM|signed off|maintainer approved|review passed)\b/i,
+      b: /\b(no comments|rubber stamp|did not check|unclear review|no invariant check|no security review|no test mapping)\b/i,
+      text: "Approval language and thin review evidence both appear. Human approval is not release evidence unless the review actually covers the material risk."
+    },
+    {
+      a: /\b(no behaviour change|no behavior change|just refactor|cleanup only|minor change|simple change)\b/i,
+      b: /\b(new logic|changed flow|changed dependency|changed permission|changed config|changed data path|different result)\b/i,
+      text: "A low-risk framing and material change evidence both appear. The map should prefer the actual diff behaviour over the reassuring label."
+    },
+    {
+      a: /\b(can rollback|easy to revert|safe deploy|feature flag|staged rollout)\b/i,
+      b: /\b(no rollback tested|migration irreversible|data change|external side effect|customer impact|stateful change)\b/i,
+      text: "Recovery confidence and recovery uncertainty both appear. Rollback should not be treated as available unless it is credible for the actual change."
     }
   ],
   directionPatterns: [
     {
-      rx: /reveal|surface|expose|the truth comes out|the player discovers/i,
-      label: "toward revelation"
+      rx: /merge|pull request|PR|commit|branch/i,
+      label: "toward merge admissibility"
     },
     {
-      rx: /alliance|trust|align|join forces|player and NPC|working together/i,
-      label: "toward alliance"
+      rx: /deploy|release|ship|go live|production/i,
+      label: "toward deployment or release admissibility"
     },
     {
-      rx: /betrayal|turning point|defection|the faction|choosing sides/i,
-      label: "toward betrayal or faction break"
+      rx: /AI-generated|AI assisted|LLM|Copilot|Claude|ChatGPT|generated code/i,
+      label: "toward AI-assisted code review"
     },
     {
-      rx: /consequence|reckoning|what was set in motion|downstream|the result/i,
-      label: "toward consequence arrival"
+      rx: /security|vulnerability|permission|auth|token|secret|privacy/i,
+      label: "toward security or privacy release review"
     },
     {
-      rx: /climax|final|the end|resolution|what it was all building toward/i,
-      label: "toward dramatic resolution"
+      rx: /dependency|package|library|lockfile|supply chain/i,
+      label: "toward dependency or supply-chain review"
     },
     {
-      rx: /player is steering away|avoiding|not engaging|side-stepping|ignoring/i,
-      label: "player avoiding the designed arc"
+      rx: /migration|schema|database|data path|stateful/i,
+      label: "toward data or migration release review"
+    },
+    {
+      rx: /rollback|revert|canary|feature flag|staged rollout/i,
+      label: "toward recovery-bounded release"
     }
   ],
-  pressureSignals: [
-    {
-      key: "trust_critical",
-      rx: /\b(trust is gone|trust has collapsed|player does not trust|trust level critical|they do not believe|I have lost them|player is hostile)\b/i,
-      label: "trust at critical level"
-    },
-    {
-      key: "agenda_surface",
-      rx: /\b(agenda surfacing|player suspects|almost revealed|close to breaking|nearly slipped|the cover is|beginning to show|player is close to knowing)\b/i,
-      label: "hidden agenda near surface"
-    },
-    {
-      key: "faction_conflict",
-      rx: /\b(faction conflict|loyalty torn|two factions|caught between|serving two|cannot serve both|faction pressure|forced to choose)\b/i,
-      label: "faction loyalty conflict active"
-    },
-    {
-      key: "consequence_due",
-      rx: /\b(consequence is due|the decision is catching up|downstream arriving|what was started|ripple reaching|the chain has reached|cannot be undone now)\b/i,
-      label: "consequence chain arriving"
-    },
-    {
-      key: "player_drift",
-      rx: /\b(player is drifting|player off arc|player ignoring|player going their own way|player not engaging|player has stopped|player lost interest)\b/i,
-      label: "player drifting from arc"
-    },
-    {
-      key: "memory_gap",
-      rx: /\b(forgot|does not remember|memory gap|inconsistent|contradicted themselves|said something different|earlier they said|that is not what|contradiction in the record)\b/i,
-      label: "NPC memory gap"
-    }
-  ],
+  pressureSignals: [],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
   sampleBaseline: "",
   sampleEntries: [],

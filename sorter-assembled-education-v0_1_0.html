@@ -600,17 +600,17 @@ label {
 // Assembly replaces everything between these markers.
 /* CARTRIDGE_START */
 window.SORTER_CARTRIDGE = {
-  id: "game-narrative",
-  name: "Personal Map",
-  tagline: "private · evidence-bound",
-  desc: "Game designer, narrative director, NPC behaviour system, or adaptive storytelling engine.. Key pressures: Player intent not yet visible — the map cannot read direction without it.; Faction loyalties unresolved — competing pulls on NPC behaviour.; Hidden agenda approaching surface — timing of reveal is load-sensitive..",
-  accent: "#2d5a3d",
-  accentLight: "#e8f0ea",
+  id: "education",
+  name: "Education Map",
+  tagline: "private · evidence-bound · understanding-led",
+  desc: "Student, tutor, learning support worker, or academic pastoral context.. Key pressures: Understanding gap that has not been named or addressed.; Assessment deadline pressure affecting quality of preparation.; Attendance or engagement declining without named reason..",
+  accent: "#1a2a4a",
+  accentLight: "#edf0f8",
   baselineTitle: "Set your baseline",
-  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: player intent not named — what the player is actually trying to achieve; faction relationships not mapped — who is aligned with whom and why; hidden agendas not listed — what each npc is concealing and from whom. Movement in this domain looks like: hidden agenda surfaced — partial or full reveal; faction relationship shifted — alliance formed, strained, or broken.",
-  baselinePlaceholder: "Where are you now? What has led to this point? Include: player intent not named — what the player is actually trying to achieve.",
+  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: what is actually being studied — subject, course, level — not stated; current assessment or deadline not described; understanding gap not named — study activity without named understanding. Movement in this domain looks like: topic understood and named as understood; assessment submitted.",
+  baselinePlaceholder: "Where are you now? What has led to this point? Include: what is actually being studied — subject, course, level — not stated.",
   entryTitle: "Add an entry",
-  entryDesc: "Precise about state. Non-prescriptive about story. Evidence-bound about what has happened. Does not invent motivation — reads what is in the material.",
+  entryDesc: "Clear. Non-judgemental. Reads activity and understanding separately. Does not assume effort equals progress.",
   entryPlaceholder: "What is on your mind?",
   reportDesc: "The map reads what is moving, stuck, and under load based on what you wrote.",
   reportEmptyDesc: "Add a baseline and at least one entry, then read your map.",
@@ -618,167 +618,147 @@ window.SORTER_CARTRIDGE = {
   crisisRx: /\b(kill myself|end my life|suicide|suicidal|I want to die|don't want to be here|hurt myself|harm myself|can't go on|not worth it|overdose)\b/i,
   gaps: [
     {
-      key: "player_intent",
-      name: "Player intent",
-      rx: /\b(player wants|player is trying|player goal|player objective|what the player|player direction|player is building toward|player has chosen|player keeps|player pattern)\b/i,
-      reason: "Without player intent named the map cannot read whether NPC behaviour is serving or obstructing the narrative. Intent is the baseline everything else is measured against."
+      key: "course_or_subject",
+      name: "Course or subject being studied",
+      rx: /\b(I am studying|my course|the subject|the module|the programme|the degree|the qualification|what I am doing|the topic|the unit|the class)\b/i,
+      reason: "Without knowing what is being studied the map cannot assess whether activity is appropriate, whether difficulty is unusual, or whether deadlines and assessments are correctly prioritised."
     },
     {
-      key: "faction_map",
-      name: "Faction relationships",
-      rx: /\b(faction|alliance|aligned with|loyal to|hostile to|neutral|faction relationship|standing with|reputation with|the factions|who controls|who is with|who is against)\b/i,
-      reason: "Faction relationships are the structural map of the world. Without them the sorter cannot read whether NPC actions are coherent, contradictory, or consequential."
+      key: "current_assessment",
+      name: "Current assessment or deadline",
+      rx: /\b(the assignment|the essay|the exam|the test|the deadline|the submission|the project|I have to|it is due|I am working toward|the assessment|I need to submit|the coursework)\b/i,
+      reason: "Without a named assessment or deadline the map cannot assess whether study activity is directed or ambient. Deadlines are the structural anchors of educational progress."
     },
     {
-      key: "hidden_agendas",
-      name: "Hidden agendas defined",
-      rx: /\b(hidden agenda|secret goal|concealing|does not reveal|privately wants|what they are not saying|true motivation|ulterior|what they are really after|the real reason)\b/i,
-      reason: "Hidden agendas drive NPC behaviour in ways that appear inconsistent without them named. Without them mapped the sorter reads contradiction where there is only concealment."
+      key: "understanding_gap",
+      name: "Understanding gap — what is not understood",
+      rx: /\b(I do not understand|I am lost|I cannot grasp|it does not make sense|I am confused by|I am struggling with|I cannot get|I do not get|the concept|I keep getting wrong|I cannot follow)\b/i,
+      reason: "Study activity without a named understanding gap is unanchored. What the person does not yet understand is the most actionable gap the map can surface. Busy studying that does not name what is not understood is a partial picture at best."
     },
     {
-      key: "consequence_chains",
-      name: "Active consequence chains",
-      rx: /\b(consequence|downstream|because of the decision|ripple|what that means for|what follows from|the result of|triggered by|set in motion|what was started|the chain)\b/i,
-      reason: "Decisions already made are still in motion. Without consequence chains traced the map cannot read what is moving and what is held."
+      key: "help_sought",
+      name: "Help or support sought",
+      rx: /\b(I asked|I spoke to|I emailed|I went to|I contacted|I went to office hours|I asked my tutor|I reached out|I sought help|I asked someone|I looked for|I found support)\b/i,
+      reason: "Whether help has been sought when difficulty is present is one of the most significant movements available. Without this described the map cannot assess whether the person is working through difficulty alone or engaging available support."
     },
     {
-      key: "trust_baseline",
-      name: "Trust baselines established",
-      rx: /\b(trust level|trust baseline|where the relationship started|initial standing|they trusted|they did not trust|starting point|before the|when they first met|the relationship began)\b/i,
-      reason: "Trust movement is only readable against a baseline. Without it named the map cannot tell whether a relationship is improving, degrading, or holding."
-    },
-    {
-      key: "dramatic_arc",
-      name: "Dramatic arc",
-      rx: /\b(arc|story arc|building toward|what this is about|the theme|what this story|the narrative direction|where this is going|what the climax|the turning point|what changes)\b/i,
-      reason: "Without the dramatic arc named the map cannot distinguish held tension from stuck narrative, or deliberate pacing from loss of momentum."
+      key: "direction_or_purpose",
+      name: "Direction — why this course and toward what",
+      rx: /\b(I want to|my goal is|this leads to|I am doing this because|the qualification will|what I am working toward|where this takes me|I chose this|I am studying this to|my aim is|the purpose)\b/i,
+      reason: "Direction shapes the significance of current difficulty. A person in a programme aligned with a clear purpose is in a different position from someone uncertain whether this is the right path. Without it described the map cannot read whether persistence is the right response."
     }
   ],
   skills: [
     {
-      key: "agenda_concealment",
-      name: "Holding a hidden agenda under pressure",
-      rx: /\b(did not reveal|kept it hidden|deflected|changed the subject|said enough|gave nothing away|maintained the cover|stayed in character|did not break|held the secret|concealed|the player does not know)\b/i,
-      loadSensitive: true,
-      isStructureSkill: false,
-      works: "NPC maintains concealment consistently — answers questions without lying outright, deflects without revealing, stays in character under interrogation.",
-      breaks: "High trust from player, extreme pressure, or conflicting faction loyalties causes partial or full agenda surfacing before the designed reveal moment."
-    },
-    {
-      key: "faction_consistency",
-      name: "Behaving consistently with faction loyalty",
-      rx: /\b(loyal to|acting for|serving|reporting back|in line with|consistent with faction|faction interest|the faction wants|faction directive|faction alignment)\b/i,
-      loadSensitive: true,
+      key: "understanding_check",
+      name: "Checking understanding rather than assuming it",
+      rx: /\b(I tested myself|I did practice questions|I explained it back|I checked|I can explain|I know it because|I got it right|I summarised|I made sure I understood|I could answer)\b/i,
+      loadSensitive: false,
       isStructureSkill: true,
-      works: "NPC behaviour is legible as factionally motivated — player can eventually read the pattern even if they do not yet know the faction.",
-      breaks: "Conflicting faction loyalties, player trust that exceeds faction loyalty threshold, or unresolved dramatic arc creates inconsistent behaviour that reads as broken rather than complex."
+      works: "Testing whether material has been understood — through practice questions, self-explanation, or application — rather than assuming familiarity from reading or attendance equals understanding.",
+      breaks: "The feeling of having covered material is mistaken for having understood it. Attendance and reading produce a sense of progress that may not survive the test or assessment."
     },
     {
-      key: "trust_management",
-      name: "Managing trust level across interactions",
-      rx: /\b(trust increased|trust decreased|player trusts|they trust me|I have their trust|trust level|building trust|losing trust|earned trust|trust dropped|trust rose|reliable|consistent|they believe)\b/i,
-      loadSensitive: false,
-      isStructureSkill: false,
-      works: "NPC actions and stated positions are consistent enough that player trust moves in a readable direction — either building or eroding in ways that feel earned.",
-      breaks: "Contradiction between NPC stated position and action, or between faction directive and player-facing behaviour, collapses trust in ways that feel arbitrary rather than consequential."
-    },
-    {
-      key: "consequence_tracking",
-      name: "Tracking and surfacing consequences",
-      rx: /\b(remember when|because of what happened|as a result of|the decision you made|that changed|you did|the last time|I have not forgotten|what you chose|that is why|the consequence of)\b/i,
-      loadSensitive: false,
-      isStructureSkill: false,
-      works: "Prior decisions surface naturally in NPC behaviour — the world remembers what the player did and the NPC reflects it without breaking the fourth wall.",
-      breaks: "Memory gap — NPC fails to connect a prior decision to current behaviour, making the world feel amnesiac and consequence-free."
-    },
-    {
-      key: "dramatic_timing",
-      name: "Timing reveals and escalations",
-      rx: /\b(not yet|not the right moment|holding back|waiting for|when the time comes|the reveal|the moment|building to|when they are ready|the right time|before the climax|after the|timing)\b/i,
+      key: "help_seeking",
+      name: "Seeking help before the gap becomes critical",
+      rx: /\b(I asked|I spoke to|I emailed the tutor|I went to|I raised it|I made an appointment|I reached out|I told my supervisor|I sought help|I got support)\b/i,
       loadSensitive: true,
       isStructureSkill: false,
-      works: "Information, reveals, and escalations arrive when they create maximum narrative effect — not too early (defusing tension) or too late (losing the player).",
-      breaks: "Pressure from player progress, pacing miscalculation, or consequence chains arriving out of order causes reveals to land flat or too abruptly."
+      works: "Raising a difficulty with a tutor, teacher, peer, or support service before it compounds into a larger problem or missed deadline.",
+      breaks: "Shame about not understanding, belief that asking is a sign of inadequacy, or discomfort with the teacher relationship causes the difficulty to accumulate unaddressed."
+    },
+    {
+      key: "deadline_management",
+      name: "Working backward from deadlines rather than toward them",
+      rx: /\b(I planned|I have a schedule|I worked out|I gave myself|I left time|I planned backwards|I mapped it out|I have been working on since|I broke it into|I have a plan)\b/i,
+      loadSensitive: true,
+      isStructureSkill: false,
+      works: "Breaking assessment tasks into stages with intermediate targets, leaving time for review, and starting early enough to recover from difficulty.",
+      breaks: "Avoidance of beginning — due to anxiety or competing demands — compresses preparation into the final period, reducing quality and increasing distress."
+    },
+    {
+      key: "feedback_application",
+      name: "Reading and applying feedback rather than filing it",
+      rx: /\b(the feedback said|I read the comments|I applied the feedback|I addressed|I changed because|I revised based on|the marker said|I acted on|I improved because|I used the feedback)\b/i,
+      loadSensitive: false,
+      isStructureSkill: false,
+      works: "Reading feedback from previous assessments and specifically applying it to subsequent work — closing the loop between performance and improvement.",
+      breaks: "Feedback received but not opened, not read, or read but not applied to subsequent work. The improvement opportunity is not taken."
     }
   ],
   contradictions: [
     {
-      a: /\b(I am on your side|I want to help you|you can trust me|I am with you|your ally|I am working for you|your interests matter)\b/i,
-      b: /\b(hidden agenda|reporting to|faction directive|concealing|the player does not know|ulterior|what they are really after|secretly)\b/i,
-      text: "Stated alliance and a hidden agenda that works against the player both appear. This is not a flaw — it is the core dramatic tension of a duplicitous NPC. The map holds both. The question is whether the contradiction has been designed into the arc or has arrived by accident."
+      a: /\b(I have been studying hard|I have put in the hours|I have worked really hard|I have been studying a lot|I have studied every day)\b/i,
+      b: /\b(I do not understand|I am still confused|I cannot get it|I am still stuck|I keep getting it wrong|I am not closer|I cannot follow)\b/i,
+      text: "High effort and persistent lack of understanding both appear. Studying hard and studying effectively are different things. The map reads the understanding, not the hours. This combination is a signal that the study method may need to change rather than the effort level increase."
     },
     {
-      a: /\b(faction loyalty|loyal to the faction|serving the faction|faction directive|faction interest|the faction comes first)\b/i,
-      b: /\b(player trust|I trust the player|the player has earned|I believe the player|I am choosing the player|player over faction|defecting|turning)\b/i,
-      text: "Faction loyalty and player trust pulling in opposite directions both appear. This is the threshold moment — faction vs relationship. The map is reading an active tension, not a contradiction to be resolved. Whether this is the designed turning point or an unplanned drift matters."
+      a: /\b(I am on top of it|I have plenty of time|I have enough time|I am not worried|there is time|I will be fine|I have got it covered|the deadline is not close)\b/i,
+      b: /\b(I have not started|I have not touched|I have not opened|I have not begun|I have done nothing|I have avoided|I keep meaning to|I have not looked at)\b/i,
+      text: "Stated time confidence and absent starting activity both appear. Believing there is enough time and having begun the work are different states. Deadline proximity combined with no start is a convergent risk."
     },
     {
-      a: /\b(the player does not know|player is unaware|concealed from player|player has not discovered|player trust is high|player believes)\b/i,
-      b: /\b(player has figured out|player suspects|player asked directly|player chose not to trust|player is testing|player already knows|player has evidence)\b/i,
-      text: "Player ignorance assumed and player awareness signals both appear. The NPC may be operating on an outdated model of what the player knows. This is a state change — the concealment dynamic may already be broken."
-    },
-    {
-      a: /\b(held tension|building toward|not yet|the arc is|this is deliberate|pacing|the reveal is coming|setting up)\b/i,
-      b: /\b(player disengaged|player skipped|player lost interest|player frustrated|player confused|nothing is happening|too slow|what is the point|player abandoned)\b/i,
-      text: "Deliberate narrative holding and player disengagement signals both appear. Held tension and stalled narrative look identical from the outside. The map cannot decide which this is — but it can surface that both signals are present at the same time."
+      a: /\b(I understand it|I am clear on|I have got it|I know the material|I am confident|I have it|I know this)\b/i,
+      b: /\b(I have not tested|I have not practised|I have not done any questions|I have not tried|I have just read|I have not applied|I have not reviewed)\b/i,
+      text: "Stated understanding and absent verification both appear. Familiarity from reading is not the same as understanding evidenced by practice or application. The map cannot treat stated confidence without testing evidence as confirmed understanding."
     }
   ],
   directionPatterns: [
     {
-      rx: /reveal|surface|expose|the truth comes out|the player discovers/i,
-      label: "toward revelation"
+      rx: /submit|assignment|essay|exam|deadline|coursework|project|hand in/i,
+      label: "toward assessment submission or preparation"
     },
     {
-      rx: /alliance|trust|align|join forces|player and NPC|working together/i,
-      label: "toward alliance"
+      rx: /understand|learn|grasp|concept|topic|get to grips|study|revision/i,
+      label: "toward understanding or learning"
     },
     {
-      rx: /betrayal|turning point|defection|the faction|choosing sides/i,
-      label: "toward betrayal or faction break"
+      rx: /help|support|tutor|supervisor|office hours|learning support|ask/i,
+      label: "toward help or support seeking"
     },
     {
-      rx: /consequence|reckoning|what was set in motion|downstream|the result/i,
-      label: "toward consequence arrival"
+      rx: /feedback|result|grade|mark|outcome|review|what was wrong/i,
+      label: "toward feedback or result review"
     },
     {
-      rx: /climax|final|the end|resolution|what it was all building toward/i,
-      label: "toward dramatic resolution"
+      rx: /direction|purpose|goal|career|why|qualification|next step|path/i,
+      label: "toward educational direction or purpose"
     },
     {
-      rx: /player is steering away|avoiding|not engaging|side-stepping|ignoring/i,
-      label: "player avoiding the designed arc"
+      rx: /attendance|engagement|showing up|staying|continuing|dropout|leave/i,
+      label: "toward programme engagement or continuation"
     }
   ],
   pressureSignals: [
     {
-      key: "trust_critical",
-      rx: /\b(trust is gone|trust has collapsed|player does not trust|trust level critical|they do not believe|I have lost them|player is hostile)\b/i,
-      label: "trust at critical level"
+      key: "avoidance_of_starting",
+      rx: /\b(I have not started|I keep putting off|I cannot begin|I have avoided|I keep meaning to|I cannot face|I have not opened|I have not touched)\b/i,
+      label: "avoidance of starting — deadline risk"
     },
     {
-      key: "agenda_surface",
-      rx: /\b(agenda surfacing|player suspects|almost revealed|close to breaking|nearly slipped|the cover is|beginning to show|player is close to knowing)\b/i,
-      label: "hidden agenda near surface"
+      key: "coverage_not_learning",
+      rx: /\b(I have read it all|I have covered it|I went through|I have looked at everything|I attended all|I have the notes|I have watched all the|I have been over)\b/i,
+      label: "coverage mistaken for understanding"
     },
     {
-      key: "faction_conflict",
-      rx: /\b(faction conflict|loyalty torn|two factions|caught between|serving two|cannot serve both|faction pressure|forced to choose)\b/i,
-      label: "faction loyalty conflict active"
+      key: "help_not_sought",
+      rx: /\b(I have not asked|I did not ask|I have not told|I have not gone to|I have not emailed|I managed alone|I did not want to ask|I was too embarrassed)\b/i,
+      label: "difficulty present but help not sought"
     },
     {
-      key: "consequence_due",
-      rx: /\b(consequence is due|the decision is catching up|downstream arriving|what was started|ripple reaching|the chain has reached|cannot be undone now)\b/i,
-      label: "consequence chain arriving"
+      key: "deadline_convergence",
+      rx: /\b(everything is due|multiple deadlines|they overlap|I have several|at the same time|all at once|I have too much|too much at once|everything is|all this week)\b/i,
+      label: "deadline convergence — overload risk"
     },
     {
-      key: "player_drift",
-      rx: /\b(player is drifting|player off arc|player ignoring|player going their own way|player not engaging|player has stopped|player lost interest)\b/i,
-      label: "player drifting from arc"
+      key: "direction_uncertainty",
+      rx: /\b(I am not sure this is right|I do not know if I want|I am questioning|I might not|I am not sure this course|I am not enjoying|this might not be for me)\b/i,
+      label: "direction uncertainty — dropout or disengagement risk"
     },
     {
-      key: "memory_gap",
-      rx: /\b(forgot|does not remember|memory gap|inconsistent|contradicted themselves|said something different|earlier they said|that is not what|contradiction in the record)\b/i,
-      label: "NPC memory gap"
+      key: "confidence_damage",
+      rx: /\b(I am not clever enough|I do not belong|everyone else gets it|I am behind|I am the worst|I should not be here|I am struggling more than|I am not good enough)\b/i,
+      label: "confidence damage — engagement and help-seeking at risk"
     }
   ],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,

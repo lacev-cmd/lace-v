@@ -600,17 +600,17 @@ label {
 // Assembly replaces everything between these markers.
 /* CARTRIDGE_START */
 window.SORTER_CARTRIDGE = {
-  id: "game-narrative",
-  name: "Personal Map",
-  tagline: "private · evidence-bound",
-  desc: "Game designer, narrative director, NPC behaviour system, or adaptive storytelling engine.. Key pressures: Player intent not yet visible — the map cannot read direction without it.; Faction loyalties unresolved — competing pulls on NPC behaviour.; Hidden agenda approaching surface — timing of reveal is load-sensitive..",
-  accent: "#2d5a3d",
-  accentLight: "#e8f0ea",
+  id: "employment",
+  name: "Employment Map",
+  tagline: "private · evidence-bound · activity-first",
+  desc: "Individual, employment support worker, career adviser, or case manager.. Key pressures: Job search that produces no responses — activity without result.; Financial pressure from unemployment making honest reflection harder.; Mismatch between what the person is pursuing and what they are qualified or positioned to get..",
+  accent: "#3a2a1a",
+  accentLight: "#f4f0ec",
   baselineTitle: "Set your baseline",
-  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: player intent not named — what the player is actually trying to achieve; faction relationships not mapped — who is aligned with whom and why; hidden agendas not listed — what each npc is concealing and from whom. Movement in this domain looks like: hidden agenda surfaced — partial or full reveal; faction relationship shifted — alliance formed, strained, or broken.",
-  baselinePlaceholder: "Where are you now? What has led to this point? Include: player intent not named — what the player is actually trying to achieve.",
+  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: target role or sector not stated — searching without direction; application activity not described — how many, to what, with what result; skills or experience gap not named. Movement in this domain looks like: application submitted; interview attended.",
+  baselinePlaceholder: "Where are you now? What has led to this point? Include: target role or sector not stated — searching without direction.",
   entryTitle: "Add an entry",
-  entryDesc: "Precise about state. Non-prescriptive about story. Evidence-bound about what has happened. Does not invent motivation — reads what is in the material.",
+  entryDesc: "Direct. Non-judgemental. Activity-focused. Reads what has been done, not what has been felt.",
   entryPlaceholder: "What is on your mind?",
   reportDesc: "The map reads what is moving, stuck, and under load based on what you wrote.",
   reportEmptyDesc: "Add a baseline and at least one entry, then read your map.",
@@ -618,167 +618,147 @@ window.SORTER_CARTRIDGE = {
   crisisRx: /\b(kill myself|end my life|suicide|suicidal|I want to die|don't want to be here|hurt myself|harm myself|can't go on|not worth it|overdose)\b/i,
   gaps: [
     {
-      key: "player_intent",
-      name: "Player intent",
-      rx: /\b(player wants|player is trying|player goal|player objective|what the player|player direction|player is building toward|player has chosen|player keeps|player pattern)\b/i,
-      reason: "Without player intent named the map cannot read whether NPC behaviour is serving or obstructing the narrative. Intent is the baseline everything else is measured against."
+      key: "target_role_or_sector",
+      name: "Target role or sector",
+      rx: /\b(I want to work as|I am looking for|I am applying for|the role I want|my target|the sector I|the type of work|what I am going for|the position|I want a job in|I am trying to get)\b/i,
+      reason: "Without a stated target role or sector the map cannot assess whether activity is directed or scattered. Searching without direction is a different picture from searching in a defined area that is not responding."
     },
     {
-      key: "faction_map",
-      name: "Faction relationships",
-      rx: /\b(faction|alliance|aligned with|loyal to|hostile to|neutral|faction relationship|standing with|reputation with|the factions|who controls|who is with|who is against)\b/i,
-      reason: "Faction relationships are the structural map of the world. Without them the sorter cannot read whether NPC actions are coherent, contradictory, or consequential."
+      key: "application_activity",
+      name: "Application activity — volume and result",
+      rx: /\b(I applied|I submitted|the application|I sent|I have applied to|how many|I have had|interviews|rejections|no response|I have not heard|they came back|I got through)\b/i,
+      reason: "Without described application activity the map cannot distinguish between someone who is searching actively without result and someone who is avoiding applications while describing the search. Volume and result are both required."
     },
     {
-      key: "hidden_agendas",
-      name: "Hidden agendas defined",
-      rx: /\b(hidden agenda|secret goal|concealing|does not reveal|privately wants|what they are not saying|true motivation|ulterior|what they are really after|the real reason)\b/i,
-      reason: "Hidden agendas drive NPC behaviour in ways that appear inconsistent without them named. Without them mapped the sorter reads contradiction where there is only concealment."
+      key: "skills_or_experience_gap",
+      name: "Skills or experience gap",
+      rx: /\b(I do not have|I lack|I need more|I am not qualified|my experience is|the gap is|I need to develop|I am missing|the requirement is|I do not meet|I am not yet|I need to learn)\b/i,
+      reason: "Without a named skills or experience gap the map cannot assess whether the search difficulty is a positioning issue, a targeting issue, or an activity issue. The gap type determines the useful next move."
     },
     {
-      key: "consequence_chains",
-      name: "Active consequence chains",
-      rx: /\b(consequence|downstream|because of the decision|ripple|what that means for|what follows from|the result of|triggered by|set in motion|what was started|the chain)\b/i,
-      reason: "Decisions already made are still in motion. Without consequence chains traced the map cannot read what is moving and what is held."
+      key: "workplace_situation",
+      name: "Current workplace situation — if employed",
+      rx: /\b(at work|my manager|the workplace|the team|I am currently|I have a job|my current role|performance|I am on a|warning|the review|the situation at work|my employer)\b/i,
+      reason: "If currently employed, the workplace situation — including any performance management, conflict, or risk of job loss — is the most immediate material. Without it described the map is reading the search in isolation from the actual employment picture."
     },
     {
-      key: "trust_baseline",
-      name: "Trust baselines established",
-      rx: /\b(trust level|trust baseline|where the relationship started|initial standing|they trusted|they did not trust|starting point|before the|when they first met|the relationship began)\b/i,
-      reason: "Trust movement is only readable against a baseline. Without it named the map cannot tell whether a relationship is improving, degrading, or holding."
-    },
-    {
-      key: "dramatic_arc",
-      name: "Dramatic arc",
-      rx: /\b(arc|story arc|building toward|what this is about|the theme|what this story|the narrative direction|where this is going|what the climax|the turning point|what changes)\b/i,
-      reason: "Without the dramatic arc named the map cannot distinguish held tension from stuck narrative, or deliberate pacing from loss of momentum."
+      key: "financial_runway",
+      name: "Financial runway or urgency",
+      rx: /\b(I have until|I can last|my savings|my redundancy|the benefit|I need to find|the pressure is|financially I|I cannot wait|the money runs out|by when I need|urgency)\b/i,
+      reason: "Financial pressure shapes what can be considered and how quickly. Without a sense of timeline the map cannot assess whether the search approach is appropriate for the urgency."
     }
   ],
   skills: [
     {
-      key: "agenda_concealment",
-      name: "Holding a hidden agenda under pressure",
-      rx: /\b(did not reveal|kept it hidden|deflected|changed the subject|said enough|gave nothing away|maintained the cover|stayed in character|did not break|held the secret|concealed|the player does not know)\b/i,
-      loadSensitive: true,
-      isStructureSkill: false,
-      works: "NPC maintains concealment consistently — answers questions without lying outright, deflects without revealing, stays in character under interrogation.",
-      breaks: "High trust from player, extreme pressure, or conflicting faction loyalties causes partial or full agenda surfacing before the designed reveal moment."
-    },
-    {
-      key: "faction_consistency",
-      name: "Behaving consistently with faction loyalty",
-      rx: /\b(loyal to|acting for|serving|reporting back|in line with|consistent with faction|faction interest|the faction wants|faction directive|faction alignment)\b/i,
-      loadSensitive: true,
+      key: "directed_search",
+      name: "Targeting the search rather than applying broadly",
+      rx: /\b(I am focusing on|I am targeting|I am only applying to|I narrowed|I chose this sector|I am going for|I identified|this type of role|I selected|I am concentrating on)\b/i,
+      loadSensitive: false,
       isStructureSkill: true,
-      works: "NPC behaviour is legible as factionally motivated — player can eventually read the pattern even if they do not yet know the faction.",
-      breaks: "Conflicting faction loyalties, player trust that exceeds faction loyalty threshold, or unresolved dramatic arc creates inconsistent behaviour that reads as broken rather than complex."
+      works: "Defining a target role or sector and directing activity toward it — making the search legible and adjustable when it does not produce results.",
+      breaks: "Anxiety about finding anything causes a broad scatter approach — many applications to varied roles — producing low return rates and no clear signal about what is and is not working."
     },
     {
-      key: "trust_management",
-      name: "Managing trust level across interactions",
-      rx: /\b(trust increased|trust decreased|player trusts|they trust me|I have their trust|trust level|building trust|losing trust|earned trust|trust dropped|trust rose|reliable|consistent|they believe)\b/i,
+      key: "activity_over_intent",
+      name: "Describing activity rather than intention",
+      rx: /\b(I applied|I submitted|I contacted|I sent|I reached out|I attended|I completed|I updated|I spoke to|I went to|I followed up|I called)\b/i,
       loadSensitive: false,
-      isStructureSkill: false,
-      works: "NPC actions and stated positions are consistent enough that player trust moves in a readable direction — either building or eroding in ways that feel earned.",
-      breaks: "Contradiction between NPC stated position and action, or between faction directive and player-facing behaviour, collapses trust in ways that feel arbitrary rather than consequential."
+      isStructureSkill: true,
+      works: "Naming what was done — application submitted, contact made, interview attended — rather than what is planned or intended. Activity is the only material the map can read.",
+      breaks: "Avoidance of actual applications while describing a busy search causes the map to read intent as activity. Planned actions presented as if they have happened are invisible gaps."
     },
     {
-      key: "consequence_tracking",
-      name: "Tracking and surfacing consequences",
-      rx: /\b(remember when|because of what happened|as a result of|the decision you made|that changed|you did|the last time|I have not forgotten|what you chose|that is why|the consequence of)\b/i,
-      loadSensitive: false,
-      isStructureSkill: false,
-      works: "Prior decisions surface naturally in NPC behaviour — the world remembers what the player did and the NPC reflects it without breaking the fourth wall.",
-      breaks: "Memory gap — NPC fails to connect a prior decision to current behaviour, making the world feel amnesiac and consequence-free."
-    },
-    {
-      key: "dramatic_timing",
-      name: "Timing reveals and escalations",
-      rx: /\b(not yet|not the right moment|holding back|waiting for|when the time comes|the reveal|the moment|building to|when they are ready|the right time|before the climax|after the|timing)\b/i,
+      key: "rejection_reading",
+      name: "Reading rejection as information rather than verdict",
+      rx: /\b(the rejection showed|I can see what|I learned from|the pattern is|it tells me|the feedback was|I adjusted|I can see why|I understand now|the signal is|the reason might be)\b/i,
       loadSensitive: true,
       isStructureSkill: false,
-      works: "Information, reveals, and escalations arrive when they create maximum narrative effect — not too early (defusing tension) or too late (losing the player).",
-      breaks: "Pressure from player progress, pacing miscalculation, or consequence chains arriving out of order causes reveals to land flat or too abruptly."
+      works: "Treating rejection or no-response as signal — about targeting, positioning, or materials — rather than as verdict on the person.",
+      breaks: "Accumulated rejection collapses into confidence damage. The search becomes harder to sustain and harder to read analytically. At this point activity often reduces without the person naming the reduction."
+    },
+    {
+      key: "gap_acknowledgement",
+      name: "Naming the skills or experience gap directly",
+      rx: /\b(I do not have enough|I lack the|my gap is|I need to develop|I am missing|the experience I need|I am not yet|I need more|the requirement I do not meet|I need to build)\b/i,
+      loadSensitive: false,
+      isStructureSkill: false,
+      works: "Naming the specific gap — qualification, experience level, sector knowledge — rather than describing a general sense of not being suitable. A named gap can be addressed. A general inadequacy cannot.",
+      breaks: "Confidence damage converts a specific, addressable gap into a global statement about the person. The gap stops being a problem to solve and becomes a characteristic."
     }
   ],
   contradictions: [
     {
-      a: /\b(I am on your side|I want to help you|you can trust me|I am with you|your ally|I am working for you|your interests matter)\b/i,
-      b: /\b(hidden agenda|reporting to|faction directive|concealing|the player does not know|ulterior|what they are really after|secretly)\b/i,
-      text: "Stated alliance and a hidden agenda that works against the player both appear. This is not a flaw — it is the core dramatic tension of a duplicitous NPC. The map holds both. The question is whether the contradiction has been designed into the arc or has arrived by accident."
+      a: /\b(I have been applying|I have been looking|I have been searching|I have been trying|I have been putting in the work|I have been active)\b/i,
+      b: /\b(I have not submitted|I have not sent|I have not applied to|I have not contacted|I have been meaning to|I have not actually|I keep planning to)\b/i,
+      text: "Described search activity and absent application evidence both appear. Searching and applying are different activities. Described busyness without named submissions, contacts, or interviews is the most common pattern in employment material. The map reads the described actions, not the described effort."
     },
     {
-      a: /\b(faction loyalty|loyal to the faction|serving the faction|faction directive|faction interest|the faction comes first)\b/i,
-      b: /\b(player trust|I trust the player|the player has earned|I believe the player|I am choosing the player|player over faction|defecting|turning)\b/i,
-      text: "Faction loyalty and player trust pulling in opposite directions both appear. This is the threshold moment — faction vs relationship. The map is reading an active tension, not a contradiction to be resolved. Whether this is the designed turning point or an unplanned drift matters."
+      a: /\b(I am qualified for|I have the right experience|I meet the requirements|I am suitable for|I have what they need|I have enough|I have the background)\b/i,
+      b: /\b(they did not respond|I keep getting rejected|no one is coming back|the feedback was|they said I did not|I am not getting through|they are looking for)\b/i,
+      text: "Stated qualification confidence and consistent rejection or silence both appear. The gap between self-assessed suitability and market response is significant. The map must hold both without resolving either."
     },
     {
-      a: /\b(the player does not know|player is unaware|concealed from player|player has not discovered|player trust is high|player believes)\b/i,
-      b: /\b(player has figured out|player suspects|player asked directly|player chose not to trust|player is testing|player already knows|player has evidence)\b/i,
-      text: "Player ignorance assumed and player awareness signals both appear. The NPC may be operating on an outdated model of what the player knows. This is a state change — the concealment dynamic may already be broken."
-    },
-    {
-      a: /\b(held tension|building toward|not yet|the arc is|this is deliberate|pacing|the reveal is coming|setting up)\b/i,
-      b: /\b(player disengaged|player skipped|player lost interest|player frustrated|player confused|nothing is happening|too slow|what is the point|player abandoned)\b/i,
-      text: "Deliberate narrative holding and player disengagement signals both appear. Held tension and stalled narrative look identical from the outside. The map cannot decide which this is — but it can surface that both signals are present at the same time."
+      a: /\b(I am happy to take anything|I will apply to everything|any job is fine|I am not fussy|anything to get back|I will do anything)\b/i,
+      b: /\b(I turned down|I did not go to|I did not apply to|I decided not to|that was not right for me|I did not like|I am not doing|I would not consider)\b/i,
+      text: "Stated willingness to take any role and described selectivity both appear. The stated flexibility and the described behaviour are not matching. The actual criteria — unstated — are shaping the search more than the stated openness suggests."
     }
   ],
   directionPatterns: [
     {
-      rx: /reveal|surface|expose|the truth comes out|the player discovers/i,
-      label: "toward revelation"
+      rx: /apply|application|submit|CV|cover letter|job board|recruiter/i,
+      label: "toward active job search activity"
     },
     {
-      rx: /alliance|trust|align|join forces|player and NPC|working together/i,
-      label: "toward alliance"
+      rx: /interview|assessment|test|phone screen|meet the team/i,
+      label: "toward interview or selection process"
     },
     {
-      rx: /betrayal|turning point|defection|the faction|choosing sides/i,
-      label: "toward betrayal or faction break"
+      rx: /training|qualification|course|develop|skill|certificate/i,
+      label: "toward skills development or qualification"
     },
     {
-      rx: /consequence|reckoning|what was set in motion|downstream|the result/i,
-      label: "toward consequence arrival"
+      rx: /network|contact|reach out|referral|connection|introduction/i,
+      label: "toward networking or relationship-based search"
     },
     {
-      rx: /climax|final|the end|resolution|what it was all building toward/i,
-      label: "toward dramatic resolution"
+      rx: /workplace|manager|HR|performance|review|warning|grievance/i,
+      label: "toward workplace situation management"
     },
     {
-      rx: /player is steering away|avoiding|not engaging|side-stepping|ignoring/i,
-      label: "player avoiding the designed arc"
+      rx: /direction|sector|role|target|focus|decide|I want to|career/i,
+      label: "toward career direction decision"
     }
   ],
   pressureSignals: [
     {
-      key: "trust_critical",
-      rx: /\b(trust is gone|trust has collapsed|player does not trust|trust level critical|they do not believe|I have lost them|player is hostile)\b/i,
-      label: "trust at critical level"
+      key: "activity_avoidance",
+      rx: /\b(I meant to apply|I was going to|I planned to|I will do it tomorrow|I have not got round to|I keep meaning to|I have been meaning to|I should have)\b/i,
+      label: "application avoidance — intent substituting for action"
     },
     {
-      key: "agenda_surface",
-      rx: /\b(agenda surfacing|player suspects|almost revealed|close to breaking|nearly slipped|the cover is|beginning to show|player is close to knowing)\b/i,
-      label: "hidden agenda near surface"
+      key: "rejection_accumulation",
+      rx: /\b(another rejection|again|same again|no one wants|nothing is working|I keep failing|I am getting nowhere|it is pointless|why bother|nothing comes of it)\b/i,
+      label: "rejection accumulation — confidence and activity risk"
     },
     {
-      key: "faction_conflict",
-      rx: /\b(faction conflict|loyalty torn|two factions|caught between|serving two|cannot serve both|faction pressure|forced to choose)\b/i,
-      label: "faction loyalty conflict active"
+      key: "financial_urgency",
+      rx: /\b(I need to find something|I cannot wait|money is running out|I have to|the pressure is building|I have run out|I am desperate|I need income now)\b/i,
+      label: "financial urgency — quality of decision-making at risk"
     },
     {
-      key: "consequence_due",
-      rx: /\b(consequence is due|the decision is catching up|downstream arriving|what was started|ripple reaching|the chain has reached|cannot be undone now)\b/i,
-      label: "consequence chain arriving"
+      key: "direction_absence",
+      rx: /\b(I do not know what I want|I have no idea|anything will do|I am not sure what|I have not decided|I do not have a plan|I am not sure where to go)\b/i,
+      label: "direction absent — scattered search likely"
     },
     {
-      key: "player_drift",
-      rx: /\b(player is drifting|player off arc|player ignoring|player going their own way|player not engaging|player has stopped|player lost interest)\b/i,
-      label: "player drifting from arc"
+      key: "confidence_damage",
+      rx: /\b(I am not good enough|I do not have what it takes|I am not qualified for anything|no one wants me|I am useless at|I cannot do|I am behind everyone|I have nothing)\b/i,
+      label: "confidence damage — activity likely reducing"
     },
     {
-      key: "memory_gap",
-      rx: /\b(forgot|does not remember|memory gap|inconsistent|contradicted themselves|said something different|earlier they said|that is not what|contradiction in the record)\b/i,
-      label: "NPC memory gap"
+      key: "workplace_worsening",
+      rx: /\b(it is getting worse at work|my manager|they are pushing me out|I am on a warning|the atmosphere|it is hostile|I dread going in|I cannot continue)\b/i,
+      label: "workplace situation worsening — urgency may be higher than stated"
     }
   ],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,

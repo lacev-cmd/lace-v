@@ -600,17 +600,17 @@ label {
 // Assembly replaces everything between these markers.
 /* CARTRIDGE_START */
 window.SORTER_CARTRIDGE = {
-  id: "game-narrative",
+  id: "stem-robotics",
   name: "Personal Map",
   tagline: "private · evidence-bound",
-  desc: "Game designer, narrative director, NPC behaviour system, or adaptive storytelling engine.. Key pressures: Player intent not yet visible — the map cannot read direction without it.; Faction loyalties unresolved — competing pulls on NPC behaviour.; Hidden agenda approaching surface — timing of reveal is load-sensitive..",
+  desc: "Robotics engineer, maintenance team, production manager, autonomy team, asset owner, reliability reviewer, integrator, insurer, or technical governance reviewer.. Key pressures: Robot appears operational while hidden burden is accumulating.; Fault clears or robot resets, but burden state may not have recovered.; Production pressure encourages continued operation past prudent bounds..",
   accent: "#2d5a3d",
   accentLight: "#e8f0ea",
   baselineTitle: "Set your baseline",
-  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: player intent not named — what the player is actually trying to achieve; faction relationships not mapped — who is aligned with whom and why; hidden agendas not listed — what each npc is concealing and from whom. Movement in this domain looks like: hidden agenda surfaced — partial or full reveal; faction relationship shifted — alliance formed, strained, or broken.",
-  baselinePlaceholder: "Where are you now? What has led to this point? Include: player intent not named — what the player is actually trying to achieve.",
+  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: current duty envelope not defined; reset/fault/protective-stop history not described; telemetry sources not identified. Movement in this domain looks like: hidden burden source is named; reset or recovery event is tested against burden state, not surface state only.",
+  baselinePlaceholder: "Where are you now? What has led to this point? Include: current duty envelope not defined.",
   entryTitle: "Add an entry",
-  entryDesc: "Precise about state. Non-prescriptive about story. Evidence-bound about what has happened. Does not invent motivation — reads what is in the material.",
+  entryDesc: "Operationally precise. Evidence-bound. Asset-focused. No safety certification language. No false assurance from green status, reset, or dashboard health.",
   entryPlaceholder: "What is on your mind?",
   reportDesc: "The map reads what is moving, stuck, and under load based on what you wrote.",
   reportEmptyDesc: "Add a baseline and at least one entry, then read your map.",
@@ -618,169 +618,188 @@ window.SORTER_CARTRIDGE = {
   crisisRx: /\b(kill myself|end my life|suicide|suicidal|I want to die|don't want to be here|hurt myself|harm myself|can't go on|not worth it|overdose)\b/i,
   gaps: [
     {
-      key: "player_intent",
-      name: "Player intent",
-      rx: /\b(player wants|player is trying|player goal|player objective|what the player|player direction|player is building toward|player has chosen|player keeps|player pattern)\b/i,
-      reason: "Without player intent named the map cannot read whether NPC behaviour is serving or obstructing the narrative. Intent is the baseline everything else is measured against."
+      key: "robot_asset_identity",
+      name: "Robot or robotic asset identity",
+      rx: /\b(robot|robotic asset|arm|cobot|UGV|AMR|AGV|drone|autonomous asset|production robot|field robot|cell|fleet unit|machine)\b/i,
+      reason: "The map needs to know what asset is being assessed. Robot class, role, and operating context affect which burden signals matter."
     },
     {
-      key: "faction_map",
-      name: "Faction relationships",
-      rx: /\b(faction|alliance|aligned with|loyal to|hostile to|neutral|faction relationship|standing with|reputation with|the factions|who controls|who is with|who is against)\b/i,
-      reason: "Faction relationships are the structural map of the world. Without them the sorter cannot read whether NPC actions are coherent, contradictory, or consequential."
+      key: "duty_envelope",
+      name: "Duty envelope",
+      rx: /\b(duty envelope|next shift|mission|cycle|payload|speed|runtime|task class|production duty|operating envelope|work envelope|duty cycle|assigned role)\b/i,
+      reason: "A robot may be admissible for one duty but not another. Next-shift or next-mission readiness cannot be read without the intended duty envelope."
     },
     {
-      key: "hidden_agendas",
-      name: "Hidden agendas defined",
-      rx: /\b(hidden agenda|secret goal|concealing|does not reveal|privately wants|what they are not saying|true motivation|ulterior|what they are really after|the real reason)\b/i,
-      reason: "Hidden agendas drive NPC behaviour in ways that appear inconsistent without them named. Without them mapped the sorter reads contradiction where there is only concealment."
+      key: "visible_state",
+      name: "Visible state",
+      rx: /\b(green|running|operational|fault cleared|reset|dashboard|status|cycle completed|online|nominal|passed|healthy|available)\b/i,
+      reason: "Visible state is useful but incomplete. The map must distinguish surface operation from hidden burden and true recovery."
     },
     {
-      key: "consequence_chains",
-      name: "Active consequence chains",
-      rx: /\b(consequence|downstream|because of the decision|ripple|what that means for|what follows from|the result of|triggered by|set in motion|what was started|the chain)\b/i,
-      reason: "Decisions already made are still in motion. Without consequence chains traced the map cannot read what is moving and what is held."
+      key: "reset_or_fault_history",
+      name: "Reset, fault, or protective-stop history",
+      rx: /\b(reset|fault|alarm|protective stop|stop event|cleared|restarted|fault code|error code|trip|shutdown|interlock|restart history)\b/i,
+      reason: "Repeated faults, resets, or protective stops can indicate accumulating burden even when the robot returns to green status."
     },
     {
-      key: "trust_baseline",
-      name: "Trust baselines established",
-      rx: /\b(trust level|trust baseline|where the relationship started|initial standing|they trusted|they did not trust|starting point|before the|when they first met|the relationship began)\b/i,
-      reason: "Trust movement is only readable against a baseline. Without it named the map cannot tell whether a relationship is improving, degrading, or holding."
+      key: "telemetry_sources",
+      name: "Telemetry sources",
+      rx: /\b(telemetry|temperature|current|vibration|motor load|actuator load|battery|voltage|torque|encoder|positioning|repeatability|cycle time|sensor data|controller data)\b/i,
+      reason: "Robotic burden is usually inferred from telemetry proxies. The map needs to know what signals exist before it can read burden quality."
     },
     {
-      key: "dramatic_arc",
-      name: "Dramatic arc",
-      rx: /\b(arc|story arc|building toward|what this is about|the theme|what this story|the narrative direction|where this is going|what the climax|the turning point|what changes)\b/i,
-      reason: "Without the dramatic arc named the map cannot distinguish held tension from stuck narrative, or deliberate pacing from loss of momentum."
+      key: "burden_classes",
+      name: "Burden classes",
+      rx: /\b(thermal|heat|vibration|fatigue|wear|gearbox|bearing|lubrication|seal|cable|joint|actuator|electrical strain|battery strain|contamination|drift|roughness|repeatability decay)\b/i,
+      reason: "Hidden burden must be classified. A generic statement that the robot is under stress is weaker than naming the burden class."
+    },
+    {
+      key: "burden_persistence",
+      name: "Burden persistence over time",
+      rx: /\b(trend|over time|persistent|recurring|accumulating|not recovering|keeps happening|again|repeat|history|pattern|cumulative|non-recovering)\b/i,
+      reason: "Temporary stress and accumulating damage are different reads. Persistence determines whether the burden is a passing event or a deteriorating state."
+    },
+    {
+      key: "recovery_basis",
+      name: "Recovery or return-to-service basis",
+      rx: /\b(return to service|recovered|cooldown|after reset|after maintenance|released back|cleared to run|restarted|back online|safe to resume|ready for next shift)\b/i,
+      reason: "The map needs the basis for recovery. A fault clearing is not the same as evidence that burden has been relieved."
+    },
+    {
+      key: "degraded_mode_options",
+      name: "Degraded-mode options",
+      rx: /\b(derate|slow down|reduced speed|reduced payload|restrict|inspect before|supervision|re-task|recover|withdraw|remove from service|safe stop|continue with restriction)\b/i,
+      reason: "Robots often have states between normal operation and failure. Degraded-mode options must be visible before the map can support bounded continuation."
+    },
+    {
+      key: "integration_exposure",
+      name: "Integration or production-cell exposure",
+      rx: /\b(cell|fixture|end effector|guarding|upstream|downstream|line|production capability|throughput|quality tolerance|recommissioning|integrator|fleet|mission continuity|cascade)\b/i,
+      reason: "The exposed asset is often not just the robot. The integrated cell, line, fleet, or mission may carry the real commercial consequence."
+    },
+    {
+      key: "qualified_boundary",
+      name: "Qualified engineering or safety boundary",
+      rx: /\b(safety system|risk assessment|OEM|qualified engineer|maintenance authority|safety certification|statutory|compliance|lockout|functional safety|professional judgement)\b/i,
+      reason: "Robotics outputs must not imply safety approval or engineering sign-off. Qualified authority boundaries must remain visible."
+    },
+    {
+      key: "direction",
+      name: "Stated robotics question",
+      rx: /\b(is it fit|can it run|next shift|should we run|should we stop|ready for|trustworthy|admissible|continue|derate|inspect|withdraw|what should happen before)\b/i,
+      reason: "The map needs the actual robotics decision question: current cycle, next shift, next mission, maintenance timing, derating, or withdrawal."
     }
   ],
   skills: [
     {
-      key: "agenda_concealment",
-      name: "Holding a hidden agenda under pressure",
-      rx: /\b(did not reveal|kept it hidden|deflected|changed the subject|said enough|gave nothing away|maintained the cover|stayed in character|did not break|held the secret|concealed|the player does not know)\b/i,
-      loadSensitive: true,
-      isStructureSkill: false,
-      works: "NPC maintains concealment consistently — answers questions without lying outright, deflects without revealing, stays in character under interrogation.",
-      breaks: "High trust from player, extreme pressure, or conflicting faction loyalties causes partial or full agenda surfacing before the designed reveal moment."
-    },
-    {
-      key: "faction_consistency",
-      name: "Behaving consistently with faction loyalty",
-      rx: /\b(loyal to|acting for|serving|reporting back|in line with|consistent with faction|faction interest|the faction wants|faction directive|faction alignment)\b/i,
+      key: "burden_observation",
+      name: "Observing hidden burden",
+      rx: /\b(temperature trend|vibration trend|current ripple|motor load|actuator lag|battery stress|thermal behaviour|repeatability drift|cycle-time instability|telemetry showed|burden estimate)\b/i,
       loadSensitive: true,
       isStructureSkill: true,
-      works: "NPC behaviour is legible as factionally motivated — player can eventually read the pattern even if they do not yet know the faction.",
-      breaks: "Conflicting faction loyalties, player trust that exceeds faction loyalty threshold, or unresolved dramatic arc creates inconsistent behaviour that reads as broken rather than complex."
+      works: "Telemetry or logs are used to infer hidden burden rather than relying on dashboard state alone.",
+      breaks: "Telemetry is present but treated as disconnected readings. No burden picture emerges."
     },
     {
-      key: "trust_management",
-      name: "Managing trust level across interactions",
-      rx: /\b(trust increased|trust decreased|player trusts|they trust me|I have their trust|trust level|building trust|losing trust|earned trust|trust dropped|trust rose|reliable|consistent|they believe)\b/i,
-      loadSensitive: false,
-      isStructureSkill: false,
-      works: "NPC actions and stated positions are consistent enough that player trust moves in a readable direction — either building or eroding in ways that feel earned.",
-      breaks: "Contradiction between NPC stated position and action, or between faction directive and player-facing behaviour, collapses trust in ways that feel arbitrary rather than consequential."
-    },
-    {
-      key: "consequence_tracking",
-      name: "Tracking and surfacing consequences",
-      rx: /\b(remember when|because of what happened|as a result of|the decision you made|that changed|you did|the last time|I have not forgotten|what you chose|that is why|the consequence of)\b/i,
-      loadSensitive: false,
-      isStructureSkill: false,
-      works: "Prior decisions surface naturally in NPC behaviour — the world remembers what the player did and the NPC reflects it without breaking the fourth wall.",
-      breaks: "Memory gap — NPC fails to connect a prior decision to current behaviour, making the world feel amnesiac and consequence-free."
-    },
-    {
-      key: "dramatic_timing",
-      name: "Timing reveals and escalations",
-      rx: /\b(not yet|not the right moment|holding back|waiting for|when the time comes|the reveal|the moment|building to|when they are ready|the right time|before the climax|after the|timing)\b/i,
+      key: "false_recovery_checking",
+      name: "Checking for false recovery",
+      rx: /\b(false recovery|after reset|fault cleared but|cooled down but|green again but|still elevated|not truly recovered|burden remained|reset did not|status improved but)\b/i,
       loadSensitive: true,
+      isStructureSkill: true,
+      works: "Recovery is tested by comparing visible state with burden state after reset, cooldown, maintenance, or restart.",
+      breaks: "The robot is recommitted because status returned to green, without checking whether burden actually reduced."
+    },
+    {
+      key: "degraded_mode_governance",
+      name: "Governing degraded mode",
+      rx: /\b(derated|reduced speed|restricted payload|restricted task|inspect before next shift|continue with restriction|safe stop|withdrawn|re-tasked|supervised operation)\b/i,
+      loadSensitive: true,
+      isStructureSkill: true,
+      works: "The robot remains useful without pretending it is fresh. Restrictions are stated and tied to the burden picture.",
+      breaks: "The robot is treated as either fully healthy or failed, with no honest middle state."
+    },
+    {
+      key: "return_late",
+      name: "Returning cautiously after recovery",
+      rx: /\b(return cautiously|resume late|not immediately full load|gradual return|monitored restart|reduced demand after|post-recovery|step back up|avoid maximum demand)\b/i,
+      loadSensitive: false,
       isStructureSkill: false,
-      works: "Information, reveals, and escalations arrive when they create maximum narrative effect — not too early (defusing tension) or too late (losing the player).",
-      breaks: "Pressure from player progress, pacing miscalculation, or consequence chains arriving out of order causes reveals to land flat or too abruptly."
+      works: "The robot is brought back gradually after recovery rather than immediately returning to maximum demand.",
+      breaks: "The robot returns to full duty immediately after a visible recovery event, creating repeated burden spikes."
+    },
+    {
+      key: "integration_risk_visibility",
+      name: "Making integration exposure visible",
+      rx: /\b(production cell|line stoppage|upstream|downstream|end effector|fixture|quality drift|recommissioning|throughput loss|mission loss|fleet impact)\b/i,
+      loadSensitive: false,
+      isStructureSkill: false,
+      works: "The review sees the robot as part of an integrated production or mission system, not an isolated machine.",
+      breaks: "The assessment treats the robot alone as the whole risk, missing the surrounding production or mission exposure."
+    },
+    {
+      key: "withholding_robot_confidence",
+      name: "Withholding robot confidence where evidence is thin",
+      rx: /\b(grey|insufficient evidence|not enough telemetry|cannot say|confidence withheld|not admissible|provisional|conditional|needs inspection|needs data)\b/i,
+      loadSensitive: false,
+      isStructureSkill: true,
+      works: "The reviewer refuses to give a confident readiness status where the telemetry, logs, or inspection evidence is thin.",
+      breaks: "The robot receives a readiness conclusion because the operation wants one, not because the evidence can support it."
     }
   ],
   contradictions: [
     {
-      a: /\b(I am on your side|I want to help you|you can trust me|I am with you|your ally|I am working for you|your interests matter)\b/i,
-      b: /\b(hidden agenda|reporting to|faction directive|concealing|the player does not know|ulterior|what they are really after|secretly)\b/i,
-      text: "Stated alliance and a hidden agenda that works against the player both appear. This is not a flaw — it is the core dramatic tension of a duplicitous NPC. The map holds both. The question is whether the contradiction has been designed into the arc or has arrived by accident."
+      a: /\b(green|healthy|operational|running|available|fault cleared|reset|back online|cycle completed|status normal)\b/i,
+      b: /\b(thermal|vibration|wear|fatigue|drift|burden|strain|repeat fault|protective stop|repeatability decay|gearbox|bearing|actuator)\b/i,
+      text: "Visible robot health and hidden burden both appear. The robot may be operational while becoming less admissible for the next duty envelope."
     },
     {
-      a: /\b(faction loyalty|loyal to the faction|serving the faction|faction directive|faction interest|the faction comes first)\b/i,
-      b: /\b(player trust|I trust the player|the player has earned|I believe the player|I am choosing the player|player over faction|defecting|turning)\b/i,
-      text: "Faction loyalty and player trust pulling in opposite directions both appear. This is the threshold moment — faction vs relationship. The map is reading an active tension, not a contradiction to be resolved. Whether this is the designed turning point or an unplanned drift matters."
+      a: /\b(reset fixed it|fault cleared|restarted|cooled down|back to normal|green again|returned to service)\b/i,
+      b: /\b(same fault|again|recurring|still elevated|not recovered|burden remained|repeat|keeps happening|false recovery|trend continues)\b/i,
+      text: "Visible recovery and persistent burden both appear. A reset or cooldown may have cleared the fault state without clearing the burden state."
     },
     {
-      a: /\b(the player does not know|player is unaware|concealed from player|player has not discovered|player trust is high|player believes)\b/i,
-      b: /\b(player has figured out|player suspects|player asked directly|player chose not to trust|player is testing|player already knows|player has evidence)\b/i,
-      text: "Player ignorance assumed and player awareness signals both appear. The NPC may be operating on an outdated model of what the player knows. This is a state change — the concealment dynamic may already be broken."
+      a: /\b(need production|must keep running|cannot stop|throughput|deadline|shift target|mission must continue|availability pressure)\b/i,
+      b: /\b(inspect|derate|withdraw|maintenance|safe stop|not admissible|burden|risk|degraded|next shift)\b/i,
+      text: "Production pressure and burden-aware restriction both appear. The map must not let output pressure erase the technical readiness question."
     },
     {
-      a: /\b(held tension|building toward|not yet|the arc is|this is deliberate|pacing|the reveal is coming|setting up)\b/i,
-      b: /\b(player disengaged|player skipped|player lost interest|player frustrated|player confused|nothing is happening|too slow|what is the point|player abandoned)\b/i,
-      text: "Deliberate narrative holding and player disengagement signals both appear. Held tension and stalled narrative look identical from the outside. The map cannot decide which this is — but it can surface that both signals are present at the same time."
+      a: /\b(same model|same robot|same platform|same cell|same task|historically fine|always run this way)\b/i,
+      b: /\b(new payload|changed duty|different end effector|new environment|firmware change|increased speed|longer runtime|aging|maintenance deferred)\b/i,
+      text: "Historical confidence and changed operating conditions both appear. Prior safe operation may not carry the new duty envelope without reconciliation."
+    },
+    {
+      a: /\b(telemetry shows|sensor says|dashboard shows|data indicates|burden estimate)\b/i,
+      b: /\b(no calibration|uncertain|no baseline|no validation|no threshold|unknown accuracy|proxy|no ground truth)\b/i,
+      text: "Telemetry-based confidence and calibration uncertainty both appear. A burden observer is only as strong as the proxy, baseline, calibration, and action threshold behind it."
     }
   ],
   directionPatterns: [
     {
-      rx: /reveal|surface|expose|the truth comes out|the player discovers/i,
-      label: "toward revelation"
+      rx: /next shift|shift readiness|production shift|next duty/i,
+      label: "toward next-shift admissibility"
     },
     {
-      rx: /alliance|trust|align|join forces|player and NPC|working together/i,
-      label: "toward alliance"
+      rx: /mission|field robot|remote|recover|withdraw|re-task/i,
+      label: "toward mission survivability"
     },
     {
-      rx: /betrayal|turning point|defection|the faction|choosing sides/i,
-      label: "toward betrayal or faction break"
+      rx: /derate|reduced speed|reduced payload|restriction|degraded mode/i,
+      label: "toward degraded-mode governance"
     },
     {
-      rx: /consequence|reckoning|what was set in motion|downstream|the result/i,
-      label: "toward consequence arrival"
+      rx: /telemetry|sensor|observer|estimate|burden state/i,
+      label: "toward burden-observer review"
     },
     {
-      rx: /climax|final|the end|resolution|what it was all building toward/i,
-      label: "toward dramatic resolution"
+      rx: /maintenance|inspect|service|repair|replace|condition monitoring/i,
+      label: "toward maintenance or reliability decision"
     },
     {
-      rx: /player is steering away|avoiding|not engaging|side-stepping|ignoring/i,
-      label: "player avoiding the designed arc"
+      rx: /cell|line|throughput|quality|fixture|end effector|integrator/i,
+      label: "toward production-cell exposure review"
     }
   ],
-  pressureSignals: [
-    {
-      key: "trust_critical",
-      rx: /\b(trust is gone|trust has collapsed|player does not trust|trust level critical|they do not believe|I have lost them|player is hostile)\b/i,
-      label: "trust at critical level"
-    },
-    {
-      key: "agenda_surface",
-      rx: /\b(agenda surfacing|player suspects|almost revealed|close to breaking|nearly slipped|the cover is|beginning to show|player is close to knowing)\b/i,
-      label: "hidden agenda near surface"
-    },
-    {
-      key: "faction_conflict",
-      rx: /\b(faction conflict|loyalty torn|two factions|caught between|serving two|cannot serve both|faction pressure|forced to choose)\b/i,
-      label: "faction loyalty conflict active"
-    },
-    {
-      key: "consequence_due",
-      rx: /\b(consequence is due|the decision is catching up|downstream arriving|what was started|ripple reaching|the chain has reached|cannot be undone now)\b/i,
-      label: "consequence chain arriving"
-    },
-    {
-      key: "player_drift",
-      rx: /\b(player is drifting|player off arc|player ignoring|player going their own way|player not engaging|player has stopped|player lost interest)\b/i,
-      label: "player drifting from arc"
-    },
-    {
-      key: "memory_gap",
-      rx: /\b(forgot|does not remember|memory gap|inconsistent|contradicted themselves|said something different|earlier they said|that is not what|contradiction in the record)\b/i,
-      label: "NPC memory gap"
-    }
-  ],
+  pressureSignals: [],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
   sampleBaseline: "",
   sampleEntries: [],

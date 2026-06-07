@@ -600,185 +600,165 @@ label {
 // Assembly replaces everything between these markers.
 /* CARTRIDGE_START */
 window.SORTER_CARTRIDGE = {
-  id: "game-narrative",
-  name: "Personal Map",
-  tagline: "private · evidence-bound",
-  desc: "Game designer, narrative director, NPC behaviour system, or adaptive storytelling engine.. Key pressures: Player intent not yet visible — the map cannot read direction without it.; Faction loyalties unresolved — competing pulls on NPC behaviour.; Hidden agenda approaching surface — timing of reveal is load-sensitive..",
-  accent: "#2d5a3d",
-  accentLight: "#e8f0ea",
+  id: "addiction-recovery",
+  name: "Addiction Recovery Map",
+  tagline: "private · evidence-bound · non-moralising",
+  desc: "Individual, recovery support worker, sponsor, case manager, or treatment coordinator.. Key pressures: Trigger environments and people that have not changed.; Relapse — actual or narrowly avoided — not named directly.; Programme or support disengagement without explicit acknowledgement..",
+  accent: "#2a3a4a",
+  accentLight: "#edf0f4",
   baselineTitle: "Set your baseline",
-  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: player intent not named — what the player is actually trying to achieve; faction relationships not mapped — who is aligned with whom and why; hidden agendas not listed — what each npc is concealing and from whom. Movement in this domain looks like: hidden agenda surfaced — partial or full reveal; faction relationship shifted — alliance formed, strained, or broken.",
-  baselinePlaceholder: "Where are you now? What has led to this point? Include: player intent not named — what the player is actually trying to achieve.",
+  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: current use status not stated — clean, reduced, or still using; programme or treatment plan not described; known triggers not named. Movement in this domain looks like: clean or sober days named; meeting attended.",
+  baselinePlaceholder: "Where are you now? What has led to this point? Include: current use status not stated — clean, reduced, or still using.",
   entryTitle: "Add an entry",
-  entryDesc: "Precise about state. Non-prescriptive about story. Evidence-bound about what has happened. Does not invent motivation — reads what is in the material.",
+  entryDesc: "Non-moralising. Evidence-bound. Reads the pattern, not the character. Does not reward or punish.",
   entryPlaceholder: "What is on your mind?",
   reportDesc: "The map reads what is moving, stuck, and under load based on what you wrote.",
   reportEmptyDesc: "Add a baseline and at least one entry, then read your map.",
-  crisisCheck: false,
+  crisisCheck: true,
   crisisRx: /\b(kill myself|end my life|suicide|suicidal|I want to die|don't want to be here|hurt myself|harm myself|can't go on|not worth it|overdose)\b/i,
   gaps: [
     {
-      key: "player_intent",
-      name: "Player intent",
-      rx: /\b(player wants|player is trying|player goal|player objective|what the player|player direction|player is building toward|player has chosen|player keeps|player pattern)\b/i,
-      reason: "Without player intent named the map cannot read whether NPC behaviour is serving or obstructing the narrative. Intent is the baseline everything else is measured against."
+      key: "use_status",
+      name: "Current use status",
+      rx: /\b(I have not used|I am clean|I am sober|I used|I relapsed|I had a|I drank|I took|I have been|days clean|weeks clean|I slipped|I am using|I have been using)\b/i,
+      reason: "Without a stated use status — clean, reduced, or still using — the map cannot read direction. This is the foundational gap. Entries that describe recovery activity without stating use status are unanchored."
     },
     {
-      key: "faction_map",
-      name: "Faction relationships",
-      rx: /\b(faction|alliance|aligned with|loyal to|hostile to|neutral|faction relationship|standing with|reputation with|the factions|who controls|who is with|who is against)\b/i,
-      reason: "Faction relationships are the structural map of the world. Without them the sorter cannot read whether NPC actions are coherent, contradictory, or consequential."
+      key: "programme_or_plan",
+      name: "Programme or treatment plan",
+      rx: /\b(my programme|the plan|I am attending|NA|AA|the meetings|my treatment|the clinic|my prescription|methadone|suboxone|the course|I am in|rehab|my counsellor|my key worker)\b/i,
+      reason: "Without a described programme or plan the map cannot assess engagement, identify where support is breaking down, or read whether movement is structured or unplanned."
     },
     {
-      key: "hidden_agendas",
-      name: "Hidden agendas defined",
-      rx: /\b(hidden agenda|secret goal|concealing|does not reveal|privately wants|what they are not saying|true motivation|ulterior|what they are really after|the real reason)\b/i,
-      reason: "Hidden agendas drive NPC behaviour in ways that appear inconsistent without them named. Without them mapped the sorter reads contradiction where there is only concealment."
+      key: "known_triggers",
+      name: "Known triggers",
+      rx: /\b(my trigger|triggers me|when I am around|the situation|certain people|certain places|stress|boredom|loneliness|when I feel|what sets me off|I know I should avoid|I stay away from)\b/i,
+      reason: "Triggers are the structural risk. Without them named the map cannot read whether the person is moving toward or away from high-risk situations — or whether they are in one now."
     },
     {
-      key: "consequence_chains",
-      name: "Active consequence chains",
-      rx: /\b(consequence|downstream|because of the decision|ripple|what that means for|what follows from|the result of|triggered by|set in motion|what was started|the chain)\b/i,
-      reason: "Decisions already made are still in motion. Without consequence chains traced the map cannot read what is moving and what is held."
+      key: "support_network",
+      name: "Support network — sponsor, meeting, peer contact",
+      rx: /\b(my sponsor|I called|I spoke to|the group|the meeting|my support|my key worker|someone in recovery|peer support|I have people|I reached out|I have a network)\b/i,
+      reason: "Recovery without a visible support network is structurally fragile. Whether there is a sponsor, regular meeting, or peer contact shapes the risk level of everything else."
     },
     {
-      key: "trust_baseline",
-      name: "Trust baselines established",
-      rx: /\b(trust level|trust baseline|where the relationship started|initial standing|they trusted|they did not trust|starting point|before the|when they first met|the relationship began)\b/i,
-      reason: "Trust movement is only readable against a baseline. Without it named the map cannot tell whether a relationship is improving, degrading, or holding."
-    },
-    {
-      key: "dramatic_arc",
-      name: "Dramatic arc",
-      rx: /\b(arc|story arc|building toward|what this is about|the theme|what this story|the narrative direction|where this is going|what the climax|the turning point|what changes)\b/i,
-      reason: "Without the dramatic arc named the map cannot distinguish held tension from stuck narrative, or deliberate pacing from loss of momentum."
+      key: "relapse_history",
+      name: "Relapse history",
+      rx: /\b(I have relapsed before|last time I relapsed|I went back|I started using again|I have been here before|previous relapse|I know this pattern|I have been through this)\b/i,
+      reason: "Relapse history is a key context for reading current risk. Patterns, triggers, and decision points from prior relapses are often predictive. Without it the map cannot assess whether current signals are familiar or new."
     }
   ],
   skills: [
     {
-      key: "agenda_concealment",
-      name: "Holding a hidden agenda under pressure",
-      rx: /\b(did not reveal|kept it hidden|deflected|changed the subject|said enough|gave nothing away|maintained the cover|stayed in character|did not break|held the secret|concealed|the player does not know)\b/i,
-      loadSensitive: true,
-      isStructureSkill: false,
-      works: "NPC maintains concealment consistently — answers questions without lying outright, deflects without revealing, stays in character under interrogation.",
-      breaks: "High trust from player, extreme pressure, or conflicting faction loyalties causes partial or full agenda surfacing before the designed reveal moment."
+      key: "honest_use_account",
+      name: "Giving an honest account of use",
+      rx: /\b(I used|I drank|I took|I relapsed|I slipped|I had some|I had a drink|I was using|I have been using|I have to be honest|I need to admit|I had a|I used again)\b/i,
+      loadSensitive: false,
+      isStructureSkill: true,
+      works: "Naming what happened with use without minimising, justifying, or omitting. Honest account is the foundation the map needs — without it no other read is reliable.",
+      breaks: "Shame following use causes minimising language, justification, or silence. The map reads what is written. Omitted use is an invisible gap."
     },
     {
-      key: "faction_consistency",
-      name: "Behaving consistently with faction loyalty",
-      rx: /\b(loyal to|acting for|serving|reporting back|in line with|consistent with faction|faction interest|the faction wants|faction directive|faction alignment)\b/i,
+      key: "trigger_recognition",
+      name: "Recognising and naming triggers before or during exposure",
+      rx: /\b(I recognised|I noticed|I could feel it|I knew it was|I spotted the trigger|I was aware|I caught myself|I could see it coming|I identified|I named it)\b/i,
+      loadSensitive: true,
+      isStructureSkill: false,
+      works: "Naming the trigger — person, place, state, or situation — before or during exposure rather than only in retrospect. Recognition is the window for intervention.",
+      breaks: "High craving state, intoxication, or intense emotional state reduces recognition to zero. The skill only functions with some baseline of awareness intact."
+    },
+    {
+      key: "programme_engagement",
+      name: "Maintaining programme or support engagement",
+      rx: /\b(I went to the meeting|I attended|I called my sponsor|I spoke to my key worker|I kept my appointment|I was honest with|I stayed in contact|I completed the session|I stayed on)\b/i,
       loadSensitive: true,
       isStructureSkill: true,
-      works: "NPC behaviour is legible as factionally motivated — player can eventually read the pattern even if they do not yet know the faction.",
-      breaks: "Conflicting faction loyalties, player trust that exceeds faction loyalty threshold, or unresolved dramatic arc creates inconsistent behaviour that reads as broken rather than complex."
+      works: "Keeping meeting attendance, sponsor contact, key worker appointments, or programme sessions even when motivation is low or shame is high.",
+      breaks: "Shame after use, avoidance of accountability, or belief that recovery is going well enough to skip support causes disengagement — the point at which risk typically increases."
     },
     {
-      key: "trust_management",
-      name: "Managing trust level across interactions",
-      rx: /\b(trust increased|trust decreased|player trusts|they trust me|I have their trust|trust level|building trust|losing trust|earned trust|trust dropped|trust rose|reliable|consistent|they believe)\b/i,
+      key: "relapse_as_information",
+      name: "Treating relapse as information rather than failure",
+      rx: /\b(I learned from|the relapse showed|what it told me|I understand now|I can see what happened|the pattern was|I recognise|it happened because|I know what triggered|I can use this)\b/i,
       loadSensitive: false,
       isStructureSkill: false,
-      works: "NPC actions and stated positions are consistent enough that player trust moves in a readable direction — either building or eroding in ways that feel earned.",
-      breaks: "Contradiction between NPC stated position and action, or between faction directive and player-facing behaviour, collapses trust in ways that feel arbitrary rather than consequential."
-    },
-    {
-      key: "consequence_tracking",
-      name: "Tracking and surfacing consequences",
-      rx: /\b(remember when|because of what happened|as a result of|the decision you made|that changed|you did|the last time|I have not forgotten|what you chose|that is why|the consequence of)\b/i,
-      loadSensitive: false,
-      isStructureSkill: false,
-      works: "Prior decisions surface naturally in NPC behaviour — the world remembers what the player did and the NPC reflects it without breaking the fourth wall.",
-      breaks: "Memory gap — NPC fails to connect a prior decision to current behaviour, making the world feel amnesiac and consequence-free."
-    },
-    {
-      key: "dramatic_timing",
-      name: "Timing reveals and escalations",
-      rx: /\b(not yet|not the right moment|holding back|waiting for|when the time comes|the reveal|the moment|building to|when they are ready|the right time|before the climax|after the|timing)\b/i,
-      loadSensitive: true,
-      isStructureSkill: false,
-      works: "Information, reveals, and escalations arrive when they create maximum narrative effect — not too early (defusing tension) or too late (losing the player).",
-      breaks: "Pressure from player progress, pacing miscalculation, or consequence chains arriving out of order causes reveals to land flat or too abruptly."
+      works: "Reading the relapse event for what it reveals — trigger, circumstance, gap in support — rather than treating it as proof that recovery is impossible.",
+      breaks: "Shame converts the relapse into a verdict rather than a signal. The person stops analysing what happened and instead focuses on what it means about them. The information is lost."
     }
   ],
   contradictions: [
     {
-      a: /\b(I am on your side|I want to help you|you can trust me|I am with you|your ally|I am working for you|your interests matter)\b/i,
-      b: /\b(hidden agenda|reporting to|faction directive|concealing|the player does not know|ulterior|what they are really after|secretly)\b/i,
-      text: "Stated alliance and a hidden agenda that works against the player both appear. This is not a flaw — it is the core dramatic tension of a duplicitous NPC. The map holds both. The question is whether the contradiction has been designed into the arc or has arrived by accident."
+      a: /\b(I am doing well|recovery is going well|I am in a good place|things are better|I feel strong|I am managing|I have this)\b/i,
+      b: /\b(I missed the meeting|I have not called|I stopped going|I have not been|I cancelled|I have not spoken to|I dropped out|I am not going)\b/i,
+      text: "Stated confidence in recovery and described disengagement or high-risk behaviour both appear. Confidence and programme disengagement appearing together is a recognised risk pattern — not an evidence of strength. The described behaviour is the more reliable read."
     },
     {
-      a: /\b(faction loyalty|loyal to the faction|serving the faction|faction directive|faction interest|the faction comes first)\b/i,
-      b: /\b(player trust|I trust the player|the player has earned|I believe the player|I am choosing the player|player over faction|defecting|turning)\b/i,
-      text: "Faction loyalty and player trust pulling in opposite directions both appear. This is the threshold moment — faction vs relationship. The map is reading an active tension, not a contradiction to be resolved. Whether this is the designed turning point or an unplanned drift matters."
+      a: /\b(I have not used|I am clean|I am sober|I did not drink|I did not take|I have been clean)\b/i,
+      b: /\b(I just had one|it was only a little|I controlled it this time|I had a few|it was not a full relapse|I had some|just a drink|just the once|it was minor)\b/i,
+      text: "A claim of no use and a described instance of use both appear. Minimising language following use is a common pattern. The use is the significant material here regardless of the framing."
     },
     {
-      a: /\b(the player does not know|player is unaware|concealed from player|player has not discovered|player trust is high|player believes)\b/i,
-      b: /\b(player has figured out|player suspects|player asked directly|player chose not to trust|player is testing|player already knows|player has evidence)\b/i,
-      text: "Player ignorance assumed and player awareness signals both appear. The NPC may be operating on an outdated model of what the player knows. This is a state change — the concealment dynamic may already be broken."
-    },
-    {
-      a: /\b(held tension|building toward|not yet|the arc is|this is deliberate|pacing|the reveal is coming|setting up)\b/i,
-      b: /\b(player disengaged|player skipped|player lost interest|player frustrated|player confused|nothing is happening|too slow|what is the point|player abandoned)\b/i,
-      text: "Deliberate narrative holding and player disengagement signals both appear. Held tension and stalled narrative look identical from the outside. The map cannot decide which this is — but it can surface that both signals are present at the same time."
+      a: /\b(I do not need the meetings anymore|I have this under control|I do not need as much support|I am past that stage|I have graduated|I know enough now|I can manage alone)\b/i,
+      b: /\b(I am still around|I have been craving|it has been hard|I nearly|I was tempted|the pressure|I have been struggling)\b/i,
+      text: "Stated readiness to reduce support and described ongoing difficulty both appear. Reducing support while cravings or pressure are still active is a high-risk combination. The map reads the current state, not the aspired state."
     }
   ],
   directionPatterns: [
     {
-      rx: /reveal|surface|expose|the truth comes out|the player discovers/i,
-      label: "toward revelation"
+      rx: /meeting|NA|AA|programme|session|group|sponsor|key worker|counsellor/i,
+      label: "toward programme or support engagement"
     },
     {
-      rx: /alliance|trust|align|join forces|player and NPC|working together/i,
-      label: "toward alliance"
+      rx: /clean|sober|days|weeks|months|milestone|anniversary|streak/i,
+      label: "toward sobriety tracking or milestone"
     },
     {
-      rx: /betrayal|turning point|defection|the faction|choosing sides/i,
-      label: "toward betrayal or faction break"
+      rx: /trigger|high risk|avoid|stay away|environment|people|places/i,
+      label: "toward trigger management or exposure reduction"
     },
     {
-      rx: /consequence|reckoning|what was set in motion|downstream|the result/i,
-      label: "toward consequence arrival"
+      rx: /relapse|slipped|used|drank|took|I had|I was using/i,
+      label: "toward relapse event or pattern review"
     },
     {
-      rx: /climax|final|the end|resolution|what it was all building toward/i,
-      label: "toward dramatic resolution"
+      rx: /crave|craving|urge|temptation|I wanted to|I nearly|I felt the pull/i,
+      label: "toward craving management"
     },
     {
-      rx: /player is steering away|avoiding|not engaging|side-stepping|ignoring/i,
-      label: "player avoiding the designed arc"
+      rx: /work|relationship|housing|family|finances|normal life|rebuilding/i,
+      label: "toward life rebuilding outside addiction"
     }
   ],
   pressureSignals: [
     {
-      key: "trust_critical",
-      rx: /\b(trust is gone|trust has collapsed|player does not trust|trust level critical|they do not believe|I have lost them|player is hostile)\b/i,
-      label: "trust at critical level"
+      key: "use_minimising",
+      rx: /\b(just a|only a little|it was not much|I controlled it|not a full relapse|minor slip|just the once|it was nothing|I had a small)\b/i,
+      label: "use minimising language — relapse may be undeclared"
     },
     {
-      key: "agenda_surface",
-      rx: /\b(agenda surfacing|player suspects|almost revealed|close to breaking|nearly slipped|the cover is|beginning to show|player is close to knowing)\b/i,
-      label: "hidden agenda near surface"
+      key: "support_dropout",
+      rx: /\b(I missed the meeting|I have not been|I stopped going|I have not called|I dropped out|I have not attended|I cancelled|I did not go)\b/i,
+      label: "support or programme dropout signal"
     },
     {
-      key: "faction_conflict",
-      rx: /\b(faction conflict|loyalty torn|two factions|caught between|serving two|cannot serve both|faction pressure|forced to choose)\b/i,
-      label: "faction loyalty conflict active"
+      key: "high_risk_proximity",
+      rx: /\b(I was around|I went back to|I saw them|I was near|I ended up at|I was in that area|I bumped into|I was at the|I went to the)\b/i,
+      label: "proximity to known high-risk environment or person"
     },
     {
-      key: "consequence_due",
-      rx: /\b(consequence is due|the decision is catching up|downstream arriving|what was started|ripple reaching|the chain has reached|cannot be undone now)\b/i,
-      label: "consequence chain arriving"
+      key: "confidence_spike",
+      rx: /\b(I have this|I am past that|I do not need|I can handle it now|I am strong enough|I know better now|I can be around|I can manage|I am fine with)\b/i,
+      label: "overconfidence spike — support reduction risk"
     },
     {
-      key: "player_drift",
-      rx: /\b(player is drifting|player off arc|player ignoring|player going their own way|player not engaging|player has stopped|player lost interest)\b/i,
-      label: "player drifting from arc"
+      key: "shame_silence",
+      rx: /\b(I do not want to say|I cannot tell them|I have not told|they do not know|I kept it from|I hid it|I lied about|I have not been honest)\b/i,
+      label: "shame-driven silence — honest account risk"
     },
     {
-      key: "memory_gap",
-      rx: /\b(forgot|does not remember|memory gap|inconsistent|contradicted themselves|said something different|earlier they said|that is not what|contradiction in the record)\b/i,
-      label: "NPC memory gap"
+      key: "isolation_increase",
+      rx: /\b(I have been alone|I have not seen|I have not spoken|I withdrew|I stayed home|I avoided|I have not contacted|I have not reached out)\b/i,
+      label: "increasing isolation — relapse risk factor"
     }
   ],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,

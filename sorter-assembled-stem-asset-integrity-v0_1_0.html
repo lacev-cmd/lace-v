@@ -600,17 +600,17 @@ label {
 // Assembly replaces everything between these markers.
 /* CARTRIDGE_START */
 window.SORTER_CARTRIDGE = {
-  id: "game-narrative",
+  id: "stem-asset-integrity",
   name: "Personal Map",
   tagline: "private · evidence-bound",
-  desc: "Game designer, narrative director, NPC behaviour system, or adaptive storytelling engine.. Key pressures: Player intent not yet visible — the map cannot read direction without it.; Faction loyalties unresolved — competing pulls on NPC behaviour.; Hidden agenda approaching surface — timing of reveal is load-sensitive..",
+  desc: "Engineer, reliability reviewer, maintenance planner, asset owner, inspector, operations manager, insurer, risk reviewer, or technical governance reviewer.. Key pressures: A visible defect is treated as equivalent to failure exposure.; Broad condition rating hides the governing path to consequence.; Inspection finds local damage but not where the damage may travel next..",
   accent: "#2d5a3d",
   accentLight: "#e8f0ea",
   baselineTitle: "Set your baseline",
-  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: player intent not named — what the player is actually trying to achieve; faction relationships not mapped — who is aligned with whom and why; hidden agendas not listed — what each npc is concealing and from whom. Movement in this domain looks like: hidden agenda surfaced — partial or full reveal; faction relationship shifted — alliance formed, strained, or broken.",
-  baselinePlaceholder: "Where are you now? What has led to this point? Include: player intent not named — what the player is actually trying to achieve.",
+  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: asset or segment not defined; observed defect/source condition not described; target consequence not stated. Movement in this domain looks like: the asset and segment under review are defined; the observed defect or degradation source is identified.",
+  baselinePlaceholder: "Where are you now? What has led to this point? Include: asset or segment not defined.",
   entryTitle: "Add an entry",
-  entryDesc: "Precise about state. Non-prescriptive about story. Evidence-bound about what has happened. Does not invent motivation — reads what is in the material.",
+  entryDesc: "Precise. Physical-path focused. Evidence-bound. No safety certification language. No unsupported remaining-life claims. No false precision.",
   entryPlaceholder: "What is on your mind?",
   reportDesc: "The map reads what is moving, stuck, and under load based on what you wrote.",
   reportEmptyDesc: "Add a baseline and at least one entry, then read your map.",
@@ -618,169 +618,205 @@ window.SORTER_CARTRIDGE = {
   crisisRx: /\b(kill myself|end my life|suicide|suicidal|I want to die|don't want to be here|hurt myself|harm myself|can't go on|not worth it|overdose)\b/i,
   gaps: [
     {
-      key: "player_intent",
-      name: "Player intent",
-      rx: /\b(player wants|player is trying|player goal|player objective|what the player|player direction|player is building toward|player has chosen|player keeps|player pattern)\b/i,
-      reason: "Without player intent named the map cannot read whether NPC behaviour is serving or obstructing the narrative. Intent is the baseline everything else is measured against."
+      key: "asset_identity",
+      name: "Asset identity",
+      rx: /\b(asset|pipe|pipeline|vessel|tank|cable|joint|bearing|rotor|pump|valve|liner|structure|bridge|robot cell|equipment|component|segment)\b/i,
+      reason: "The map needs to know what asset or component is being reviewed. Asset class controls which evidence and failure modes matter."
     },
     {
-      key: "faction_map",
-      name: "Faction relationships",
-      rx: /\b(faction|alliance|aligned with|loyal to|hostile to|neutral|faction relationship|standing with|reputation with|the factions|who controls|who is with|who is against)\b/i,
-      reason: "Faction relationships are the structural map of the world. Without them the sorter cannot read whether NPC actions are coherent, contradictory, or consequential."
+      key: "segment_or_domain",
+      name: "Segment or review domain",
+      rx: /\b(segment|section|bend|joint|weld|repair|patch|zone|region|area|component|domain|scope|boundary|location|site)\b/i,
+      reason: "Failure-path review must be bounded. Whole-asset concern is usually too broad unless a screening layer has already narrowed the domain."
     },
     {
-      key: "hidden_agendas",
-      name: "Hidden agendas defined",
-      rx: /\b(hidden agenda|secret goal|concealing|does not reveal|privately wants|what they are not saying|true motivation|ulterior|what they are really after|the real reason)\b/i,
-      reason: "Hidden agendas drive NPC behaviour in ways that appear inconsistent without them named. Without them mapped the sorter reads contradiction where there is only concealment."
+      key: "source_condition",
+      name: "Observed source condition",
+      rx: /\b(pit|crack|groove|wear|thinning|corrosion|erosion|defect|delamination|liner damage|deformation|leak|hotspot|partial discharge|vibration anomaly|inspection finding)\b/i,
+      reason: "The source condition anchors the path. Without a defined source, the map cannot read where degradation may begin or continue."
     },
     {
-      key: "consequence_chains",
-      name: "Active consequence chains",
-      rx: /\b(consequence|downstream|because of the decision|ripple|what that means for|what follows from|the result of|triggered by|set in motion|what was started|the chain)\b/i,
-      reason: "Decisions already made are still in motion. Without consequence chains traced the map cannot read what is moving and what is held."
+      key: "degradation_mechanism",
+      name: "Degradation mechanism",
+      rx: /\b(corrosion|erosion|erosion-corrosion|fatigue|wear|creep|thermal aging|water treeing|partial discharge|crack growth|delamination|abrasion|chemical attack|mechanical overload)\b/i,
+      reason: "The mechanism determines admissibility. A path that is credible for one degradation mode may be blocked for another."
     },
     {
-      key: "trust_baseline",
-      name: "Trust baselines established",
-      rx: /\b(trust level|trust baseline|where the relationship started|initial standing|they trusted|they did not trust|starting point|before the|when they first met|the relationship began)\b/i,
-      reason: "Trust movement is only readable against a baseline. Without it named the map cannot tell whether a relationship is improving, degrading, or holding."
+      key: "target_consequence",
+      name: "Target or consequence condition",
+      rx: /\b(breach|through-wall|failure|rupture|leak|collapse|trip|shutdown|loss of containment|loss of function|liner breach|unsafe condition|critical condition|consequence)\b/i,
+      reason: "The review needs to know what consequence is being tested. Wear alone is not the same as path-to-consequence exposure."
     },
     {
-      key: "dramatic_arc",
-      name: "Dramatic arc",
-      rx: /\b(arc|story arc|building toward|what this is about|the theme|what this story|the narrative direction|where this is going|what the climax|the turning point|what changes)\b/i,
-      reason: "Without the dramatic arc named the map cannot distinguish held tension from stuck narrative, or deliberate pacing from loss of momentum."
+      key: "resistance_factors",
+      name: "Resistance or vulnerability factors",
+      rx: /\b(resistance|hardness|thickness|material property|geometry|stress|pressure|temperature|velocity|flow|chemistry|pH|coating|liner|adhesion|repair quality|load path|barrier)\b/i,
+      reason: "Path reasoning requires local factors that make degradation easier, harder, blocked, diverted, or arrested."
+    },
+    {
+      key: "admissibility_criteria",
+      name: "Local admissibility criteria",
+      rx: /\b(admissible|criterion|criteria|threshold|propagation condition|growth condition|driving force|stress intensity|allowable|limit|activation|continuation|arrest condition)\b/i,
+      reason: "A low-resistance route is not automatically a real path. The local mechanism must be physically able to continue."
+    },
+    {
+      key: "inspection_evidence",
+      name: "Inspection or test evidence",
+      rx: /\b(inspection|NDT|ultrasonic|UT|scan|measurement|thickness map|hardness test|sample|test result|field data|teardown|visual inspection|condition report)\b/i,
+      reason: "Inspection and test evidence show what is actually observed. The map must know what was measured and what remains unmeasured."
+    },
+    {
+      key: "model_or_analysis_evidence",
+      name: "Model or analysis evidence",
+      rx: /\b(model|CFD|FEA|simulation|digital twin|calculation|analysis|wear model|corrosion model|flow model|stress model|finite element|prediction)\b/i,
+      reason: "Model evidence may inform path reasoning, but model scope, assumptions, calibration, and limits must remain visible."
+    },
+    {
+      key: "operating_envelope",
+      name: "Operating envelope",
+      rx: /\b(operating condition|duty|load|pressure|temperature|flow rate|velocity|cycle|runtime|environment|chemistry|slurry|abrasive|humidity|voltage|current|throughput)\b/i,
+      reason: "Asset integrity depends on the operating envelope. A path may be inactive under one regime and active under another."
+    },
+    {
+      key: "path_status",
+      name: "Path status",
+      rx: /\b(reaches|diverts|arrests|blocked|remains open|open path|closed path|governing path|path status|unresolved|path to consequence|failure path)\b/i,
+      reason: "The output should not stop at general concern. It should identify whether the path reaches consequence, diverts, remains open, arrests, is blocked, or remains unresolved."
+    },
+    {
+      key: "intervention_option",
+      name: "Intervention or review option",
+      rx: /\b(repair|replace|reline|monitor|inspect|test further|model further|derate|shutdown|maintenance|intervention|scope|priority|watch|review)\b/i,
+      reason: "The map should connect the path read to a bounded next action: inspect, repair, monitor, model, derate, replace, or withhold confidence."
+    },
+    {
+      key: "qualified_boundary",
+      name: "Qualified engineering boundary",
+      rx: /\b(qualified engineer|site engineer|maintenance authority|integrity engineer|regulator|certification|safety case|professional judgement|engineering sign-off|statutory|compliance)\b/i,
+      reason: "Asset-integrity outputs must not imply engineering sign-off, safety approval, or regulatory compliance. Qualified authority boundaries must remain visible."
+    },
+    {
+      key: "direction",
+      name: "Stated asset-integrity question",
+      rx: /\b(can this fail|will it breach|where will it go|what path|should we repair|should we replace|should we inspect|is this credible|what governs|what matters most|what evidence is missing)\b/i,
+      reason: "The map needs the actual decision question: path credibility, intervention priority, monitoring, repair scope, replacement timing, or evidence gap."
     }
   ],
   skills: [
     {
-      key: "agenda_concealment",
-      name: "Holding a hidden agenda under pressure",
-      rx: /\b(did not reveal|kept it hidden|deflected|changed the subject|said enough|gave nothing away|maintained the cover|stayed in character|did not break|held the secret|concealed|the player does not know)\b/i,
-      loadSensitive: true,
-      isStructureSkill: false,
-      works: "NPC maintains concealment consistently — answers questions without lying outright, deflects without revealing, stays in character under interrogation.",
-      breaks: "High trust from player, extreme pressure, or conflicting faction loyalties causes partial or full agenda surfacing before the designed reveal moment."
-    },
-    {
-      key: "faction_consistency",
-      name: "Behaving consistently with faction loyalty",
-      rx: /\b(loyal to|acting for|serving|reporting back|in line with|consistent with faction|faction interest|the faction wants|faction directive|faction alignment)\b/i,
-      loadSensitive: true,
+      key: "path_question_setting",
+      name: "Setting the path question",
+      rx: /\b(path question|path to|can it reach|will it propagate|from source to|target condition|governing path|review question|consequence path)\b/i,
+      loadSensitive: false,
       isStructureSkill: true,
-      works: "NPC behaviour is legible as factionally motivated — player can eventually read the pattern even if they do not yet know the faction.",
-      breaks: "Conflicting faction loyalties, player trust that exceeds faction loyalty threshold, or unresolved dramatic arc creates inconsistent behaviour that reads as broken rather than complex."
+      works: "The review asks whether a defined degradation path can reach a defined consequence.",
+      breaks: "The assessment stays at broad wear, condition, or risk rating without asking what path governs."
     },
     {
-      key: "trust_management",
-      name: "Managing trust level across interactions",
-      rx: /\b(trust increased|trust decreased|player trusts|they trust me|I have their trust|trust level|building trust|losing trust|earned trust|trust dropped|trust rose|reliable|consistent|they believe)\b/i,
+      key: "source_to_consequence_mapping",
+      name: "Mapping source to consequence",
+      rx: /\b(from the pit to|from the crack to|from the defect to|toward breach|toward failure|source condition|target condition|route to|path reaches)\b/i,
       loadSensitive: false,
-      isStructureSkill: false,
-      works: "NPC actions and stated positions are consistent enough that player trust moves in a readable direction — either building or eroding in ways that feel earned.",
-      breaks: "Contradiction between NPC stated position and action, or between faction directive and player-facing behaviour, collapses trust in ways that feel arbitrary rather than consequential."
+      isStructureSkill: true,
+      works: "The source condition, likely route, and consequence condition are linked.",
+      breaks: "A defect is observed but its route to consequence is not assessed."
     },
     {
-      key: "consequence_tracking",
-      name: "Tracking and surfacing consequences",
-      rx: /\b(remember when|because of what happened|as a result of|the decision you made|that changed|you did|the last time|I have not forgotten|what you chose|that is why|the consequence of)\b/i,
+      key: "resistance_field_reasoning",
+      name: "Reading resistance and vulnerability",
+      rx: /\b(low resistance|higher resistance|vulnerable region|hardness|thickness|geometry|stress concentration|flow concentration|weak zone|barrier|repair quality|material condition)\b/i,
       loadSensitive: false,
-      isStructureSkill: false,
-      works: "Prior decisions surface naturally in NPC behaviour — the world remembers what the player did and the NPC reflects it without breaking the fourth wall.",
-      breaks: "Memory gap — NPC fails to connect a prior decision to current behaviour, making the world feel amnesiac and consequence-free."
+      isStructureSkill: true,
+      works: "Local resistance and vulnerability factors are used to explain why a path may travel, divert, or arrest.",
+      breaks: "The path is assumed to follow the shortest or most visually obvious route without local resistance reasoning."
     },
     {
-      key: "dramatic_timing",
-      name: "Timing reveals and escalations",
-      rx: /\b(not yet|not the right moment|holding back|waiting for|when the time comes|the reveal|the moment|building to|when they are ready|the right time|before the climax|after the|timing)\b/i,
+      key: "admissibility_testing",
+      name: "Testing physical admissibility",
+      rx: /\b(admissible path|physically credible|propagation criterion|growth criterion|threshold met|driving force|arrest|blocked|not physically possible|criterion not satisfied)\b/i,
+      loadSensitive: false,
+      isStructureSkill: true,
+      works: "The review checks whether the degradation mechanism can physically continue through the proposed route.",
+      breaks: "A route is accepted because it is plausible-looking, not because the local mechanism can continue."
+    },
+    {
+      key: "uncertainty_visibility",
+      name: "Keeping uncertainty visible",
+      rx: /\b(uncertain|unresolved|not enough data|missing inspection|needs testing|assumption|confidence limited|unknown|cannot conclude|evidence gap)\b/i,
+      loadSensitive: false,
+      isStructureSkill: true,
+      works: "Uncertainty is named and carried forward rather than hidden inside a confident result.",
+      breaks: "The review gives a clean conclusion where inputs are weak, stale, or incomplete."
+    },
+    {
+      key: "intervention_targeting",
+      name: "Targeting intervention",
+      rx: /\b(targeted repair|focused inspection|prioritise|prioritize|reline this section|monitor this zone|replace this part|inspection priority|repair scope|maintenance timing)\b/i,
       loadSensitive: true,
       isStructureSkill: false,
-      works: "Information, reveals, and escalations arrive when they create maximum narrative effect — not too early (defusing tension) or too late (losing the player).",
-      breaks: "Pressure from player progress, pacing miscalculation, or consequence chains arriving out of order causes reveals to land flat or too abruptly."
+      works: "The path read supports a bounded intervention or evidence request rather than a broad alarm.",
+      breaks: "Maintenance action is either too broad, too late, or not tied to the governing path."
     }
   ],
   contradictions: [
     {
-      a: /\b(I am on your side|I want to help you|you can trust me|I am with you|your ally|I am working for you|your interests matter)\b/i,
-      b: /\b(hidden agenda|reporting to|faction directive|concealing|the player does not know|ulterior|what they are really after|secretly)\b/i,
-      text: "Stated alliance and a hidden agenda that works against the player both appear. This is not a flaw — it is the core dramatic tension of a duplicitous NPC. The map holds both. The question is whether the contradiction has been designed into the arc or has arrived by accident."
+      a: /\b(wear|defect|pit|crack|corrosion|erosion|thinning|damage|anomaly|hotspot)\b/i,
+      b: /\b(no breach path|arrests|blocked|not propagating|not active|below threshold|not connected|no consequence path)\b/i,
+      text: "Observed damage and lack of path-to-consequence both appear. Damage is real, but failure exposure may be limited if the path arrests or is blocked."
     },
     {
-      a: /\b(faction loyalty|loyal to the faction|serving the faction|faction directive|faction interest|the faction comes first)\b/i,
-      b: /\b(player trust|I trust the player|the player has earned|I believe the player|I am choosing the player|player over faction|defecting|turning)\b/i,
-      text: "Faction loyalty and player trust pulling in opposite directions both appear. This is the threshold moment — faction vs relationship. The map is reading an active tension, not a contradiction to be resolved. Whether this is the designed turning point or an unplanned drift matters."
+      a: /\b(safe|acceptable|low risk|monitor only|no action|fine|stable)\b/i,
+      b: /\b(missing data|not inspected|uncertain|unknown|not modelled|not tested|assumption|unresolved)\b/i,
+      text: "A reassuring conclusion and unresolved evidence gaps both appear. Confidence should be capped until the missing evidence is resolved."
     },
     {
-      a: /\b(the player does not know|player is unaware|concealed from player|player has not discovered|player trust is high|player believes)\b/i,
-      b: /\b(player has figured out|player suspects|player asked directly|player chose not to trust|player is testing|player already knows|player has evidence)\b/i,
-      text: "Player ignorance assumed and player awareness signals both appear. The NPC may be operating on an outdated model of what the player knows. This is a state change — the concealment dynamic may already be broken."
+      a: /\b(high wear|high risk|replace all|urgent repair|critical|severe)\b/i,
+      b: /\b(path unclear|no target condition|no admissibility criteria|not mapped|general concern|broad rating)\b/i,
+      text: "High-concern language and weak path reasoning both appear. The concern may be valid, but intervention scope is weak without a governing path."
     },
     {
-      a: /\b(held tension|building toward|not yet|the arc is|this is deliberate|pacing|the reveal is coming|setting up)\b/i,
-      b: /\b(player disengaged|player skipped|player lost interest|player frustrated|player confused|nothing is happening|too slow|what is the point|player abandoned)\b/i,
-      text: "Deliberate narrative holding and player disengagement signals both appear. Held tension and stalled narrative look identical from the outside. The map cannot decide which this is — but it can surface that both signals are present at the same time."
+      a: /\b(model shows|simulation predicts|CFD shows|FEA shows|digital twin indicates|calculation shows)\b/i,
+      b: /\b(not calibrated|assumption|no inspection match|no field validation|wrong scope|limited model|uncertain inputs)\b/i,
+      text: "Model confidence and model-limit evidence both appear. The model may be useful, but its assumptions and calibration limits must travel with the output."
+    },
+    {
+      a: /\b(same asset|same material|same design|same pipe|same line|similar section|historical data)\b/i,
+      b: /\b(changed operating condition|new load|different chemistry|different flow|new repair|aged|degraded|different environment|changed duty)\b/i,
+      text: "Inherited asset confidence and changed operating conditions both appear. Prior safe operation may not carry the present burden without reconciliation."
+    },
+    {
+      a: /\b(repair|patch|liner|coating|barrier|weld repair|reinforcement|reline)\b/i,
+      b: /\b(new weak point|adhesion|edge effect|local vulnerability|repair quality|interface|diverted path|attracts path)\b/i,
+      text: "A repair or barrier and a possible new path vulnerability both appear. Repair presence does not automatically close the path; it may redirect or concentrate it."
     }
   ],
   directionPatterns: [
     {
-      rx: /reveal|surface|expose|the truth comes out|the player discovers/i,
-      label: "toward revelation"
+      rx: /path to consequence|failure path|governing path|propagation path/i,
+      label: "toward failure-path review"
     },
     {
-      rx: /alliance|trust|align|join forces|player and NPC|working together/i,
-      label: "toward alliance"
+      rx: /inspect|inspection|NDT|ultrasonic|scan|measurement/i,
+      label: "toward inspection evidence review"
     },
     {
-      rx: /betrayal|turning point|defection|the faction|choosing sides/i,
-      label: "toward betrayal or faction break"
+      rx: /repair|replace|reline|maintenance|intervention|shutdown/i,
+      label: "toward maintenance or intervention decision"
     },
     {
-      rx: /consequence|reckoning|what was set in motion|downstream|the result/i,
-      label: "toward consequence arrival"
+      rx: /model|CFD|FEA|simulation|digital twin|calculation/i,
+      label: "toward model-supported integrity review"
     },
     {
-      rx: /climax|final|the end|resolution|what it was all building toward/i,
-      label: "toward dramatic resolution"
+      rx: /corrosion|erosion|fatigue|wear|crack growth|thermal aging|partial discharge/i,
+      label: "toward degradation mechanism review"
     },
     {
-      rx: /player is steering away|avoiding|not engaging|side-stepping|ignoring/i,
-      label: "player avoiding the designed arc"
+      rx: /risk|insurance|governance|audit|decision record|assumption/i,
+      label: "toward governance or assurance review"
     }
   ],
-  pressureSignals: [
-    {
-      key: "trust_critical",
-      rx: /\b(trust is gone|trust has collapsed|player does not trust|trust level critical|they do not believe|I have lost them|player is hostile)\b/i,
-      label: "trust at critical level"
-    },
-    {
-      key: "agenda_surface",
-      rx: /\b(agenda surfacing|player suspects|almost revealed|close to breaking|nearly slipped|the cover is|beginning to show|player is close to knowing)\b/i,
-      label: "hidden agenda near surface"
-    },
-    {
-      key: "faction_conflict",
-      rx: /\b(faction conflict|loyalty torn|two factions|caught between|serving two|cannot serve both|faction pressure|forced to choose)\b/i,
-      label: "faction loyalty conflict active"
-    },
-    {
-      key: "consequence_due",
-      rx: /\b(consequence is due|the decision is catching up|downstream arriving|what was started|ripple reaching|the chain has reached|cannot be undone now)\b/i,
-      label: "consequence chain arriving"
-    },
-    {
-      key: "player_drift",
-      rx: /\b(player is drifting|player off arc|player ignoring|player going their own way|player not engaging|player has stopped|player lost interest)\b/i,
-      label: "player drifting from arc"
-    },
-    {
-      key: "memory_gap",
-      rx: /\b(forgot|does not remember|memory gap|inconsistent|contradicted themselves|said something different|earlier they said|that is not what|contradiction in the record)\b/i,
-      label: "NPC memory gap"
-    }
-  ],
+  pressureSignals: [],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
   sampleBaseline: "",
   sampleEntries: [],

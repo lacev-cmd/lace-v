@@ -600,187 +600,132 @@ label {
 // Assembly replaces everything between these markers.
 /* CARTRIDGE_START */
 window.SORTER_CARTRIDGE = {
-  id: "game-narrative",
-  name: "Personal Map",
-  tagline: "private · evidence-bound",
-  desc: "Game designer, narrative director, NPC behaviour system, or adaptive storytelling engine.. Key pressures: Player intent not yet visible — the map cannot read direction without it.; Faction loyalties unresolved — competing pulls on NPC behaviour.; Hidden agenda approaching surface — timing of reveal is load-sensitive..",
-  accent: "#2d5a3d",
-  accentLight: "#e8f0ea",
+  id: "grief",
+  name: "Grief Map",
+  tagline: "private · evidence-bound · non-prescriptive",
+  desc: "Individual, grief support worker, therapist context, or bereavement service.. Key pressures: Acute grief — recent loss, early period.; Complicated grief — loss that is not resolving over time.; Disenfranchised grief — loss that others do not recognise as loss..",
+  accent: "#4a3a2a",
+  accentLight: "#f4f0ec",
   baselineTitle: "Set your baseline",
-  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: player intent not named — what the player is actually trying to achieve; faction relationships not mapped — who is aligned with whom and why; hidden agendas not listed — what each npc is concealing and from whom. Movement in this domain looks like: hidden agenda surfaced — partial or full reveal; faction relationship shifted — alliance formed, strained, or broken.",
-  baselinePlaceholder: "Where are you now? What has led to this point? Include: player intent not named — what the player is actually trying to achieve.",
+  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: the loss itself not directly named; secondary losses not described; support network not visible. Movement in this domain looks like: naming the loss directly rather than around it; allowing the grief rather than managing it away.",
+  baselinePlaceholder: "Where are you now? What has led to this point? Include: the loss itself not directly named.",
   entryTitle: "Add an entry",
-  entryDesc: "Precise about state. Non-prescriptive about story. Evidence-bound about what has happened. Does not invent motivation — reads what is in the material.",
+  entryDesc: "Slow. Careful. Non-directive. Does not impose a timeline. Does not suggest what grief should look like.",
   entryPlaceholder: "What is on your mind?",
   reportDesc: "The map reads what is moving, stuck, and under load based on what you wrote.",
   reportEmptyDesc: "Add a baseline and at least one entry, then read your map.",
-  crisisCheck: false,
+  crisisCheck: true,
   crisisRx: /\b(kill myself|end my life|suicide|suicidal|I want to die|don't want to be here|hurt myself|harm myself|can't go on|not worth it|overdose)\b/i,
   gaps: [
     {
-      key: "player_intent",
-      name: "Player intent",
-      rx: /\b(player wants|player is trying|player goal|player objective|what the player|player direction|player is building toward|player has chosen|player keeps|player pattern)\b/i,
-      reason: "Without player intent named the map cannot read whether NPC behaviour is serving or obstructing the narrative. Intent is the baseline everything else is measured against."
+      key: "loss_named",
+      name: "The loss directly named",
+      rx: /\b(I lost|they died|she died|he died|the death|the loss of|gone|my mother|my father|my partner|my child|my friend|the relationship ended|I left|it ended)\b/i,
+      reason: "The loss itself needs to be named before the map can read what is happening in response to it. Without it the map is reading around something central."
     },
     {
-      key: "faction_map",
-      name: "Faction relationships",
-      rx: /\b(faction|alliance|aligned with|loyal to|hostile to|neutral|faction relationship|standing with|reputation with|the factions|who controls|who is with|who is against)\b/i,
-      reason: "Faction relationships are the structural map of the world. Without them the sorter cannot read whether NPC actions are coherent, contradictory, or consequential."
+      key: "support_network",
+      name: "Support network",
+      rx: /\b(I spoke to|I have|people around me|my family|my friends|support|someone I can|I am not alone|I told|I reached out|counsellor|therapist|group)\b/i,
+      reason: "Whether the person is carrying this alone or has people around them changes what the map can read and what is most urgent."
     },
     {
-      key: "hidden_agendas",
-      name: "Hidden agendas defined",
-      rx: /\b(hidden agenda|secret goal|concealing|does not reveal|privately wants|what they are not saying|true motivation|ulterior|what they are really after|the real reason)\b/i,
-      reason: "Hidden agendas drive NPC behaviour in ways that appear inconsistent without them named. Without them mapped the sorter reads contradiction where there is only concealment."
+      key: "functional_impact",
+      name: "Functional impact",
+      rx: /\b(I cannot work|I have not eaten|I have not slept|I cannot function|basic things|I have stopped|I am not leaving|I cannot concentrate|I have not)\b/i,
+      reason: "Grief affecting basic function — sleep, eating, work, leaving the house — is a different read from grief that is painful but not disabling. The distinction matters."
     },
     {
-      key: "consequence_chains",
-      name: "Active consequence chains",
-      rx: /\b(consequence|downstream|because of the decision|ripple|what that means for|what follows from|the result of|triggered by|set in motion|what was started|the chain)\b/i,
-      reason: "Decisions already made are still in motion. Without consequence chains traced the map cannot read what is moving and what is held."
+      key: "what_person_needs",
+      name: "What the person needs",
+      rx: /\b(I need|what would help|what I want|I would like|I am looking for|I wish|what I need is|the thing that would|if only)\b/i,
+      reason: "Feelings are often clear in grief. What the person actually needs is often not named. That gap is where the most useful next entries sit."
     },
     {
-      key: "trust_baseline",
-      name: "Trust baselines established",
-      rx: /\b(trust level|trust baseline|where the relationship started|initial standing|they trusted|they did not trust|starting point|before the|when they first met|the relationship began)\b/i,
-      reason: "Trust movement is only readable against a baseline. Without it named the map cannot tell whether a relationship is improving, degrading, or holding."
-    },
-    {
-      key: "dramatic_arc",
-      name: "Dramatic arc",
-      rx: /\b(arc|story arc|building toward|what this is about|the theme|what this story|the narrative direction|where this is going|what the climax|the turning point|what changes)\b/i,
-      reason: "Without the dramatic arc named the map cannot distinguish held tension from stuck narrative, or deliberate pacing from loss of momentum."
+      key: "direction",
+      name: "Any sense of direction",
+      rx: /\b(I want to|eventually|at some point|I hope|I would like to|one day|I am trying to|I am working toward|finding my way|getting through)\b/i,
+      reason: "Direction in grief is not the same as resolution. Any sense of what the person is moving toward — however tentative — helps the map read whether the current period is acute, extended, or beginning to shift."
     }
   ],
   skills: [
     {
-      key: "agenda_concealment",
-      name: "Holding a hidden agenda under pressure",
-      rx: /\b(did not reveal|kept it hidden|deflected|changed the subject|said enough|gave nothing away|maintained the cover|stayed in character|did not break|held the secret|concealed|the player does not know)\b/i,
-      loadSensitive: true,
-      isStructureSkill: false,
-      works: "NPC maintains concealment consistently — answers questions without lying outright, deflects without revealing, stays in character under interrogation.",
-      breaks: "High trust from player, extreme pressure, or conflicting faction loyalties causes partial or full agenda surfacing before the designed reveal moment."
-    },
-    {
-      key: "faction_consistency",
-      name: "Behaving consistently with faction loyalty",
-      rx: /\b(loyal to|acting for|serving|reporting back|in line with|consistent with faction|faction interest|the faction wants|faction directive|faction alignment)\b/i,
-      loadSensitive: true,
+      key: "naming_the_loss",
+      name: "Naming the loss directly",
+      rx: /\b(I said it|I named it|I spoke about|I told someone|I wrote about|I allowed myself to|I said out loud|I acknowledged|I accepted that)\b/i,
+      loadSensitive: false,
       isStructureSkill: true,
-      works: "NPC behaviour is legible as factionally motivated — player can eventually read the pattern even if they do not yet know the faction.",
-      breaks: "Conflicting faction loyalties, player trust that exceeds faction loyalty threshold, or unresolved dramatic arc creates inconsistent behaviour that reads as broken rather than complex."
+      works: "Naming the loss directly rather than writing around it — which is the beginning of being able to carry it rather than avoid it.",
+      breaks: "The loss stays unnamed across multiple entries — the map is reading the shape of avoidance without being able to say what is being avoided."
     },
     {
-      key: "trust_management",
-      name: "Managing trust level across interactions",
-      rx: /\b(trust increased|trust decreased|player trusts|they trust me|I have their trust|trust level|building trust|losing trust|earned trust|trust dropped|trust rose|reliable|consistent|they believe)\b/i,
-      loadSensitive: false,
-      isStructureSkill: false,
-      works: "NPC actions and stated positions are consistent enough that player trust moves in a readable direction — either building or eroding in ways that feel earned.",
-      breaks: "Contradiction between NPC stated position and action, or between faction directive and player-facing behaviour, collapses trust in ways that feel arbitrary rather than consequential."
-    },
-    {
-      key: "consequence_tracking",
-      name: "Tracking and surfacing consequences",
-      rx: /\b(remember when|because of what happened|as a result of|the decision you made|that changed|you did|the last time|I have not forgotten|what you chose|that is why|the consequence of)\b/i,
-      loadSensitive: false,
-      isStructureSkill: false,
-      works: "Prior decisions surface naturally in NPC behaviour — the world remembers what the player did and the NPC reflects it without breaking the fourth wall.",
-      breaks: "Memory gap — NPC fails to connect a prior decision to current behaviour, making the world feel amnesiac and consequence-free."
-    },
-    {
-      key: "dramatic_timing",
-      name: "Timing reveals and escalations",
-      rx: /\b(not yet|not the right moment|holding back|waiting for|when the time comes|the reveal|the moment|building to|when they are ready|the right time|before the climax|after the|timing)\b/i,
+      key: "seeking_support",
+      name: "Seeking or accepting support",
+      rx: /\b(I asked for|I accepted|I reached out|I called|I went to|I spoke to|I told them|I let them|I allowed|I received|I have support)\b/i,
       loadSensitive: true,
       isStructureSkill: false,
-      works: "Information, reveals, and escalations arrive when they create maximum narrative effect — not too early (defusing tension) or too late (losing the player).",
-      breaks: "Pressure from player progress, pacing miscalculation, or consequence chains arriving out of order causes reveals to land flat or too abruptly."
+      works: "Reaching toward others — friends, family, professionals — rather than carrying the grief entirely alone.",
+      breaks: "Isolation reasserts under load — the person withdraws from available support and carries more alone than is sustainable."
+    },
+    {
+      key: "self_care",
+      name: "Basic self-care",
+      rx: /\b(I ate|I slept|I went outside|I moved|I showered|I got dressed|I left the house|I made myself|I managed to|basic things|I kept)\b/i,
+      loadSensitive: true,
+      isStructureSkill: false,
+      works: "Maintaining basic self-care — eating, sleeping, moving — during a period when these things require effort.",
+      breaks: "Acute grief or a hard period causes self-care to stop — the person is not eating, sleeping, or leaving the house."
+    },
+    {
+      key: "allowing_grief",
+      name: "Allowing the grief",
+      rx: /\b(I cried|I let myself|I allowed|I did not push it away|I sat with|I gave myself|I grieved|I felt it|I let it|I did not try to stop)\b/i,
+      loadSensitive: false,
+      isStructureSkill: false,
+      works: "Allowing the grief to be present rather than managing it away — which is what allows it to move at its own pace.",
+      breaks: "The pressure to cope or appear functional causes the grief to be suppressed — it accumulates rather than moving."
     }
   ],
   contradictions: [
     {
-      a: /\b(I am on your side|I want to help you|you can trust me|I am with you|your ally|I am working for you|your interests matter)\b/i,
-      b: /\b(hidden agenda|reporting to|faction directive|concealing|the player does not know|ulterior|what they are really after|secretly)\b/i,
-      text: "Stated alliance and a hidden agenda that works against the player both appear. This is not a flaw — it is the core dramatic tension of a duplicitous NPC. The map holds both. The question is whether the contradiction has been designed into the arc or has arrived by accident."
+      a: /\b(I am okay|I am managing|I am fine|I am getting on with things|I am coping|I am doing alright|I am okay really)\b/i,
+      b: /\b(I cannot|I have not|I broke down|I am not sleeping|I am not eating|I have stopped|I cannot function|it hit me|I fell apart|I am struggling)\b/i,
+      text: "A stated sense of coping and described difficulty functioning both appear. In grief these often coexist — the presented surface and the actual experience are not the same thing. The map holds both without deciding which is true. Both can be true at once."
     },
     {
-      a: /\b(faction loyalty|loyal to the faction|serving the faction|faction directive|faction interest|the faction comes first)\b/i,
-      b: /\b(player trust|I trust the player|the player has earned|I believe the player|I am choosing the player|player over faction|defecting|turning)\b/i,
-      text: "Faction loyalty and player trust pulling in opposite directions both appear. This is the threshold moment — faction vs relationship. The map is reading an active tension, not a contradiction to be resolved. Whether this is the designed turning point or an unplanned drift matters."
+      a: /\b(I want to move on|I need to get past this|I should be over it|it has been long enough|I need to move forward)\b/i,
+      b: /\b(I still|I keep|it comes back|I miss|I think about|I cannot stop|the grief|it is still|it has not gone|I am still)\b/i,
+      text: "A stated desire to move on and the continuing presence of the grief both appear. The desire to be past it and the reality of still being in it are not a contradiction — they are the shape of grief. The map holds both. There is no timeline that applies here."
     },
     {
-      a: /\b(the player does not know|player is unaware|concealed from player|player has not discovered|player trust is high|player believes)\b/i,
-      b: /\b(player has figured out|player suspects|player asked directly|player chose not to trust|player is testing|player already knows|player has evidence)\b/i,
-      text: "Player ignorance assumed and player awareness signals both appear. The NPC may be operating on an outdated model of what the player knows. This is a state change — the concealment dynamic may already be broken."
-    },
-    {
-      a: /\b(held tension|building toward|not yet|the arc is|this is deliberate|pacing|the reveal is coming|setting up)\b/i,
-      b: /\b(player disengaged|player skipped|player lost interest|player frustrated|player confused|nothing is happening|too slow|what is the point|player abandoned)\b/i,
-      text: "Deliberate narrative holding and player disengagement signals both appear. Held tension and stalled narrative look identical from the outside. The map cannot decide which this is — but it can surface that both signals are present at the same time."
+      a: /\b(I loved them|I miss them|I would do anything|they meant everything|I cannot imagine|they were everything)\b/i,
+      b: /\b(relief|relieved|it is over|better off|free|the burden|it was hard|the end was|glad that|I feel guilty because I feel)\b/i,
+      text: "Love or deep attachment and relief or ambivalence both appear. These are not opposites in grief — they are both real and both valid. The map holds them without resolving the tension. Guilt about the relief is common and does not require explanation."
     }
   ],
   directionPatterns: [
     {
-      rx: /reveal|surface|expose|the truth comes out|the player discovers/i,
-      label: "toward revelation"
+      rx: /carry it|live with it|learn to carry|hold it|make room for/i,
+      label: "toward carrying the loss rather than resolving it"
     },
     {
-      rx: /alliance|trust|align|join forces|player and NPC|working together/i,
-      label: "toward alliance"
+      rx: /return to|get back to|resume|pick up|reconnect|back to/i,
+      label: "toward returning to suspended life"
     },
     {
-      rx: /betrayal|turning point|defection|the faction|choosing sides/i,
-      label: "toward betrayal or faction break"
+      rx: /honour|remember|mark|memorial|legacy|keep their memory/i,
+      label: "toward honouring the loss"
     },
     {
-      rx: /consequence|reckoning|what was set in motion|downstream|the result/i,
-      label: "toward consequence arrival"
+      rx: /support|help others|understand|use this|meaning|something from/i,
+      label: "toward finding meaning"
     },
     {
-      rx: /climax|final|the end|resolution|what it was all building toward/i,
-      label: "toward dramatic resolution"
-    },
-    {
-      rx: /player is steering away|avoiding|not engaging|side-stepping|ignoring/i,
-      label: "player avoiding the designed arc"
+      rx: /get through|survive|just get through|one day at a time|keep going/i,
+      label: "toward getting through the current period"
     }
   ],
-  pressureSignals: [
-    {
-      key: "trust_critical",
-      rx: /\b(trust is gone|trust has collapsed|player does not trust|trust level critical|they do not believe|I have lost them|player is hostile)\b/i,
-      label: "trust at critical level"
-    },
-    {
-      key: "agenda_surface",
-      rx: /\b(agenda surfacing|player suspects|almost revealed|close to breaking|nearly slipped|the cover is|beginning to show|player is close to knowing)\b/i,
-      label: "hidden agenda near surface"
-    },
-    {
-      key: "faction_conflict",
-      rx: /\b(faction conflict|loyalty torn|two factions|caught between|serving two|cannot serve both|faction pressure|forced to choose)\b/i,
-      label: "faction loyalty conflict active"
-    },
-    {
-      key: "consequence_due",
-      rx: /\b(consequence is due|the decision is catching up|downstream arriving|what was started|ripple reaching|the chain has reached|cannot be undone now)\b/i,
-      label: "consequence chain arriving"
-    },
-    {
-      key: "player_drift",
-      rx: /\b(player is drifting|player off arc|player ignoring|player going their own way|player not engaging|player has stopped|player lost interest)\b/i,
-      label: "player drifting from arc"
-    },
-    {
-      key: "memory_gap",
-      rx: /\b(forgot|does not remember|memory gap|inconsistent|contradicted themselves|said something different|earlier they said|that is not what|contradiction in the record)\b/i,
-      label: "NPC memory gap"
-    }
-  ],
+  pressureSignals: [],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
   sampleBaseline: "",
   sampleEntries: [],

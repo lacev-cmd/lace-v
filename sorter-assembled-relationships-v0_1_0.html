@@ -600,17 +600,17 @@ label {
 // Assembly replaces everything between these markers.
 /* CARTRIDGE_START */
 window.SORTER_CARTRIDGE = {
-  id: "game-narrative",
-  name: "Personal Map",
-  tagline: "private · evidence-bound",
-  desc: "Game designer, narrative director, NPC behaviour system, or adaptive storytelling engine.. Key pressures: Player intent not yet visible — the map cannot read direction without it.; Faction loyalties unresolved — competing pulls on NPC behaviour.; Hidden agenda approaching surface — timing of reveal is load-sensitive..",
-  accent: "#2d5a3d",
-  accentLight: "#e8f0ea",
+  id: "relationships",
+  name: "Relationships Map",
+  tagline: "private · evidence-bound · non-directive",
+  desc: "Individual, couples therapist support context, family support worker, or mediation preparation.. Key pressures: Distance growing without acknowledgement.; Repair intended but not attempted.; Dependency — one person carrying more than is sustainable..",
+  accent: "#2a3a5c",
+  accentLight: "#edf0f4",
   baselineTitle: "Set your baseline",
-  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: player intent not named — what the player is actually trying to achieve; faction relationships not mapped — who is aligned with whom and why; hidden agendas not listed — what each npc is concealing and from whom. Movement in this domain looks like: hidden agenda surfaced — partial or full reveal; faction relationship shifted — alliance formed, strained, or broken.",
-  baselinePlaceholder: "Where are you now? What has led to this point? Include: player intent not named — what the player is actually trying to achieve.",
+  baselineDesc: "Where you are now. What has led to this point. What the current pressure looks like. The map particularly needs: the other person's state not visible — only one side of the relationship described; repair not attempted despite being named as important; what the person actually does toward the other — not just feels. Movement in this domain looks like: contact made when it was absent; repair attempted — not just intended.",
+  baselinePlaceholder: "Where are you now? What has led to this point? Include: the other person's state not visible — only one side of the relationship described.",
   entryTitle: "Add an entry",
-  entryDesc: "Precise about state. Non-prescriptive about story. Evidence-bound about what has happened. Does not invent motivation — reads what is in the material.",
+  entryDesc: "Careful. Non-partisan. Reads the gap between the stated relationship and the described one. Does not take sides.",
   entryPlaceholder: "What is on your mind?",
   reportDesc: "The map reads what is moving, stuck, and under load based on what you wrote.",
   reportEmptyDesc: "Add a baseline and at least one entry, then read your map.",
@@ -618,169 +618,114 @@ window.SORTER_CARTRIDGE = {
   crisisRx: /\b(kill myself|end my life|suicide|suicidal|I want to die|don't want to be here|hurt myself|harm myself|can't go on|not worth it|overdose)\b/i,
   gaps: [
     {
-      key: "player_intent",
-      name: "Player intent",
-      rx: /\b(player wants|player is trying|player goal|player objective|what the player|player direction|player is building toward|player has chosen|player keeps|player pattern)\b/i,
-      reason: "Without player intent named the map cannot read whether NPC behaviour is serving or obstructing the narrative. Intent is the baseline everything else is measured against."
+      key: "what_is_done_toward_other",
+      name: "What is actually done toward the other person",
+      rx: /\b(I called|I reached out|I said|I told them|I apologised|I asked|I spent time|I was honest with|I initiated|I went to see|I made contact|I did)\b/i,
+      reason: "Feelings about a relationship are often described clearly. What the person actually does — or does not do — toward the other person is often missing. The gap between feeling and action is where the map needs material."
     },
     {
-      key: "faction_map",
-      name: "Faction relationships",
-      rx: /\b(faction|alliance|aligned with|loyal to|hostile to|neutral|faction relationship|standing with|reputation with|the factions|who controls|who is with|who is against)\b/i,
-      reason: "Faction relationships are the structural map of the world. Without them the sorter cannot read whether NPC actions are coherent, contradictory, or consequential."
+      key: "contact_frequency",
+      name: "Contact frequency and quality",
+      rx: /\b(we spoke|we met|I called|they called|we saw|contact|in touch|we talked|how often|we have been|I have seen|last time we)\b/i,
+      reason: "Described closeness without described contact is a significant gap. Whether contact is actually happening tells the map more than how the person feels about the relationship."
     },
     {
-      key: "hidden_agendas",
-      name: "Hidden agendas defined",
-      rx: /\b(hidden agenda|secret goal|concealing|does not reveal|privately wants|what they are not saying|true motivation|ulterior|what they are really after|the real reason)\b/i,
-      reason: "Hidden agendas drive NPC behaviour in ways that appear inconsistent without them named. Without them mapped the sorter reads contradiction where there is only concealment."
+      key: "repair_status",
+      name: "Repair status",
+      rx: /\b(I apologised|we talked about it|we addressed|I said sorry|they forgave|we worked through|repair|we are okay now|it has been resolved|I brought it up)\b/i,
+      reason: "Whether repair has been attempted — not just intended — is the key signal. Repair described as important but not yet attempted is avoidance with a named object."
     },
     {
-      key: "consequence_chains",
-      name: "Active consequence chains",
-      rx: /\b(consequence|downstream|because of the decision|ripple|what that means for|what follows from|the result of|triggered by|set in motion|what was started|the chain)\b/i,
-      reason: "Decisions already made are still in motion. Without consequence chains traced the map cannot read what is moving and what is held."
+      key: "dependency_pattern",
+      name: "Dependency pattern",
+      rx: /\b(I depend on|they depend on me|I need them|they need me|I cannot do this without|too much on each other|I am carrying|they are carrying|the weight of)\b/i,
+      reason: "Dependency that is not named cannot be changed. Whether one person is carrying more than is sustainable — and whether that is acknowledged — shapes what movement looks like in this relationship."
     },
     {
-      key: "trust_baseline",
-      name: "Trust baselines established",
-      rx: /\b(trust level|trust baseline|where the relationship started|initial standing|they trusted|they did not trust|starting point|before the|when they first met|the relationship began)\b/i,
-      reason: "Trust movement is only readable against a baseline. Without it named the map cannot tell whether a relationship is improving, degrading, or holding."
-    },
-    {
-      key: "dramatic_arc",
-      name: "Dramatic arc",
-      rx: /\b(arc|story arc|building toward|what this is about|the theme|what this story|the narrative direction|where this is going|what the climax|the turning point|what changes)\b/i,
-      reason: "Without the dramatic arc named the map cannot distinguish held tension from stuck narrative, or deliberate pacing from loss of momentum."
+      key: "direction",
+      name: "Stated direction for the relationship",
+      rx: /\b(I want to|I am trying to|my goal|what I want from|I hope|repair|rebuild|end it|distance|different|work on it|the relationship I want)\b/i,
+      reason: "Without a stated direction the map cannot assess whether current activity is moving toward or away from what the person actually wants."
     }
   ],
   skills: [
     {
-      key: "agenda_concealment",
-      name: "Holding a hidden agenda under pressure",
-      rx: /\b(did not reveal|kept it hidden|deflected|changed the subject|said enough|gave nothing away|maintained the cover|stayed in character|did not break|held the secret|concealed|the player does not know)\b/i,
-      loadSensitive: true,
-      isStructureSkill: false,
-      works: "NPC maintains concealment consistently — answers questions without lying outright, deflects without revealing, stays in character under interrogation.",
-      breaks: "High trust from player, extreme pressure, or conflicting faction loyalties causes partial or full agenda surfacing before the designed reveal moment."
-    },
-    {
-      key: "faction_consistency",
-      name: "Behaving consistently with faction loyalty",
-      rx: /\b(loyal to|acting for|serving|reporting back|in line with|consistent with faction|faction interest|the faction wants|faction directive|faction alignment)\b/i,
+      key: "making_contact",
+      name: "Making contact",
+      rx: /\b(I called|I reached out|I initiated|I went to see|I wrote|I texted|I made contact|I got in touch|I arranged to|I showed up)\b/i,
       loadSensitive: true,
       isStructureSkill: true,
-      works: "NPC behaviour is legible as factionally motivated — player can eventually read the pattern even if they do not yet know the faction.",
-      breaks: "Conflicting faction loyalties, player trust that exceeds faction loyalty threshold, or unresolved dramatic arc creates inconsistent behaviour that reads as broken rather than complex."
+      works: "Initiating contact — calls, visits, messages — rather than waiting for the other person to reach first.",
+      breaks: "Fear of rejection, past conflict, or the assumption that the other person should go first causes contact to stop — distance grows without acknowledgement."
     },
     {
-      key: "trust_management",
-      name: "Managing trust level across interactions",
-      rx: /\b(trust increased|trust decreased|player trusts|they trust me|I have their trust|trust level|building trust|losing trust|earned trust|trust dropped|trust rose|reliable|consistent|they believe)\b/i,
-      loadSensitive: false,
-      isStructureSkill: false,
-      works: "NPC actions and stated positions are consistent enough that player trust moves in a readable direction — either building or eroding in ways that feel earned.",
-      breaks: "Contradiction between NPC stated position and action, or between faction directive and player-facing behaviour, collapses trust in ways that feel arbitrary rather than consequential."
-    },
-    {
-      key: "consequence_tracking",
-      name: "Tracking and surfacing consequences",
-      rx: /\b(remember when|because of what happened|as a result of|the decision you made|that changed|you did|the last time|I have not forgotten|what you chose|that is why|the consequence of)\b/i,
-      loadSensitive: false,
-      isStructureSkill: false,
-      works: "Prior decisions surface naturally in NPC behaviour — the world remembers what the player did and the NPC reflects it without breaking the fourth wall.",
-      breaks: "Memory gap — NPC fails to connect a prior decision to current behaviour, making the world feel amnesiac and consequence-free."
-    },
-    {
-      key: "dramatic_timing",
-      name: "Timing reveals and escalations",
-      rx: /\b(not yet|not the right moment|holding back|waiting for|when the time comes|the reveal|the moment|building to|when they are ready|the right time|before the climax|after the|timing)\b/i,
+      key: "honest_conversation",
+      name: "Having honest conversations",
+      rx: /\b(I told them|I said|I was honest|I raised|I brought up|I named it|I said what I|I told the truth|I said how I felt|I was direct)\b/i,
       loadSensitive: true,
       isStructureSkill: false,
-      works: "Information, reveals, and escalations arrive when they create maximum narrative effect — not too early (defusing tension) or too late (losing the player).",
-      breaks: "Pressure from player progress, pacing miscalculation, or consequence chains arriving out of order causes reveals to land flat or too abruptly."
+      works: "Saying what is actually true rather than the version that avoids conflict or keeps things smooth on the surface.",
+      breaks: "Conflict avoidance or fear of the other person's reaction causes the honest version to stay unsaid — the surface manages while the real situation does not change."
+    },
+    {
+      key: "holding_boundaries",
+      name: "Holding stated boundaries",
+      rx: /\b(I said no|I held the boundary|I did not|I maintained|I kept to|I did not let|I stood by|I did not change|I kept the distance|I did not go back on)\b/i,
+      loadSensitive: true,
+      isStructureSkill: false,
+      works: "Maintaining a stated boundary — even when pressure, guilt, or the other person's response makes it hard.",
+      breaks: "Emotional pressure, guilt, or the other person's reaction causes the boundary to collapse — the stated and enacted position diverge."
+    },
+    {
+      key: "hearing_the_other",
+      name: "Hearing the other person",
+      rx: /\b(I heard them|I listened|their point|they said|I understood what they|I could see their|from their side|their perspective|I took in what they|I let them finish)\b/i,
+      loadSensitive: true,
+      isStructureSkill: false,
+      works: "Taking in the other person's position without immediately countering it.",
+      breaks: "Load or defensiveness converts listening into waiting to respond — the other person's position is not heard."
     }
   ],
   contradictions: [
     {
-      a: /\b(I am on your side|I want to help you|you can trust me|I am with you|your ally|I am working for you|your interests matter)\b/i,
-      b: /\b(hidden agenda|reporting to|faction directive|concealing|the player does not know|ulterior|what they are really after|secretly)\b/i,
-      text: "Stated alliance and a hidden agenda that works against the player both appear. This is not a flaw — it is the core dramatic tension of a duplicitous NPC. The map holds both. The question is whether the contradiction has been designed into the arc or has arrived by accident."
+      a: /\b(I love them|I care about them|they are important|they mean everything|I do not want to lose them|I value the relationship)\b/i,
+      b: /\b(I have not called|I have not reached out|I have not said|I have not done|I keep meaning to|same distance|I have not addressed|still not)\b/i,
+      text: "Stated care or love and absence of contact or action toward the person both appear. The gap between what is felt and what is done is the most common pattern in relational difficulty. The map reads both without deciding which is more real — but the behaviour is the more reliable signal of current state."
     },
     {
-      a: /\b(faction loyalty|loyal to the faction|serving the faction|faction directive|faction interest|the faction comes first)\b/i,
-      b: /\b(player trust|I trust the player|the player has earned|I believe the player|I am choosing the player|player over faction|defecting|turning)\b/i,
-      text: "Faction loyalty and player trust pulling in opposite directions both appear. This is the threshold moment — faction vs relationship. The map is reading an active tension, not a contradiction to be resolved. Whether this is the designed turning point or an unplanned drift matters."
+      a: /\b(fine|okay|not that bad|good moments|we are okay|it is okay|mostly fine|we are good)\b/i,
+      b: /\b(argument|fight|same pattern|keeps happening|can\'t go on|exhausted by it|losing hope|same distance|nothing changes between us)\b/i,
+      text: "Statements that the relationship is broadly fine and signals of significant strain both appear. The overall assessment staying positive while the specific material shows a different picture is a common pattern. Both are real — the map holds them without resolving either."
     },
     {
-      a: /\b(the player does not know|player is unaware|concealed from player|player has not discovered|player trust is high|player believes)\b/i,
-      b: /\b(player has figured out|player suspects|player asked directly|player chose not to trust|player is testing|player already knows|player has evidence)\b/i,
-      text: "Player ignorance assumed and player awareness signals both appear. The NPC may be operating on an outdated model of what the player knows. This is a state change — the concealment dynamic may already be broken."
-    },
-    {
-      a: /\b(held tension|building toward|not yet|the arc is|this is deliberate|pacing|the reveal is coming|setting up)\b/i,
-      b: /\b(player disengaged|player skipped|player lost interest|player frustrated|player confused|nothing is happening|too slow|what is the point|player abandoned)\b/i,
-      text: "Deliberate narrative holding and player disengagement signals both appear. Held tension and stalled narrative look identical from the outside. The map cannot decide which this is — but it can surface that both signals are present at the same time."
+      a: /\b(I want to repair|I want to fix it|I want things to be better|I am trying|I want us to be okay)\b/i,
+      b: /\b(I have not|I keep putting off|I have not said|I have not tried|I have not reached out|still not|same situation|I keep meaning)\b/i,
+      text: "Stated desire to repair the relationship and consistent inaction toward repair both appear. Wanting repair and taking the step toward it are different things. The gap is worth naming — what is getting in the way of the step is the most useful question."
     }
   ],
   directionPatterns: [
     {
-      rx: /reveal|surface|expose|the truth comes out|the player discovers/i,
-      label: "toward revelation"
+      rx: /repair|fix|restore|work through|reconcile|rebuild/i,
+      label: "toward repair or reconciliation"
     },
     {
-      rx: /alliance|trust|align|join forces|player and NPC|working together/i,
-      label: "toward alliance"
+      rx: /boundary|space|distance|less contact|I need to|protect myself/i,
+      label: "toward establishing or maintaining distance"
     },
     {
-      rx: /betrayal|turning point|defection|the faction|choosing sides/i,
-      label: "toward betrayal or faction break"
+      rx: /end|leave|separate|break up|divorce|walk away|done/i,
+      label: "toward ending the relationship"
     },
     {
-      rx: /consequence|reckoning|what was set in motion|downstream|the result/i,
-      label: "toward consequence arrival"
+      rx: /honest|say it|tell them|name it|raise it|have the conversation/i,
+      label: "toward honest conversation"
     },
     {
-      rx: /climax|final|the end|resolution|what it was all building toward/i,
-      label: "toward dramatic resolution"
-    },
-    {
-      rx: /player is steering away|avoiding|not engaging|side-stepping|ignoring/i,
-      label: "player avoiding the designed arc"
+      rx: /different|change the dynamic|something has to change|new pattern/i,
+      label: "toward changing the relationship pattern"
     }
   ],
-  pressureSignals: [
-    {
-      key: "trust_critical",
-      rx: /\b(trust is gone|trust has collapsed|player does not trust|trust level critical|they do not believe|I have lost them|player is hostile)\b/i,
-      label: "trust at critical level"
-    },
-    {
-      key: "agenda_surface",
-      rx: /\b(agenda surfacing|player suspects|almost revealed|close to breaking|nearly slipped|the cover is|beginning to show|player is close to knowing)\b/i,
-      label: "hidden agenda near surface"
-    },
-    {
-      key: "faction_conflict",
-      rx: /\b(faction conflict|loyalty torn|two factions|caught between|serving two|cannot serve both|faction pressure|forced to choose)\b/i,
-      label: "faction loyalty conflict active"
-    },
-    {
-      key: "consequence_due",
-      rx: /\b(consequence is due|the decision is catching up|downstream arriving|what was started|ripple reaching|the chain has reached|cannot be undone now)\b/i,
-      label: "consequence chain arriving"
-    },
-    {
-      key: "player_drift",
-      rx: /\b(player is drifting|player off arc|player ignoring|player going their own way|player not engaging|player has stopped|player lost interest)\b/i,
-      label: "player drifting from arc"
-    },
-    {
-      key: "memory_gap",
-      rx: /\b(forgot|does not remember|memory gap|inconsistent|contradicted themselves|said something different|earlier they said|that is not what|contradiction in the record)\b/i,
-      label: "NPC memory gap"
-    }
-  ],
+  pressureSignals: [],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
   sampleBaseline: "",
   sampleEntries: [],
