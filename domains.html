@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lace V — Pick Your Domain</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F5F1E8; --accent: #6B1A2A; --ink: #2a1a1a; --mid: #5a4a3a;
+    --muted: #7a6a5a; --faint: #9a7a6a; --border: #d4c4b4; --white: #ffffff;
+    --font: 'Inter', sans-serif;
+  }
+  body { background: var(--bg); font-family: var(--font); color: var(--ink); min-height: 100vh; }
+  nav { padding: 1.5rem 3rem; display: flex; align-items: center; border-bottom: 1px solid var(--border); }
+  .logo { display: flex; align-items: center; gap: 1.25rem; text-decoration: none; }
+  .logo-text p:first-child { font-size: 18px; font-weight: 500; letter-spacing: 0.16em; color: var(--accent); }
+  .logo-text p:last-child { font-size: 9px; letter-spacing: 0.2em; color: var(--faint); text-transform: uppercase; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 4rem 2rem; }
+  h1 { font-size: 26px; font-weight: 500; color: var(--ink); margin: 0 0 0.5rem; }
+  .intro { font-size: 15px; color: var(--muted); margin: 0 0 3rem; }
+  .section-label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); margin: 0 0 1rem; }
+  .domain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 3rem; }
+  .domain-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between; gap: 1rem; transition: border-color 0.15s; }
+  .domain-card:hover { border-color: var(--accent); }
+  .domain-card h3 { font-size: 15px; font-weight: 500; color: var(--ink); margin: 0 0 4px; }
+  .domain-card p { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.6; }
+  .btn-open { background: var(--accent); color: var(--bg); border: none; border-radius: 6px; padding: 0.5rem 1rem; font-family: var(--font); font-size: 13px; font-weight: 500; cursor: pointer; align-self: flex-start; transition: opacity 0.15s; text-decoration: none; display: inline-block; }
+  .btn-open:hover { opacity: 0.88; }
+  footer { border-top: 1px solid var(--border); padding: 2rem 3rem; margin-top: 2rem; }
+  footer p { font-size: 13px; color: var(--faint); }
+  @media (max-width: 600px) {
+    nav { padding: 1rem 1.25rem; }
+    .wrap { padding: 2rem 1.25rem; }
+    .domain-grid { grid-template-columns: 1fr; }
+    footer { padding: 1.5rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">
+    <svg width="52" height="44" viewBox="0 0 160 140">
+      <polyline points="0,0 80,150 160,0" fill="none" stroke="#6B1A2A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.2"/>
+      <polyline points="22,0 80,103 138,0" fill="none" stroke="#6B1A2A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+      <polyline points="50,0 80,56 110,0" fill="none" stroke="#6B1A2A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+    </svg>
+    <div class="logo-text">
+      <p>LACE V</p>
+      <p>Pattern Reading Machine</p>
+    </div>
+  </a>
+</nav>
+
+<div class="wrap">
+  <h1>Pick your domain.</h1>
+  <p class="intro">Select the tool that fits your situation. Each one uses the same reading engine — calibrated for its domain.</p>
+
+  <p class="section-label">Personal</p>
+  <div class="domain-grid">
+    <div class="domain-card">
+      <div><h3>Grief</h3><p>For loss, bereavement, and what comes after.</p></div>
+      <a class="btn-open" href="sorter-assembled-grief-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Relationships</h3><p>For personal and family relationships under pressure.</p></div>
+      <a class="btn-open" href="sorter-assembled-relationships-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Mental health</h3><p>For mapping function, load, and what's changing.</p></div>
+      <a class="btn-open" href="sorter-assembled-mental-health-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Addiction recovery</h3><p>For reading movement, stagnation, and pressure in recovery.</p></div>
+      <a class="btn-open" href="sorter-assembled-addiction-recovery-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Reentry</h3><p>For life after the justice system.</p></div>
+      <a class="btn-open" href="sorter-assembled-reentry-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Employment</h3><p>For work, job search, and employment situations.</p></div>
+      <a class="btn-open" href="sorter-assembled-employment-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Medical</h3><p>For health situations, treatment, and care.</p></div>
+      <a class="btn-open" href="sorter-assembled-medical-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Financial</h3><p>For money, debt, and financial decisions under pressure.</p></div>
+      <a class="btn-open" href="sorter-assembled-financial-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Legal</h3><p>For legal situations requiring careful evidence mapping.</p></div>
+      <a class="btn-open" href="sorter-assembled-legal-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Creative</h3><p>For creative work, blocks, and process mapping.</p></div>
+      <a class="btn-open" href="sorter-assembled-creative-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Education</h3><p>For learning situations, study, and educational decisions.</p></div>
+      <a class="btn-open" href="sorter-assembled-education-v0_1_0.html">Open tool</a>
+    </div>
+  </div>
+
+  <p class="section-label">Professional</p>
+  <div class="domain-grid">
+    <div class="domain-card">
+      <div><h3>Engineering</h3><p>For technical decisions, constraints, and evidence gaps.</p></div>
+      <a class="btn-open" href="sorter-assembled-engineering-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Team dynamics</h3><p>For teams under pressure, conflict, and performance mapping.</p></div>
+      <a class="btn-open" href="sorter-assembled-team-dynamics-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Code release</h3><p>For release decisions, evidence readiness, and change mapping.</p></div>
+      <a class="btn-open" href="sorter-assembled-stem-code-release-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Asset integrity</h3><p>For inspection, maintenance, and asset evidence mapping.</p></div>
+      <a class="btn-open" href="sorter-assembled-stem-asset-integrity-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Robotics</h3><p>For robotics systems, capability gaps, and deployment evidence.</p></div>
+      <a class="btn-open" href="sorter-assembled-stem-robotics-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Lab evidence</h3><p>For scientific evidence readiness and lab decision mapping.</p></div>
+      <a class="btn-open" href="sorter-assembled-stem-lab-evidence-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>AI agent</h3><p>For AI systems, capability boundaries, and deployment decisions.</p></div>
+      <a class="btn-open" href="sorter-assembled-ai-agent-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Game narrative</h3><p>For game design, narrative structure, and story mapping.</p></div>
+      <a class="btn-open" href="sorter-assembled-game-narrative-v0_1_0.html">Open tool</a>
+    </div>
+    <div class="domain-card">
+      <div><h3>Criminal justice</h3><p>For criminal justice situations, case mapping, and evidence reads.</p></div>
+      <a class="btn-open" href="sorter-assembled-criminal-justice-v0_1_0.html">Open tool</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 Lace V</p>
+</footer>
+
+</body>
+</html>
