@@ -400,9 +400,9 @@ label {
     <!-- WELCOME SCREEN 1 -->
     <div id="onboard-s1">
       <p class="brand-kicker">LACE V</p>
-      <h1 class="onboard-title serif" id="onboard-title">Welcome.</h1>
-      <p class="onboard-lead">Lace V is a bootstrap start-up founded in 2025 with a single question: what does AI look like when it stops generating and starts reading? We build precise, evidence-bound tools that map what's actually there — not what a model thinks you want to hear. No subscriptions to a chatbot. No black box. Just your material, read carefully, returned to you as a map.</p>
-      <p class="onboard-lead" style="margin-top:-.5rem;" id="onboard-lead">This tool has been built for your domain. It reads what you submit and maps what it finds — movement, stagnation, load, gaps, and the next useful move. It takes a baseline and entries over time. The more specific the material, the more precise the read.</p>
+      <h1 class="onboard-title serif" id="onboard-title">Criminal Justice Map</h1>
+      <p class="onboard-lead" id="onboard-lead">The period after the justice system is one of the hardest to navigate and one of the hardest to talk about honestly. This tool doesn't judge where you are or how you got here. It reads what you write and maps what's actually there — what's in place, what isn't, what the pressure looks like, what needs attention.</p>
+      <p class="onboard-lead" style="margin-top:-.5rem;">Write what's happening. The map reads what you give it.</p>
       <div class="onboard-actions">
         <button class="btn btn-primary" onclick="document.getElementById('onboard-s1').style.display='none'; document.getElementById('onboard-s2').style.display='block';">Next</button>
         <button class="btn btn-sm" onclick="loadSample()">See a sample</button>
@@ -414,13 +414,9 @@ label {
       <p class="brand-kicker">HOW TO USE THIS TOOL</p>
 
       <div class="what-this-is">
-        <p><strong>Baseline.</strong> Your starting point. State where things are now — the situation, the pressure, what has led to this point. Be specific. Vague baselines produce vague reads.</p>
-        <p><strong>Entries.</strong> Dated material added over time. What happened, what was decided, what changed, what didn't. One entry can be a single sentence or several paragraphs. The tool reads across all of them.</p>
-        <p><strong>Corrections.</strong> If the map misreads something, correct it here. Corrections are not cosmetic — they propagate forward and change how subsequent material is weighted.</p>
-        <p><strong>Read map.</strong> Generates your reading from everything submitted. Run it when you have enough material — a baseline and at least one entry.</p>
-        <p><strong>Report.</strong> Produces a structured document from the reading. Format depends on the output type you selected.</p>
-        <p><strong>What this tool does not do.</strong> It does not give advice. It does not diagnose. It does not generate a response. It reads what you submit and maps what it finds — no more, no less.</p>
-        <p><strong>Best results.</strong> Submit material that describes rather than summarises. The tool reads signal in specific language — dates, decisions, named constraints, actual events. General statements produce thin reads.</p>
+        <p>Write where things stand — your situation, the conditions you're under, what's working and what isn't. Come back when something changes. The map reads across all of it.</p>
+        <p><strong>A minimum baseline might look like this:</strong><br>"I've been out for six weeks. I have conditions I have to meet. I'm trying to stay away from the people and places that caused problems before. It's harder than I expected and I haven't told anyone how hard."</p>
+        <p>Write more if you have it. That's enough if you don't.</p>
       </div>
 
       <div class="onboard-actions">
@@ -603,7 +599,7 @@ window.SORTER_CARTRIDGE = {
   id: "criminal-justice",
   name: "Criminal Justice Map",
   tagline: "private · evidence-bound · non-moralising",
-  desc: "Probation officer, offender manager, support worker, or individual.. Key pressures: Licence or order conditions creating structural constraints.; Recall or breach risk.; Stigma and disclosure burden..",
+    desc: "",
   accent: "#3a3a2a",
   accentLight: "#f2f2ed",
   baselineTitle: "Set your baseline",
@@ -1250,7 +1246,7 @@ const MercatorEngine = (() => {
   function saveBaseline() {
     MercatorEngine.saveBaseline($('baselineText').value.trim());
     const s = $('baseline-status');
-    s.textContent = 'Saved.'; s.style.display = 'block';
+    s.textContent = 'Received.'; s.style.display = 'block';
     setTimeout(() => s.style.display='none', 2000);
   }
 
@@ -1264,7 +1260,7 @@ const MercatorEngine = (() => {
     MercatorEngine.addEntry($('entryDate').value || todayISO(), text);
     $('entryText').value = '';
     const s = $('entry-status');
-    s.textContent = 'Entry saved.'; s.style.display = 'inline';
+    s.textContent = 'Received.'; s.style.display = 'inline';
     setTimeout(() => s.style.display='none', 2000);
     renderEntries();
   }

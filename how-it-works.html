@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lace V — How it works</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F5F1E8; --accent: #6B1A2A; --ink: #1a0a0a; --mid: #5a4a3a;
+    --muted: #7a6a5a; --faint: #9a7a6a; --border: #d4c4b4; --white: #ffffff;
+    --font: 'Inter', sans-serif;
+  }
+  body { background: var(--bg); font-family: var(--font); color: var(--ink); min-height: 100vh; }
+  a { text-decoration: none; color: inherit; }
+
+  nav { padding: 1.25rem 2.5rem; display: flex; align-items: center; border-bottom: 1px solid var(--border); }
+  .logo { display: flex; align-items: center; gap: 1rem; }
+  .logo-text p:first-child { font-size: 17px; font-weight: 500; letter-spacing: 0.16em; color: var(--accent); }
+  .logo-text p:last-child { font-size: 9px; letter-spacing: 0.2em; color: var(--faint); text-transform: uppercase; }
+
+  .tagline-strip { background: #ede8de; border-bottom: 1px solid var(--border); padding: 0.45rem 2.5rem; font-size: 11px; letter-spacing: 0.1em; color: var(--muted); }
+
+  .panel { max-width: 640px; margin: 0 auto; padding: 3.5rem 2rem; }
+  .panel + .panel { border-top: 1px solid var(--border); }
+  .panel-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint); font-weight: 600; margin-bottom: 1.25rem; }
+  .panel h2 { font-size: 26px; font-weight: 500; color: var(--ink); line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 0.85rem; }
+  .panel p { font-size: 15px; color: var(--mid); line-height: 1.75; max-width: 480px; }
+  .panel p + p { margin-top: 1rem; }
+
+  .detail { max-width: 640px; margin: 0 auto; padding: 0 2rem 3.5rem; border-top: 1px solid var(--border); }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 2.5rem; }
+  .detail-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem 1.25rem; }
+  .detail-card .d-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 0.5rem; }
+  .detail-card p { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+  .cta-wrap { max-width: 640px; margin: 0 auto; padding: 2.5rem 2rem 3.5rem; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+  .btn-primary { display: inline-block; background: var(--accent); color: var(--bg); border-radius: 8px; padding: 0.85rem 2.25rem; font-size: 15px; font-weight: 500; transition: opacity 0.15s; }
+  .btn-primary:hover { opacity: 0.88; }
+  .cta-note { font-size: 12px; color: var(--faint); line-height: 1.65; }
+
+  footer { border-top: 1px solid var(--border); padding: 1.5rem 2.5rem; }
+  footer p { font-size: 12px; color: var(--faint); }
+
+  @media (max-width: 600px) {
+    nav { padding: 1rem 1.25rem; }
+    .tagline-strip { padding: 0.45rem 1.25rem; }
+    .panel { padding: 2.5rem 1.25rem; }
+    .detail { padding: 0 1.25rem 2.5rem; }
+    .detail-grid { grid-template-columns: 1fr; }
+    .cta-wrap { padding: 2rem 1.25rem 3rem; flex-direction: column; align-items: flex-start; }
+    footer { padding: 1.5rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">
+    <svg width="44" height="37" viewBox="0 0 160 140">
+      <polyline points="0,0 80,150 160,0" fill="none" stroke="#6B1A2A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.2"/>
+      <polyline points="22,0 80,103 138,0" fill="none" stroke="#6B1A2A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+      <polyline points="50,0 80,56 110,0" fill="none" stroke="#6B1A2A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+    </svg>
+    <div class="logo-text">
+      <p>LACE V</p>
+      <p>Pattern Reading Machine</p>
+    </div>
+  </a>
+</nav>
+
+<div class="tagline-strip">Private · Evidence-bound · Pattern-aware</div>
+
+<div class="panel">
+  <p class="panel-label">What it is</p>
+  <h2>You already know what's happening.<br>You just can't see it yet.</h2>
+  <p>Lace V reads what you write and maps what's actually there — what's moving, what's stuck, what's missing, what contradicts. It doesn't tell you what to think. It shows you what you gave it.</p>
+</div>
+
+<div class="panel">
+  <p class="panel-label">How it's different</p>
+  <h2>Most tools generate answers.<br>This one reads what you give it.</h2>
+  <p>Lace V is a pattern-reading engine. You write. It counts what appears independently, tracks what is moving, holds contradictions, and maps the next useful move. Evidence only. Nothing invented.</p>
+  <p>It does not generate. It does not predict. It does not guess. If you didn't write it, the map cannot see it.</p>
+</div>
+
+<div class="panel">
+  <p class="panel-label">How it works</p>
+  <h2>Write what's happening.<br>It reads what's there.</h2>
+  <p>Start with a baseline — where things stand right now. Add entries over time as things move, change, or don't. The map reads across all of it and surfaces what the material actually shows.</p>
+</div>
+
+<div class="detail">
+  <div class="detail-grid">
+    <div class="detail-card">
+      <div class="d-label">Counts signals</div>
+      <p>Independent appearances across entries — not repetition of one claim. One mention is thin. The same thing appearing across separate days is evidence.</p>
+    </div>
+    <div class="detail-card">
+      <div class="d-label">Tracks movement</div>
+      <p>What is changing. What has stopped. What is circling without shifting. The map reads the difference between progress and the appearance of it.</p>
+    </div>
+    <div class="detail-card">
+      <div class="d-label">Holds contradictions</div>
+      <p>Both things visible at once, without resolving either. If you say you're fine and describe falling apart — the map holds both without deciding which is true.</p>
+    </div>
+    <div class="detail-card">
+      <div class="d-label">Surfaces gaps</div>
+      <p>What is missing from the picture. What has not been named. The map cannot read what you didn't write — but it can tell you what it couldn't find.</p>
+    </div>
+    <div class="detail-card">
+      <div class="d-label">Reads load</div>
+      <p>What is making things harder. Pressure that is active in the material — even when it hasn't been named as pressure.</p>
+    </div>
+    <div class="detail-card">
+      <div class="d-label">Maps next move</div>
+      <p>Bounded by what the evidence actually supports. Not advice. The most useful next step given what the map can actually read.</p>
+    </div>
+  </div>
+</div>
+
+<div class="cta-wrap">
+  <a class="btn-primary" href="domains.html">Pick your domain</a>
+  <p class="cta-note">No account required. Nothing leaves your device.<br>Free to use — export your report for $9/month.</p>
+</div>
+
+<footer>
+  <p>© 2026 Lace V</p>
+</footer>
+
+</body>
+</html>

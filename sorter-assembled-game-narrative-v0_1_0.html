@@ -396,39 +396,20 @@ label {
 <!-- ── ONBOARD SCREEN ──────────────────────────────────────── -->
 <div id="screen-onboard">
   <div class="onboard-wrap">
+    <p class="brand-kicker">LACE V</p>
+    <h1 class="onboard-title serif" id="onboard-title">Personal Map</h1>
+    <p class="onboard-lead" id="onboard-lead">A reading and sorting tool. You write. It reads what you wrote.</p>
 
-    <!-- WELCOME SCREEN 1 -->
-    <div id="onboard-s1">
-      <p class="brand-kicker">LACE V</p>
-      <h1 class="onboard-title serif" id="onboard-title">Welcome.</h1>
-      <p class="onboard-lead">Lace V is a bootstrap start-up founded in 2025 with a single question: what does AI look like when it stops generating and starts reading? We build precise, evidence-bound tools that map what's actually there — not what a model thinks you want to hear. No subscriptions to a chatbot. No black box. Just your material, read carefully, returned to you as a map.</p>
-      <p class="onboard-lead" style="margin-top:-.5rem;" id="onboard-lead">This tool has been built for your domain. It reads what you submit and maps what it finds — movement, stagnation, load, gaps, and the next useful move. It takes a baseline and entries over time. The more specific the material, the more precise the read.</p>
-      <div class="onboard-actions">
-        <button class="btn btn-primary" onclick="document.getElementById('onboard-s1').style.display='none'; document.getElementById('onboard-s2').style.display='block';">Next</button>
-        <button class="btn btn-sm" onclick="loadSample()">See a sample</button>
-      </div>
+    <div class="what-this-is">
+      <p><strong>What this is.</strong> This map is built from what you wrote. Nothing more. It cannot see what you did not give it. It cannot fill gaps you left empty. It cannot read what you held back. The more honestly you write, the more honestly it reads.</p>
+      <p>It does not generate, predict, or guess. It reads your material, counts what appears independently, maps what is moving and what is not, holds what contradicts without resolving it, and surfaces what is missing.</p>
+      <p><strong>This is your record.</strong> Nothing leaves this device. No account required. No data stored anywhere but here.</p>
     </div>
 
-    <!-- WELCOME SCREEN 2 -->
-    <div id="onboard-s2" style="display:none;">
-      <p class="brand-kicker">HOW TO USE THIS TOOL</p>
-
-      <div class="what-this-is">
-        <p><strong>Baseline.</strong> Your starting point. State where things are now — the situation, the pressure, what has led to this point. Be specific. Vague baselines produce vague reads.</p>
-        <p><strong>Entries.</strong> Dated material added over time. What happened, what was decided, what changed, what didn't. One entry can be a single sentence or several paragraphs. The tool reads across all of them.</p>
-        <p><strong>Corrections.</strong> If the map misreads something, correct it here. Corrections are not cosmetic — they propagate forward and change how subsequent material is weighted.</p>
-        <p><strong>Read map.</strong> Generates your reading from everything submitted. Run it when you have enough material — a baseline and at least one entry.</p>
-        <p><strong>Report.</strong> Produces a structured document from the reading. Format depends on the output type you selected.</p>
-        <p><strong>What this tool does not do.</strong> It does not give advice. It does not diagnose. It does not generate a response. It reads what you submit and maps what it finds — no more, no less.</p>
-        <p><strong>Best results.</strong> Submit material that describes rather than summarises. The tool reads signal in specific language — dates, decisions, named constraints, actual events. General statements produce thin reads.</p>
-      </div>
-
-      <div class="onboard-actions">
-        <button class="btn btn-primary" onclick="startApp()">Enter tool</button>
-        <button class="btn btn-sm" onclick="document.getElementById('onboard-s2').style.display='none'; document.getElementById('onboard-s1').style.display='block';">Back</button>
-      </div>
+    <div class="onboard-actions">
+      <button class="btn btn-primary" onclick="startApp()">Start your map</button>
+      <button class="btn btn-sm" onclick="loadSample()">See a sample</button>
     </div>
-
   </div>
 </div>
 
@@ -601,9 +582,9 @@ label {
 /* CARTRIDGE_START */
 window.SORTER_CARTRIDGE = {
   id: "game-narrative",
-  name: "Personal Map",
+  name: "Game Narrative Map",
   tagline: "private · evidence-bound",
-  desc: "Game designer, narrative director, NPC behaviour system, or adaptive storytelling engine.. Key pressures: Player intent not yet visible — the map cannot read direction without it.; Faction loyalties unresolved — competing pulls on NPC behaviour.; Hidden agenda approaching surface — timing of reveal is load-sensitive..",
+    desc: "",
   accent: "#2d5a3d",
   accentLight: "#e8f0ea",
   baselineTitle: "Set your baseline",
@@ -782,8 +763,21 @@ window.SORTER_CARTRIDGE = {
     }
   ],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
-  sampleBaseline: "",
-  sampleEntries: [],
+  sampleBaseline: "Player is in act two of a three-act structure. They've allied with Faction A publicly but have been feeding intelligence to Faction B. Faction A's trust level is high — they don't suspect. Faction B is using the intelligence but hasn't committed to the player yet. There's a planned reveal in act three where Faction A discovers the betrayal. The player's current behaviour is making that reveal feel inevitable rather than dramatic — I need to create more tension and uncertainty before it lands.",
+  sampleEntries: [
+    {
+      daysAgo: 9,
+      text: "Introduced an NPC in Faction A who has noticed an anomaly — not enough to accuse the player but enough to create visible suspicion. Player response in testing: they noticed and started being more careful. The reveal still feels too far away to create urgency."
+    },
+    {
+      daysAgo: 5,
+      text: "Added a timed element — Faction B has given the player a deadline. If the player doesn't act by a certain point, Faction B will act without them. This is creating the pressure I needed. Playtesters are now making different decisions than before."
+    },
+    {
+      daysAgo: 1,
+      text: "The reveal is now landing better. The NPC suspicion thread and the deadline pressure are working together. Players feel the walls closing in — which is the right emotional state before the act three confrontation. Documenting the tension mechanics for the act three design pass."
+    },
+  ],
 };
 /* CARTRIDGE_END */
 
@@ -1305,7 +1299,7 @@ const MercatorEngine = (() => {
   function saveBaseline() {
     MercatorEngine.saveBaseline($('baselineText').value.trim());
     const s = $('baseline-status');
-    s.textContent = 'Saved.'; s.style.display = 'block';
+    s.textContent = 'Received.'; s.style.display = 'block';
     setTimeout(() => s.style.display='none', 2000);
   }
 
@@ -1319,7 +1313,7 @@ const MercatorEngine = (() => {
     MercatorEngine.addEntry($('entryDate').value || todayISO(), text);
     $('entryText').value = '';
     const s = $('entry-status');
-    s.textContent = 'Entry saved.'; s.style.display = 'inline';
+    s.textContent = 'Received.'; s.style.display = 'inline';
     setTimeout(() => s.style.display='none', 2000);
     renderEntries();
   }

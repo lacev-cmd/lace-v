@@ -400,9 +400,9 @@ label {
     <!-- WELCOME SCREEN 1 -->
     <div id="onboard-s1">
       <p class="brand-kicker">LACE V</p>
-      <h1 class="onboard-title serif" id="onboard-title">Welcome.</h1>
-      <p class="onboard-lead">Lace V is a bootstrap start-up founded in 2025 with a single question: what does AI look like when it stops generating and starts reading? We build precise, evidence-bound tools that map what's actually there — not what a model thinks you want to hear. No subscriptions to a chatbot. No black box. Just your material, read carefully, returned to you as a map.</p>
-      <p class="onboard-lead" style="margin-top:-.5rem;" id="onboard-lead">This tool has been built for your domain. It reads what you submit and maps what it finds — movement, stagnation, load, gaps, and the next useful move. It takes a baseline and entries over time. The more specific the material, the more precise the read.</p>
+      <h1 class="onboard-title serif" id="onboard-title">Engineering Map</h1>
+      <p class="onboard-lead" id="onboard-lead">Engineering problems are rarely as simple as they first appear. This tool reads what you write and maps what's actually there — whether the problem is defined, where the constraints are, what's blocking progress, what hasn't been said yet.</p>
+      <p class="onboard-lead" style="margin-top:-.5rem;">Write what's happening. The map reads what you give it.</p>
       <div class="onboard-actions">
         <button class="btn btn-primary" onclick="document.getElementById('onboard-s1').style.display='none'; document.getElementById('onboard-s2').style.display='block';">Next</button>
         <button class="btn btn-sm" onclick="loadSample()">See a sample</button>
@@ -414,13 +414,9 @@ label {
       <p class="brand-kicker">HOW TO USE THIS TOOL</p>
 
       <div class="what-this-is">
-        <p><strong>Baseline.</strong> Your starting point. State where things are now — the situation, the pressure, what has led to this point. Be specific. Vague baselines produce vague reads.</p>
-        <p><strong>Entries.</strong> Dated material added over time. What happened, what was decided, what changed, what didn't. One entry can be a single sentence or several paragraphs. The tool reads across all of them.</p>
-        <p><strong>Corrections.</strong> If the map misreads something, correct it here. Corrections are not cosmetic — they propagate forward and change how subsequent material is weighted.</p>
-        <p><strong>Read map.</strong> Generates your reading from everything submitted. Run it when you have enough material — a baseline and at least one entry.</p>
-        <p><strong>Report.</strong> Produces a structured document from the reading. Format depends on the output type you selected.</p>
-        <p><strong>What this tool does not do.</strong> It does not give advice. It does not diagnose. It does not generate a response. It reads what you submit and maps what it finds — no more, no less.</p>
-        <p><strong>Best results.</strong> Submit material that describes rather than summarises. The tool reads signal in specific language — dates, decisions, named constraints, actual events. General statements produce thin reads.</p>
+        <p>Write the problem as you understand it — what you're trying to solve, what's in the way, what's been tried. Come back when something moves. The map reads across all of it.</p>
+        <p><strong>A minimum baseline might look like this:</strong><br>"We have a performance issue in production. The cause isn't confirmed yet. We've tried two things and neither fixed it. There's pressure to ship the next release while this is still open."</p>
+        <p>Write more if you have it. That's enough if you don't.</p>
       </div>
 
       <div class="onboard-actions">
@@ -603,7 +599,7 @@ window.SORTER_CARTRIDGE = {
   id: "engineering",
   name: "Engineering Map",
   tagline: "private · evidence-bound · constraint-aware",
-  desc: "Engineer, technical lead, project manager, or engineering support context.. Key pressures: Problem that is not yet clearly defined stalling all other progress.; Technical debt or legacy constraints blocking the preferred solution.; Scope change mid-delivery without re-planning..",
+    desc: "",
   accent: "#1a3a3a",
   accentLight: "#edf4f4",
   baselineTitle: "Set your baseline",
@@ -776,8 +772,21 @@ window.SORTER_CARTRIDGE = {
     }
   ],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
-  sampleBaseline: "",
-  sampleEntries: [],
+  sampleBaseline: "We have a recurring performance degradation in production that appears under load. Root cause hasn't been confirmed — we've had two hypotheses, tested both, neither resolved it. There's pressure from the business to ship the next release on schedule. The team is split on whether to hold the release or ship and monitor.",
+  sampleEntries: [
+    {
+      daysAgo: 14,
+      text: "Ran load tests in staging. Reproduced the issue at roughly 80% of production load. That's useful — at least we can reproduce it now. The profile points to a database query that's not indexed correctly. Reviewing that path now."
+    },
+    {
+      daysAgo: 7,
+      text: "Fixed the query. Tested in staging — performance improved significantly. Deployed to production behind a feature flag. Monitoring for 48 hours before full rollout. The release is still on the table but we've asked for three more days."
+    },
+    {
+      daysAgo: 2,
+      text: "Full rollout done. Performance is stable. Release is back on schedule. Documenting the root cause and the fix — this pattern has appeared before in a different part of the codebase and we should check for it systematically."
+    },
+  ],
 };
 /* CARTRIDGE_END */
 
@@ -1299,7 +1308,7 @@ const MercatorEngine = (() => {
   function saveBaseline() {
     MercatorEngine.saveBaseline($('baselineText').value.trim());
     const s = $('baseline-status');
-    s.textContent = 'Saved.'; s.style.display = 'block';
+    s.textContent = 'Received.'; s.style.display = 'block';
     setTimeout(() => s.style.display='none', 2000);
   }
 
@@ -1313,7 +1322,7 @@ const MercatorEngine = (() => {
     MercatorEngine.addEntry($('entryDate').value || todayISO(), text);
     $('entryText').value = '';
     const s = $('entry-status');
-    s.textContent = 'Entry saved.'; s.style.display = 'inline';
+    s.textContent = 'Received.'; s.style.display = 'inline';
     setTimeout(() => s.style.display='none', 2000);
     renderEntries();
   }

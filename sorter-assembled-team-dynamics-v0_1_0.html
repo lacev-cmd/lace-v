@@ -400,9 +400,9 @@ label {
     <!-- WELCOME SCREEN 1 -->
     <div id="onboard-s1">
       <p class="brand-kicker">LACE V</p>
-      <h1 class="onboard-title serif" id="onboard-title">Welcome.</h1>
-      <p class="onboard-lead">Lace V is a bootstrap start-up founded in 2025 with a single question: what does AI look like when it stops generating and starts reading? We build precise, evidence-bound tools that map what's actually there — not what a model thinks you want to hear. No subscriptions to a chatbot. No black box. Just your material, read carefully, returned to you as a map.</p>
-      <p class="onboard-lead" style="margin-top:-.5rem;" id="onboard-lead">This tool has been built for your domain. It reads what you submit and maps what it finds — movement, stagnation, load, gaps, and the next useful move. It takes a baseline and entries over time. The more specific the material, the more precise the read.</p>
+      <h1 class="onboard-title serif" id="onboard-title">Team Dynamics Map</h1>
+      <p class="onboard-lead" id="onboard-lead">Team problems are often obvious to everyone and named by no one. This tool reads what you write and maps what's actually there — what's being said, what isn't, where the load is sitting, what the pattern looks like.</p>
+      <p class="onboard-lead" style="margin-top:-.5rem;">Write what's happening. It doesn't take sides.</p>
       <div class="onboard-actions">
         <button class="btn btn-primary" onclick="document.getElementById('onboard-s1').style.display='none'; document.getElementById('onboard-s2').style.display='block';">Next</button>
         <button class="btn btn-sm" onclick="loadSample()">See a sample</button>
@@ -414,13 +414,9 @@ label {
       <p class="brand-kicker">HOW TO USE THIS TOOL</p>
 
       <div class="what-this-is">
-        <p><strong>Baseline.</strong> Your starting point. State where things are now — the situation, the pressure, what has led to this point. Be specific. Vague baselines produce vague reads.</p>
-        <p><strong>Entries.</strong> Dated material added over time. What happened, what was decided, what changed, what didn't. One entry can be a single sentence or several paragraphs. The tool reads across all of them.</p>
-        <p><strong>Corrections.</strong> If the map misreads something, correct it here. Corrections are not cosmetic — they propagate forward and change how subsequent material is weighted.</p>
-        <p><strong>Read map.</strong> Generates your reading from everything submitted. Run it when you have enough material — a baseline and at least one entry.</p>
-        <p><strong>Report.</strong> Produces a structured document from the reading. Format depends on the output type you selected.</p>
-        <p><strong>What this tool does not do.</strong> It does not give advice. It does not diagnose. It does not generate a response. It reads what you submit and maps what it finds — no more, no less.</p>
-        <p><strong>Best results.</strong> Submit material that describes rather than summarises. The tool reads signal in specific language — dates, decisions, named constraints, actual events. General statements produce thin reads.</p>
+        <p>Write where the team stands — the situation, the pressure, what's working and what isn't. Come back when something shifts. The map reads across all of it.</p>
+        <p><strong>A minimum baseline might look like this:</strong><br>"We have a team of six. Two people are doing most of the work. There's tension but nobody's named it directly. Our last two sprints have missed. The team lead is aware but hasn't addressed it."</p>
+        <p>Write more if you have it. That's enough if you don't.</p>
       </div>
 
       <div class="onboard-actions">
@@ -603,7 +599,7 @@ window.SORTER_CARTRIDGE = {
   id: "team-dynamics",
   name: "Team Dynamics Map",
   tagline: "private · evidence-bound · pattern-aware",
-  desc: "Team lead, team member, organisational consultant, or facilitator.. Key pressures: Conflict not named in the group — circling around it.; One person carrying what belongs to the group.; Accountability distributed so widely it belongs to no one..",
+    desc: "",
   accent: "#2a4a4a",
   accentLight: "#edf4f4",
   baselineTitle: "Set your baseline",
@@ -722,8 +718,21 @@ window.SORTER_CARTRIDGE = {
   ],
   pressureSignals: [],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
-  sampleBaseline: "",
-  sampleEntries: [],
+  sampleBaseline: "Team of seven. We've missed the last three sprint targets. Two senior engineers are carrying the majority of the technical decisions and the majority of the delivery. There's a newer member who is struggling but hasn't asked for help and hasn't been offered it directly. The retrospectives are civil but nothing real gets said. I'm the team lead and I haven't named any of this in the open yet.",
+  sampleEntries: [
+    {
+      daysAgo: 13,
+      text: "Retrospective today. Again, nothing substantive came up. People said the sprint was 'challenging'. I asked what made it challenging — got vague answers. The two seniors exchanged a look. I didn't push. I should have pushed."
+    },
+    {
+      daysAgo: 6,
+      text: "Had a one-to-one with the newer member. She said she's been finding it hard to get unblocked — people are busy and she doesn't want to interrupt. I told her that's exactly what she should be doing. I also told her I should have made that clearer sooner. That was the first honest conversation I've had about this."
+    },
+    {
+      daysAgo: 1,
+      text: "Restructured the pairing setup — the newer member is now paired with one of the seniors for two weeks. Named the load imbalance in the team meeting. It was uncomfortable but it landed. One of the seniors said he was relieved someone had said it."
+    },
+  ],
 };
 /* CARTRIDGE_END */
 
@@ -1245,7 +1254,7 @@ const MercatorEngine = (() => {
   function saveBaseline() {
     MercatorEngine.saveBaseline($('baselineText').value.trim());
     const s = $('baseline-status');
-    s.textContent = 'Saved.'; s.style.display = 'block';
+    s.textContent = 'Received.'; s.style.display = 'block';
     setTimeout(() => s.style.display='none', 2000);
   }
 
@@ -1259,7 +1268,7 @@ const MercatorEngine = (() => {
     MercatorEngine.addEntry($('entryDate').value || todayISO(), text);
     $('entryText').value = '';
     const s = $('entry-status');
-    s.textContent = 'Entry saved.'; s.style.display = 'inline';
+    s.textContent = 'Received.'; s.style.display = 'inline';
     setTimeout(() => s.style.display='none', 2000);
     renderEntries();
   }

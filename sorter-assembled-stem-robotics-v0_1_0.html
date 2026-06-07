@@ -400,9 +400,9 @@ label {
     <!-- WELCOME SCREEN 1 -->
     <div id="onboard-s1">
       <p class="brand-kicker">LACE V</p>
-      <h1 class="onboard-title serif" id="onboard-title">Welcome.</h1>
-      <p class="onboard-lead">Lace V is a bootstrap start-up founded in 2025 with a single question: what does AI look like when it stops generating and starts reading? We build precise, evidence-bound tools that map what's actually there — not what a model thinks you want to hear. No subscriptions to a chatbot. No black box. Just your material, read carefully, returned to you as a map.</p>
-      <p class="onboard-lead" style="margin-top:-.5rem;" id="onboard-lead">This tool has been built for your domain. It reads what you submit and maps what it finds — movement, stagnation, load, gaps, and the next useful move. It takes a baseline and entries over time. The more specific the material, the more precise the read.</p>
+      <h1 class="onboard-title serif" id="onboard-title">Robotics Map</h1>
+      <p class="onboard-lead" id="onboard-lead">Robotic systems accumulate burden that isn't always visible in the operational data. This tool reads what you write and maps what's there — capability state, fault history, load patterns, what the evidence actually supports.</p>
+      <p class="onboard-lead" style="margin-top:-.5rem;">Write what you know. The map reads what you give it.</p>
       <div class="onboard-actions">
         <button class="btn btn-primary" onclick="document.getElementById('onboard-s1').style.display='none'; document.getElementById('onboard-s2').style.display='block';">Next</button>
         <button class="btn btn-sm" onclick="loadSample()">See a sample</button>
@@ -414,13 +414,9 @@ label {
       <p class="brand-kicker">HOW TO USE THIS TOOL</p>
 
       <div class="what-this-is">
-        <p><strong>Baseline.</strong> Your starting point. State where things are now — the situation, the pressure, what has led to this point. Be specific. Vague baselines produce vague reads.</p>
-        <p><strong>Entries.</strong> Dated material added over time. What happened, what was decided, what changed, what didn't. One entry can be a single sentence or several paragraphs. The tool reads across all of them.</p>
-        <p><strong>Corrections.</strong> If the map misreads something, correct it here. Corrections are not cosmetic — they propagate forward and change how subsequent material is weighted.</p>
-        <p><strong>Read map.</strong> Generates your reading from everything submitted. Run it when you have enough material — a baseline and at least one entry.</p>
-        <p><strong>Report.</strong> Produces a structured document from the reading. Format depends on the output type you selected.</p>
-        <p><strong>What this tool does not do.</strong> It does not give advice. It does not diagnose. It does not generate a response. It reads what you submit and maps what it finds — no more, no less.</p>
-        <p><strong>Best results.</strong> Submit material that describes rather than summarises. The tool reads signal in specific language — dates, decisions, named constraints, actual events. General statements produce thin reads.</p>
+        <p>Write the system state — operational history, recent faults, maintenance status, deployment context. Come back when something changes. The map reads across all of it.</p>
+        <p><strong>A minimum baseline might look like this:</strong><br>"The robot has been running for six weeks since last service. There have been three fault resets — all cleared automatically. Production pressure has been high. I'm not sure the resets are as clean as the logs suggest."</p>
+        <p>Write more if you have it. That's enough if you don't.</p>
       </div>
 
       <div class="onboard-actions">
@@ -601,9 +597,9 @@ label {
 /* CARTRIDGE_START */
 window.SORTER_CARTRIDGE = {
   id: "stem-robotics",
-  name: "Personal Map",
+  name: "Robotics Map",
   tagline: "private · evidence-bound",
-  desc: "Robotics engineer, maintenance team, production manager, autonomy team, asset owner, reliability reviewer, integrator, insurer, or technical governance reviewer.. Key pressures: Robot appears operational while hidden burden is accumulating.; Fault clears or robot resets, but burden state may not have recovered.; Production pressure encourages continued operation past prudent bounds..",
+    desc: "",
   accent: "#2d5a3d",
   accentLight: "#e8f0ea",
   baselineTitle: "Set your baseline",
@@ -801,8 +797,21 @@ window.SORTER_CARTRIDGE = {
   ],
   pressureSignals: [],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
-  sampleBaseline: "",
-  sampleEntries: [],
+  sampleBaseline: "Articulated arm robot on a production line. Running at 94% utilisation for the past eight weeks — above the recommended sustained operating rate. We've had four automatic fault resets in the last two weeks, all logged as cleared. Maintenance is scheduled in three weeks. Production manager wants to hold the current rate until then. I'm not confident the fault pattern is as benign as the auto-clear suggests.",
+  sampleEntries: [
+    {
+      daysAgo: 10,
+      text: "Pulled the detailed fault logs. Three of the four resets are in the same joint axis. Auto-clear masks the frequency — looking at the raw data it's happening more than the summary report shows. Flagged to the maintenance team. They're busy but acknowledged it."
+    },
+    {
+      daysAgo: 4,
+      text: "Another reset, same axis. That's five now. Raised formally with the production manager — asked to reduce utilisation to 80% until maintenance can look at it. She pushed back. I documented the request and the response."
+    },
+    {
+      daysAgo: 1,
+      text: "Maintenance brought forward. Joint inspection found wear beyond the service threshold — it would have failed before the scheduled date. Production manager has agreed to a utilisation cap going forward. The auto-clear logging is being reviewed — it was hiding the pattern."
+    },
+  ],
 };
 /* CARTRIDGE_END */
 
@@ -1324,7 +1333,7 @@ const MercatorEngine = (() => {
   function saveBaseline() {
     MercatorEngine.saveBaseline($('baselineText').value.trim());
     const s = $('baseline-status');
-    s.textContent = 'Saved.'; s.style.display = 'block';
+    s.textContent = 'Received.'; s.style.display = 'block';
     setTimeout(() => s.style.display='none', 2000);
   }
 
@@ -1338,7 +1347,7 @@ const MercatorEngine = (() => {
     MercatorEngine.addEntry($('entryDate').value || todayISO(), text);
     $('entryText').value = '';
     const s = $('entry-status');
-    s.textContent = 'Entry saved.'; s.style.display = 'inline';
+    s.textContent = 'Received.'; s.style.display = 'inline';
     setTimeout(() => s.style.display='none', 2000);
     renderEntries();
   }

@@ -400,9 +400,9 @@ label {
     <!-- WELCOME SCREEN 1 -->
     <div id="onboard-s1">
       <p class="brand-kicker">LACE V</p>
-      <h1 class="onboard-title serif" id="onboard-title">Welcome.</h1>
-      <p class="onboard-lead">Lace V is a bootstrap start-up founded in 2025 with a single question: what does AI look like when it stops generating and starts reading? We build precise, evidence-bound tools that map what's actually there — not what a model thinks you want to hear. No subscriptions to a chatbot. No black box. Just your material, read carefully, returned to you as a map.</p>
-      <p class="onboard-lead" style="margin-top:-.5rem;" id="onboard-lead">This tool has been built for your domain. It reads what you submit and maps what it finds — movement, stagnation, load, gaps, and the next useful move. It takes a baseline and entries over time. The more specific the material, the more precise the read.</p>
+      <h1 class="onboard-title serif" id="onboard-title">Asset Integrity Map</h1>
+      <p class="onboard-lead" id="onboard-lead">Asset condition isn't always what the inspection report says it is. This tool reads what you write and maps what's actually there — what's confirmed, what's assumed, where the exposure sits, what hasn't been tested.</p>
+      <p class="onboard-lead" style="margin-top:-.5rem;">Write what you know. The map reads what you give it.</p>
       <div class="onboard-actions">
         <button class="btn btn-primary" onclick="document.getElementById('onboard-s1').style.display='none'; document.getElementById('onboard-s2').style.display='block';">Next</button>
         <button class="btn btn-sm" onclick="loadSample()">See a sample</button>
@@ -414,13 +414,9 @@ label {
       <p class="brand-kicker">HOW TO USE THIS TOOL</p>
 
       <div class="what-this-is">
-        <p><strong>Baseline.</strong> Your starting point. State where things are now — the situation, the pressure, what has led to this point. Be specific. Vague baselines produce vague reads.</p>
-        <p><strong>Entries.</strong> Dated material added over time. What happened, what was decided, what changed, what didn't. One entry can be a single sentence or several paragraphs. The tool reads across all of them.</p>
-        <p><strong>Corrections.</strong> If the map misreads something, correct it here. Corrections are not cosmetic — they propagate forward and change how subsequent material is weighted.</p>
-        <p><strong>Read map.</strong> Generates your reading from everything submitted. Run it when you have enough material — a baseline and at least one entry.</p>
-        <p><strong>Report.</strong> Produces a structured document from the reading. Format depends on the output type you selected.</p>
-        <p><strong>What this tool does not do.</strong> It does not give advice. It does not diagnose. It does not generate a response. It reads what you submit and maps what it finds — no more, no less.</p>
-        <p><strong>Best results.</strong> Submit material that describes rather than summarises. The tool reads signal in specific language — dates, decisions, named constraints, actual events. General statements produce thin reads.</p>
+        <p>Write the asset state — condition, inspection history, known defects, operational context. Come back when the picture changes. The map reads across all of it.</p>
+        <p><strong>A minimum baseline might look like this:</strong><br>"We have a structural inspection due. The last one flagged minor corrosion in two locations. The asset is still operational. I'm not confident the last inspection covered the full exposure path."</p>
+        <p>Write more if you have it. That's enough if you don't.</p>
       </div>
 
       <div class="onboard-actions">
@@ -601,9 +597,9 @@ label {
 /* CARTRIDGE_START */
 window.SORTER_CARTRIDGE = {
   id: "stem-asset-integrity",
-  name: "Personal Map",
+  name: "Asset Integrity Map",
   tagline: "private · evidence-bound",
-  desc: "Engineer, reliability reviewer, maintenance planner, asset owner, inspector, operations manager, insurer, risk reviewer, or technical governance reviewer.. Key pressures: A visible defect is treated as equivalent to failure exposure.; Broad condition rating hides the governing path to consequence.; Inspection finds local damage but not where the damage may travel next..",
+    desc: "",
   accent: "#2d5a3d",
   accentLight: "#e8f0ea",
   baselineTitle: "Set your baseline",
@@ -818,8 +814,21 @@ window.SORTER_CARTRIDGE = {
   ],
   pressureSignals: [],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
-  sampleBaseline: "",
-  sampleEntries: [],
+  sampleBaseline: "Pipeline section under review following a routine inspection that flagged wall thinning at two locations. Both are within operating tolerance individually. What hasn't been assessed is whether the thinning pattern indicates a systemic issue across the section. The asset is currently operational. The next scheduled inspection is in four months. There's pressure to defer any intervention until then.",
+  sampleEntries: [
+    {
+      daysAgo: 11,
+      text: "Reviewed the inspection data in detail. The two flagged locations are 40 metres apart but in the same flow zone. That's not conclusive but it's not coincidental either. Raised the pattern with the integrity engineer. She agrees it warrants a closer look before the four-month window."
+    },
+    {
+      daysAgo: 5,
+      text: "Commissioned a targeted inspection of the full flow zone. Results show three additional thinning locations — all within tolerance individually but the cumulative picture is different. Recommending an intervention before the scheduled date. Documenting the basis for the recommendation."
+    },
+    {
+      daysAgo: 1,
+      text: "Intervention approved. Scope defined. Operational impact is being managed. The original assessment would have missed this — the individual tolerance check isn't sufficient when the pattern indicates a systemic cause."
+    },
+  ],
 };
 /* CARTRIDGE_END */
 
@@ -1341,7 +1350,7 @@ const MercatorEngine = (() => {
   function saveBaseline() {
     MercatorEngine.saveBaseline($('baselineText').value.trim());
     const s = $('baseline-status');
-    s.textContent = 'Saved.'; s.style.display = 'block';
+    s.textContent = 'Received.'; s.style.display = 'block';
     setTimeout(() => s.style.display='none', 2000);
   }
 
@@ -1355,7 +1364,7 @@ const MercatorEngine = (() => {
     MercatorEngine.addEntry($('entryDate').value || todayISO(), text);
     $('entryText').value = '';
     const s = $('entry-status');
-    s.textContent = 'Entry saved.'; s.style.display = 'inline';
+    s.textContent = 'Received.'; s.style.display = 'inline';
     setTimeout(() => s.style.display='none', 2000);
     renderEntries();
   }
