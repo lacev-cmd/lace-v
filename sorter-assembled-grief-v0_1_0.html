@@ -400,9 +400,8 @@ label {
     <!-- WELCOME SCREEN 1 -->
     <div id="onboard-s1">
       <p class="brand-kicker">LACE V</p>
-      <h1 class="onboard-title serif" id="onboard-title">Welcome.</h1>
-      <p class="onboard-lead">Lace V is a bootstrap start-up founded in 2025 with a single question: what does AI look like when it stops generating and starts reading? We build precise, evidence-bound tools that map what's actually there — not what a model thinks you want to hear. No subscriptions to a chatbot. No black box. Just your material, read carefully, returned to you as a map.</p>
-      <p class="onboard-lead" style="margin-top:-.5rem;" id="onboard-lead">This tool has been built for your domain. It reads what you submit and maps what it finds — movement, stagnation, load, gaps, and the next useful move. It takes a baseline and entries over time. The more specific the material, the more precise the read.</p>
+      <h1 class="onboard-title serif" id="onboard-title">Grief Map</h1>
+      <p class="onboard-lead" id="onboard-lead">This is only a tool that may help you navigate this painful time. If nothing else, it may concentrate the mind. Either way, use it — and hopefully it will help in some small way.</p>
       <div class="onboard-actions">
         <button class="btn btn-primary" onclick="document.getElementById('onboard-s1').style.display='none'; document.getElementById('onboard-s2').style.display='block';">Next</button>
         <button class="btn btn-sm" onclick="loadSample()">See a sample</button>
@@ -414,13 +413,8 @@ label {
       <p class="brand-kicker">HOW TO USE THIS TOOL</p>
 
       <div class="what-this-is">
-        <p><strong>Baseline.</strong> Your starting point. State where things are now — the situation, the pressure, what has led to this point. Be specific. Vague baselines produce vague reads.</p>
-        <p><strong>Entries.</strong> Dated material added over time. What happened, what was decided, what changed, what didn't. One entry can be a single sentence or several paragraphs. The tool reads across all of them.</p>
-        <p><strong>Corrections.</strong> If the map misreads something, correct it here. Corrections are not cosmetic — they propagate forward and change how subsequent material is weighted.</p>
-        <p><strong>Read map.</strong> Generates your reading from everything submitted. Run it when you have enough material — a baseline and at least one entry.</p>
-        <p><strong>Report.</strong> Produces a structured document from the reading. Format depends on the output type you selected.</p>
-        <p><strong>What this tool does not do.</strong> It does not give advice. It does not diagnose. It does not generate a response. It reads what you submit and maps what it finds — no more, no less.</p>
-        <p><strong>Best results.</strong> Submit material that describes rather than summarises. The tool reads signal in specific language — dates, decisions, named constraints, actual events. General statements produce thin reads.</p>
+        <p>Write where things are. Come back when something changes. The map reads what you give it — nothing more.</p>
+        <p>There is no right way to do this.</p>
       </div>
 
       <div class="onboard-actions">
@@ -603,7 +597,7 @@ window.SORTER_CARTRIDGE = {
   id: "grief",
   name: "Grief Map",
   tagline: "private · evidence-bound · non-prescriptive",
-  desc: "Individual, grief support worker, therapist context, or bereavement service.. Key pressures: Acute grief — recent loss, early period.; Complicated grief — loss that is not resolving over time.; Disenfranchised grief — loss that others do not recognise as loss..",
+  desc: "",
   accent: "#4a3a2a",
   accentLight: "#f4f0ec",
   baselineTitle: "Set your baseline",
