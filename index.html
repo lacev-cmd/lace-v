@@ -3,38 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lace V — The Pattern Reader</title>
+<title>LACE V — Pattern reading machine</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #F5F1E8; --accent: #6B1A2A; --ink: #2a1a1a; --mid: #5a4a3a;
+    --bg: #F5F1E8; --accent: #6B1A2A; --ink: #1a0a0a; --mid: #5a4a3a;
     --muted: #7a6a5a; --faint: #9a7a6a; --border: #d4c4b4; --white: #ffffff;
     --font: 'Inter', sans-serif;
   }
-  body { background: var(--bg); font-family: var(--font); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; }
-  nav { padding: 1.5rem 3rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
-  .logo { display: flex; align-items: center; gap: 1.25rem; text-decoration: none; }
-  .logo-text p:first-child { font-size: 18px; font-weight: 500; letter-spacing: 0.16em; color: var(--accent); }
+  body { background: var(--bg); font-family: var(--font); color: var(--ink); min-height: 100vh; }
+  a { text-decoration: none; color: inherit; }
+
+  nav { padding: 1.25rem 2.5rem; display: flex; align-items: center; border-bottom: 1px solid var(--border); }
+  .logo { display: flex; align-items: center; gap: 1rem; }
+  .logo-text p:first-child { font-size: 17px; font-weight: 500; letter-spacing: 0.16em; color: var(--accent); }
   .logo-text p:last-child { font-size: 9px; letter-spacing: 0.2em; color: var(--faint); text-transform: uppercase; }
-  .tagline-strip { text-align: center; padding: 0.7rem 3rem; border-bottom: 1px solid var(--border); }
-  .tagline-strip p { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint); }
-  .main { flex: 1; max-width: 680px; margin: 0 auto; padding: 5rem 2rem; }
-  h1 { font-size: 30px; font-weight: 500; color: var(--ink); margin: 0 0 2.5rem; line-height: 1.25; letter-spacing: -0.01em; }
-  .body-text { font-size: 17px; color: var(--mid); line-height: 1.9; margin: 0 0 2rem; }
-  .divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
-  .section-title { font-size: 14px; font-weight: 500; color: var(--ink); margin: 0 0 1rem; }
-  .engine-text { font-size: 15px; color: var(--mid); line-height: 1.85; margin: 0 0 1.25rem; }
-  .engine-note { font-size: 15px; color: var(--mid); line-height: 1.85; margin: 0 0 1.25rem; }
-  .engine-italic { font-size: 15px; color: var(--accent); line-height: 1.85; font-style: italic; margin: 0 0 3rem; }
-  .btn-primary { background: var(--accent); color: var(--bg); border: none; border-radius: 8px; padding: 0.9rem 3rem; font-family: var(--font); font-size: 15px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; text-decoration: none; display: inline-block; }
+
+  .tagline-strip { background: #ede8de; border-bottom: 1px solid var(--border); padding: 0.45rem 2.5rem; font-size: 11px; letter-spacing: 0.1em; color: var(--muted); }
+
+  .panel { max-width: 640px; margin: 0 auto; padding: 3.5rem 2rem; }
+  .panel + .panel { border-top: 1px solid var(--border); }
+
+  .panel-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint); font-weight: 600; margin-bottom: 1.25rem; }
+
+  .panel h2 { font-size: 26px; font-weight: 500; color: var(--ink); line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 0.85rem; }
+
+  .panel p { font-size: 15px; color: var(--mid); line-height: 1.75; max-width: 480px; }
+
+  .cta-wrap { max-width: 640px; margin: 0 auto; padding: 2.5rem 2rem 3.5rem; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+
+  .btn-primary { display: inline-block; background: var(--accent); color: var(--bg); border-radius: 8px; padding: 0.85rem 2.25rem; font-size: 15px; font-weight: 500; transition: opacity 0.15s; }
   .btn-primary:hover { opacity: 0.88; }
-  footer { border-top: 1px solid var(--border); padding: 2rem 3rem; }
-  footer p { font-size: 13px; color: var(--faint); }
+
+  .cta-note { font-size: 12px; color: var(--faint); line-height: 1.65; }
+
+  footer { border-top: 1px solid var(--border); padding: 1.5rem 2.5rem; }
+  footer p { font-size: 12px; color: var(--faint); }
+
   @media (max-width: 600px) {
     nav { padding: 1rem 1.25rem; }
-    .main { padding: 3rem 1.25rem; }
-    h1 { font-size: 24px; }
+    .tagline-strip { padding: 0.45rem 1.25rem; }
+    .panel { padding: 2.5rem 1.25rem; }
+    .cta-wrap { padding: 2rem 1.25rem 3rem; flex-direction: column; align-items: flex-start; }
     footer { padding: 1.5rem 1.25rem; }
   }
 </style>
@@ -43,7 +54,7 @@
 
 <nav>
   <a class="logo" href="index.html">
-    <svg width="52" height="44" viewBox="0 0 160 140">
+    <svg width="44" height="37" viewBox="0 0 160 140">
       <polyline points="0,0 80,150 160,0" fill="none" stroke="#6B1A2A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.2"/>
       <polyline points="22,0 80,103 138,0" fill="none" stroke="#6B1A2A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
       <polyline points="50,0 80,56 110,0" fill="none" stroke="#6B1A2A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
@@ -55,26 +66,29 @@
   </a>
 </nav>
 
-<div class="tagline-strip">
-  <p>Private · Evidence-bound · Pattern-aware</p>
+<div class="tagline-strip">Private · Evidence-bound · Pattern-aware</div>
+
+<div class="panel">
+  <p class="panel-label">What it is</p>
+  <h2>You already know what's happening.<br>You just can't see it yet.</h2>
+  <p>Lace V reads what you write and maps what's actually there — what's moving, what's stuck, what's missing, what contradicts. It doesn't tell you what to think. It shows you what you gave it.</p>
 </div>
 
-<div class="main">
-  <h1>The Pattern Reader.</h1>
+<div class="panel">
+  <p class="panel-label">How it's different</p>
+  <h2>Most tools generate answers.<br>This one reads what you give it.</h2>
+  <p>Lace V is a pattern-reading engine. You write. It counts what appears independently, tracks what is moving, holds contradictions, and maps the next useful move. Evidence only. Nothing invented.</p>
+</div>
 
-  <p class="body-text">Welcome to Lace V. We are here with one purpose — to try and understand. To understand where we are going, what's failing, what the outlook is, or isn't. We try to give you an extra layer of information to act upon or not. It's all in your hands. The cleaner the input, the better the tool will serve you.</p>
+<div class="panel">
+  <p class="panel-label">How it works</p>
+  <h2>Write what's happening.<br>It reads what's there.</h2>
+  <p>A pattern-reading engine for the situations that matter — grief, recovery, legal, medical, work, relationships, engineering, and more. Private. Evidence-bound. Nothing leaves your device.</p>
+</div>
 
-  <hr class="divider">
-
-  <p class="section-title">What the engine does</p>
-
-  <p class="engine-text">Lace V reads your material and maps what it finds. It counts what appears independently across your entries. It tracks what is moving and what is not. It holds contradictions without resolving them. It surfaces what is absent. It reads load — what is making things harder. It detects state changes — genuine shifts versus noise. And it tells you what the next useful move is, bounded by what the evidence actually supports.</p>
-
-  <p class="engine-note">It does not generate. It does not predict. It does not guess. It reads what you give it and maps what is there.</p>
-
-  <p class="engine-italic">It will only read what you input. The better the input, the better the tool will serve you.</p>
-
+<div class="cta-wrap">
   <a class="btn-primary" href="domains.html">Pick your domain</a>
+  <p class="cta-note">No account required. Nothing leaves your device.<br>Free to use — export your report for $9/month.</p>
 </div>
 
 <footer>
