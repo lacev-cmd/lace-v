@@ -415,6 +415,8 @@ label {
       <div class="what-this-is">
         <p>Write where things are. Come back when something changes. The map reads what you give it — nothing more.</p>
         <p>There is no right way to do this.</p>
+        <p><strong>A minimum baseline might look like this:</strong><br>"My mother died six weeks ago. I'm back at work. I'm doing the things I'm supposed to do. I don't know what I need. I just know something is very wrong and I can't name it properly yet."</p>
+        <p><em>This tool is not a substitute for professional support. It reads what you write and maps what it finds — no more. It does not diagnose, assess risk, or produce a clinical or legal finding. If you are in crisis or need immediate help, please reach out to someone who can support you directly.</em></p>
       </div>
 
       <div class="onboard-actions">
@@ -432,6 +434,7 @@ label {
 
   <header class="app-header">
     <div class="app-header-inner">
+      <a href="domains.html" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);text-decoration:none;font-family:var(--font);white-space:nowrap;">&#8592; All domains</a>
       <div class="app-brand">
         <span class="app-brand-name serif" id="header-name">Map</span>
         <span class="app-brand-domain" id="header-domain"></span>
@@ -721,8 +724,21 @@ window.SORTER_CARTRIDGE = {
   ],
   pressureSignals: [],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
-  sampleBaseline: "",
-  sampleEntries: [],
+  sampleBaseline: "My mother died six weeks ago. She had been ill for a long time but it still didn't feel real when it happened. I am back at work. I am doing the things I am supposed to do. My sister is around but we are both carrying it separately — we don't really talk about it. I have friends who have checked in but I keep telling them I am fine. I don't know what I need. I just know that something is very wrong and I cannot name it properly yet.",
+  sampleEntries: [
+    {
+      daysAgo: 18,
+      text: "I got through the week. I am managing. Work is actually helping in a way — it gives me somewhere to put myself. I ate today, I slept last night. Basic things. But I cried on the way home on Tuesday and I didn't try to stop it. I just let it come. I don't know if that is progress or just what happens now."
+    },
+    {
+      daysAgo: 11,
+      text: "I am not okay. I said I was fine to my friend again today and I don't know why I keep doing that. I have not slept properly in four days. I keep thinking about small things — the way she answered the phone, the specific smell of her house. I cannot concentrate on anything for more than a few minutes. I should be further along than this. People keep saying I am doing so well and I want to scream."
+    },
+    {
+      daysAgo: 4,
+      text: "I called my sister. We didn't talk about mum directly but it was the first time I had reached out to anyone. It helped more than I expected. I told her I wasn't doing as well as I'd been saying. She said the same. I don't know what getting through this looks like but I want to get through it. One day at a time I suppose."
+    },
+  ],
 };
 /* CARTRIDGE_END */
 
@@ -1244,7 +1260,7 @@ const MercatorEngine = (() => {
   function saveBaseline() {
     MercatorEngine.saveBaseline($('baselineText').value.trim());
     const s = $('baseline-status');
-    s.textContent = 'Saved.'; s.style.display = 'block';
+    s.textContent = 'Thank you — come back and edit this anytime if you remember anything more.'; s.style.display = 'block';
     setTimeout(() => s.style.display='none', 2000);
   }
 
@@ -1258,7 +1274,7 @@ const MercatorEngine = (() => {
     MercatorEngine.addEntry($('entryDate').value || todayISO(), text);
     $('entryText').value = '';
     const s = $('entry-status');
-    s.textContent = 'Entry saved.'; s.style.display = 'inline';
+    s.textContent = 'Thank you — come back and edit this anytime if you remember anything more.'; s.style.display = 'inline';
     setTimeout(() => s.style.display='none', 2000);
     renderEntries();
   }

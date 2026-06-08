@@ -417,6 +417,7 @@ label {
         <p>Write where things stand — your situation, the conditions you're under, what's working and what isn't. Come back when something changes. The map reads across all of it.</p>
         <p><strong>A minimum baseline might look like this:</strong><br>"I've been out for six weeks. I have conditions I have to meet. I'm trying to stay away from the people and places that caused problems before. It's harder than I expected and I haven't told anyone how hard."</p>
         <p>Write more if you have it. That's enough if you don't.</p>
+        <p><em>This tool is not a substitute for professional support. It reads what you write and maps what it finds — no more. It does not diagnose, assess risk, or produce a clinical or legal finding. If you are in crisis or need immediate help, please reach out to someone who can support you directly.</em></p>
       </div>
 
       <div class="onboard-actions">
@@ -434,6 +435,7 @@ label {
 
   <header class="app-header">
     <div class="app-header-inner">
+      <a href="domains.html" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);text-decoration:none;font-family:var(--font);white-space:nowrap;">&#8592; All domains</a>
       <div class="app-brand">
         <span class="app-brand-name serif" id="header-name">Map</span>
         <span class="app-brand-domain" id="header-domain"></span>
@@ -723,8 +725,21 @@ window.SORTER_CARTRIDGE = {
   ],
   pressureSignals: [],
   stuckRx: /\b(same thing|going in circles|nothing changes|same pattern|no progress|still the same|back to square one|what is the point|nothing moves)\b/i,
-  sampleBaseline: "",
-  sampleEntries: [],
+  sampleBaseline: "I've been out for three months. I'm on licence — conditions include reporting weekly and not contacting certain people. I'm living in supported accommodation which is okay for now. I've started a part-time job. The pressure is the people and places I used to be around — they're still there and I'm not far enough away from them yet. I haven't told my probation officer how close it still feels sometimes.",
+  sampleEntries: [
+    {
+      daysAgo: 19,
+      text: "Reported in. That's done. Work is going okay — showing up, keeping my head down. Had a message from someone I shouldn't be in contact with. I didn't reply but I didn't block it either. I know what that means."
+    },
+    {
+      daysAgo: 11,
+      text: "Blocked the contact. It took me a week longer than it should have but it's done. Told my key worker I'd been finding it harder than I'd said. She didn't make it a big thing — just asked what support would help. That was better than I expected."
+    },
+    {
+      daysAgo: 3,
+      text: "Three months done. Licence conditions reviewed — no changes but the review felt more routine than threatening this time. Work has offered me more hours. I said yes. Keeping busy is part of it. I know that. I'm trying to build something that's mine."
+    },
+  ],
 };
 /* CARTRIDGE_END */
 
