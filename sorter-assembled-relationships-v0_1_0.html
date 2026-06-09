@@ -544,7 +544,7 @@ label {
         <label>To <input type="date" id="reportEnd"></label>
         <button class="btn btn-accent btn-sm" onclick="generateReport()">Read the map</button>
         <button class="btn btn-sm" onclick="generateExitReport()">Full arc</button>
-        <button class="btn btn-sm" onclick="window.print()">Print</button>
+        <button class="btn btn-sm" onclick="LaceVGate.check(function(){ window.print(); })">Print</button>
       </div>
 
       <div id="report-empty" class="report-empty">
@@ -1314,14 +1314,16 @@ const MercatorEngine = (() => {
   }
 
   function exportData() {
-    const json = MercatorEngine.exportJSON();
-    const blob = new Blob([json], {type:'application/json'});
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url;
-    a.download = `lacev-map-${MercatorEngine.getCartridge()?.id||'export'}-${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+    LaceVGate.check(function() {
+      const json = MercatorEngine.exportJSON();
+      const blob = new Blob([json], {type:'application/json'});
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url;
+      a.download = `lacev-map-${MercatorEngine.getCartridge()?.id||'export'}-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
   }
 
   function clearAll() {
@@ -1428,5 +1430,6 @@ const MercatorEngine = (() => {
 })();
 </script>
 
+<script src="lacev-payment-gate.js"></script>
 </body>
 </html>
