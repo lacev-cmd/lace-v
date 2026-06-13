@@ -3,98 +3,213 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LACE V — Pattern reading machine</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<title>LACE V STEM — Pick a tool</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #F5F1E8; --accent: #6B1A2A; --ink: #1a0a0a; --mid: #5a4a3a;
-    --muted: #7a6a5a; --faint: #9a7a6a; --border: #d4c4b4; --white: #ffffff;
-    --font: 'Inter', sans-serif;
-  }
-  body { background: var(--bg); font-family: var(--font); color: var(--ink); min-height: 100vh; }
-  a { text-decoration: none; color: inherit; }
+:root {
+  --bg:           #f3f1eb;
+  --surface:      #ffffff;
+  --ink:          #171512;
+  --text:         #211f1a;
+  --muted:        #676157;
+  --faint:        #9b968c;
+  --border:       #e1dbcc;
+  --border-strong:#bfb7a6;
+  --accent:       #2d5a3d;
+  --accent-light: #e8f0ea;
+  --r-lg:         14px;
+  --r-md:         8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+button, input { font: inherit; }
+button { cursor: pointer; }
 
-  nav { padding: 1.25rem 2.5rem; display: flex; align-items: center; border-bottom: 1px solid var(--border); }
-  .logo { display: flex; align-items: center; gap: 1rem; }
-  .logo-text p:first-child { font-size: 17px; font-weight: 500; letter-spacing: 0.16em; color: var(--accent); }
-  .logo-text p:last-child { font-size: 9px; letter-spacing: 0.2em; color: var(--faint); text-transform: uppercase; }
+.wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
 
-  .tagline-strip { background: #ede8de; border-bottom: 1px solid var(--border); padding: 0.45rem 2.5rem; font-size: 11px; letter-spacing: 0.1em; color: var(--muted); }
+.kicker {
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: .4rem;
+}
+h1 {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -.03em;
+  color: var(--ink);
+  margin-bottom: .5rem;
+}
+.lead {
+  font-size: 15px;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+  line-height: 1.65;
+}
 
-  .panel { max-width: 640px; margin: 0 auto; padding: 3.5rem 2rem; }
-  .panel + .panel { border-top: 1px solid var(--border); }
+.group { margin-bottom: 2rem; }
+.group-label {
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: .75rem;
+  font-weight: 600;
+}
 
-  .panel-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint); font-weight: 600; margin-bottom: 1.25rem; }
+.domain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  gap: 8px;
+}
 
-  .panel h2 { font-size: 26px; font-weight: 500; color: var(--ink); line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 0.85rem; }
+.domain-card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: .85rem 1rem;
+  cursor: pointer;
+  transition: border-color .12s, background .12s;
+  text-align: left;
+  user-select: none;
+}
+.domain-card:hover { border-color: var(--border-strong); background: #faf8f3; }
+.domain-card.selected {
+  border: 1.5px solid var(--accent);
+  background: var(--accent-light);
+}
+.domain-card .d-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  display: block;
+  margin-bottom: .2rem;
+}
+.domain-card .d-hint {
+  font-size: 11px;
+  color: var(--faint);
+  display: block;
+  line-height: 1.4;
+}
+.domain-card.selected .d-name { color: var(--accent); }
 
-  .panel p { font-size: 15px; color: var(--mid); line-height: 1.75; max-width: 480px; }
+.action-bar {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
 
-  .cta-wrap { max-width: 640px; margin: 0 auto; padding: 2.5rem 2rem 3.5rem; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+.btn-build {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-md);
+  padding: .6rem 1.4rem;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  transition: opacity .12s;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-build.disabled {
+  opacity: .35;
+  cursor: default;
+  pointer-events: none;
+}
+.btn-build:not(.disabled):hover { opacity: .88; }
 
-  .btn-primary { display: inline-block; background: var(--accent); color: var(--bg); border-radius: 8px; padding: 0.85rem 2.25rem; font-size: 15px; font-weight: 500; transition: opacity 0.15s; }
-  .btn-primary:hover { opacity: 0.88; }
+.sel-note {
+  font-size: 13px;
+  color: var(--muted);
+}
 
-  .cta-note { font-size: 12px; color: var(--faint); line-height: 1.65; }
-
-  footer { border-top: 1px solid var(--border); padding: 1.5rem 2.5rem; }
-  footer p { font-size: 12px; color: var(--faint); }
-
-  @media (max-width: 600px) {
-    nav { padding: 1rem 1.25rem; }
-    .tagline-strip { padding: 0.45rem 1.25rem; }
-    .panel { padding: 2.5rem 1.25rem; }
-    .cta-wrap { padding: 2rem 1.25rem 3rem; flex-direction: column; align-items: flex-start; }
-    footer { padding: 1.5rem 1.25rem; }
-  }
+.footer-note {
+  margin-top: 3rem;
+  font-size: 12px;
+  color: var(--faint);
+  line-height: 1.7;
+  border-top: 1px solid var(--border);
+  padding-top: 1.25rem;
+}
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<nav>
-  <a class="logo" href="index.html">
-    <svg width="44" height="37" viewBox="0 0 160 140">
-      <polyline points="0,0 80,150 160,0" fill="none" stroke="#6B1A2A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.2"/>
-      <polyline points="22,0 80,103 138,0" fill="none" stroke="#6B1A2A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
-      <polyline points="50,0 80,56 110,0" fill="none" stroke="#6B1A2A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
-    </svg>
-    <div class="logo-text">
-      <p>LACE V</p>
-      <p>Pattern Reading Machine</p>
+  <p class="kicker">LACE V STEM</p>
+  <h1>What are you reading evidence for?</h1>
+  <p class="lead">Pick a tool. You get a single page — write what you know, and the map reads what's there. No server, no account, works offline.</p>
+
+  <div class="group">
+    <p class="group-label">STEM &amp; technical</p>
+    <div class="domain-grid">
+      <div class="domain-card" data-id="stem-lab-evidence" data-file="sorter-assembled-stem-lab-evidence-v0_1_0.html" onclick="pick(this)">
+        <span class="d-name">Lab evidence</span>
+        <span class="d-hint">Readiness, gaps, claims</span>
+      </div>
+      <div class="domain-card" data-id="stem-robotics" data-file="sorter-assembled-stem-robotics-v0_1_0.html" onclick="pick(this)">
+        <span class="d-name">Robotics</span>
+        <span class="d-hint">Testing, integration</span>
+      </div>
+      <div class="domain-card" data-id="stem-asset-integrity" data-file="sorter-assembled-stem-asset-integrity-v0_1_0.html" onclick="pick(this)">
+        <span class="d-name">Asset integrity</span>
+        <span class="d-hint">Inspection, risk, condition</span>
+      </div>
+      <div class="domain-card" data-id="stem-code-release" data-file="sorter-assembled-stem-code-release-v0_1_0.html" onclick="pick(this)">
+        <span class="d-name">Code release</span>
+        <span class="d-hint">Readiness, sign-off</span>
+      </div>
     </div>
-  </a>
-  <a href="how-it-works.html" style="font-size: 13px; color: var(--faint); margin-left: auto; font-family: var(--font);">How it works</a>
-</nav>
+  </div>
 
-<div class="tagline-strip">Private · Evidence-bound · Pattern-aware</div>
+  <div class="action-bar">
+    <a class="btn-build disabled" id="build-btn" href="#">Open tool</a>
+    <span class="sel-note" id="sel-note">No tool selected</span>
+  </div>
 
-<div class="panel">
-  <p class="panel-label">What it is</p>
-  <h2>You already know what's happening.<br>You just can't see it yet.</h2>
-  <p>Lace V reads what you write and maps what's actually there — what's moving, what's stuck, what's missing, what contradicts. It doesn't tell you what to think. It shows you what you gave it.</p>
+  <p class="footer-note">
+    Each tool is a single page. No server required. No data leaves your device.<br>
+    The map reads what you write — nothing more, nothing less.
+  </p>
+
 </div>
+<script>
+let selected = null;
 
-<div class="panel">
-  <p class="panel-label">How it's different</p>
-  <h2>Most tools generate answers.<br>This one reads what you give it.</h2>
-  <p>Lace V is a pattern-reading engine. You write. It counts what appears independently, tracks what is moving, holds contradictions, and maps the next useful move. Evidence only. Nothing invented.</p>
-</div>
-
-<div class="panel">
-  <p class="panel-label">How it works</p>
-  <h2>Write what's happening.<br>It reads what's there.</h2>
-  <p>A pattern-reading engine for the situations that matter — grief, recovery, legal, medical, work, relationships, engineering, and more. Private. Evidence-bound. Nothing leaves your device.</p>
-</div>
-
-<div class="cta-wrap">
-  <a class="btn-primary" href="domains.html">Pick your domain</a>
-  <p class="cta-note">No account required. Nothing leaves your device.<br>Free to use — export your report for $9/month.</p>
-</div>
-
-<footer>
-  <p>© 2026 Lace V</p>
-</footer>
-
+function pick(el) {
+  document.querySelectorAll('.domain-card.selected').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selected = {
+    id:   el.dataset.id,
+    file: el.dataset.file || null,
+    name: el.querySelector('.d-name').textContent,
+  };
+  document.getElementById('sel-note').textContent = selected.name + ' selected';
+  const btn = document.getElementById('build-btn');
+  if (selected.file) {
+    btn.href = selected.file;
+    btn.classList.remove('disabled');
+  } else {
+    btn.href = '#';
+    btn.classList.add('disabled');
+  }
+}
+</script>
 </body>
 </html>
